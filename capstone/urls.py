@@ -19,5 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),  
+    path('', include('accounts.urls')),   # landing page = login/register
+    path('home/', include('home.urls')),  # dashboard after login
 ]
