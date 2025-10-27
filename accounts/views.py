@@ -35,7 +35,37 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 def register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        bday = request.POST.get('bday')  # <-- capture birthday
+        address = request.POST.get('address')
+        contact_num = request.POST.get('contact_num')
+        program_and_yr = request.POST.get('program_and_yr')
+        document = request.FILES.get('document')
+
+        # create student
+        student = Student.objects.create(
+            username=username,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            bday=bday,  # <-- include birthday here
+            address=address,
+            contact_num=contact_num,
+            program_and_yr=program_and_yr,
+            doc_submitted=document
+        )
+        student.save()
+        messages.success(request, "Registration successful!")
+        return redirect('accounts:login')
+
     return render(request, 'accounts/register.html')
+
 
 def admin_dashboard(request):
     admin_id = request.session.get('user_id')
@@ -54,4 +84,5 @@ def student_dashboard(request):
 
 def logout_view(request):
     request.session.flush()  # clears all session data
-    return redirect('login')
+    return redirect('accounts:login')
+

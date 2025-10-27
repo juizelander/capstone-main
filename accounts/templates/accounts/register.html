@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -6,12 +7,22 @@
 </head>
 <body>
   <h1>Register</h1>
-  <form method="POST">
+  <form method="POST" enctype="multipart/form-data">
+   {% csrf_token %}
+
+    <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <input type="text" name="username" placeholder="Username"><br>
-    <input type="password" name="password" placeholder="Password"><br>
+    <input type="text" name="username" placeholder="Username" required><br>
+    <input type="password" name="password" placeholder="Password" required><br>
+    <input type="text" name="first_name" placeholder="First Name" required><br>
+    <input type="text" name="last_name" placeholder="Last Name" required><br>
+    <input type="email" name="email" placeholder="Email" required><br>
+    <input type="date" name="bday" placeholder="Birthday" required><br>
+    <input type="text" name="address" placeholder="Address" required><br>
+    <input type="text" name="contact_num" placeholder="Contact Number" required><br>
+    <input type="text" name="program_and_yr" placeholder="Program & Year" required><br>
+    <input type="file" name="document"><br>
     <button type="submit">Register</button>
-  </form>
-  <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</form>
 </body>
 </html>

@@ -22,6 +22,7 @@ class Student(models.Model):
     scholarship = models.CharField(max_length=100, blank=True, null=True)
     password = models.CharField(max_length=100)
     status = models.CharField(max_length=50, default='active')
+    doc_submitted = models.FileField(upload_to='documents/', blank=True, null=True)
 
     def __str__(self):
         return self.username
