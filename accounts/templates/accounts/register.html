@@ -1,28 +1,112 @@
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Student Management System</title>
+  {% load static %}
   <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 </head>
 <body>
-  <h1>Register</h1>
-  <form method="POST" enctype="multipart/form-data">
-   {% csrf_token %}
+  <div class="auth-container registration-container">
+    <div class="auth-header">
+      <h1>Create Account</h1>
+      <p> Bakit nga ba mahal kita kahit na may mahal ka nang iba <br> bat baliw na baliw ako sayo</p>
+    </div>
 
-    <form method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <input type="text" name="first_name" placeholder="First Name" required><br>
-    <input type="text" name="last_name" placeholder="Last Name" required><br>
-    <input type="email" name="email" placeholder="Email" required><br>
-    <input type="date" name="bday" placeholder="Birthday" required><br>
-    <input type="text" name="address" placeholder="Address" required><br>
-    <input type="text" name="contact_num" placeholder="Contact Number" required><br>
-    <input type="text" name="program_and_yr" placeholder="Program & Year" required><br>
-    <input type="file" name="document"><br>
-    <button type="submit">Register</button>
-</form>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="success-message">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" class="auth-form">
+      {% csrf_token %}
+      
+      <div class="form-row">
+        <div class="input-group">
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Choose a username" required>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a password" required>
+      </div>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label for="bday">Birthday</label>
+          <input type="date" id="bday" name="bday" required>
+        </div>
+        
+        <div class="input-group">
+          <label for="contact_num">Contact Number</label>
+          <input type="text" id="contact_num" name="contact_num" placeholder="Your phone number" required>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="program_and_yr">Program & Year</label>
+        <input type="text" id="program_and_yr" name="program_and_yr" placeholder="e.g., BSIT 3rd Year" required>
+      </div>
+
+      <div class="input-group">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" placeholder="Enter your complete address" rows="3" required></textarea>
+      </div>
+
+      <div class="input-group">
+        <label for="document">Document Upload</label>
+        <div class="file-upload">
+          <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+          <label for="document" class="file-upload-label">
+            <span id="file-label">📄 Choose a document to upload (optional)</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="auth-button">Create Account</button>
+    </form>
+
+    <div class="auth-link">
+      <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+    </div>
+  </div>
+
+  <script>
+    // File upload handling
+    document.getElementById('document').addEventListener('change', function(e) {
+      const fileLabel = document.getElementById('file-label');
+      const fileLabelElement = fileLabel.parentElement;
+      
+      if (e.target.files.length > 0) {
+        const fileName = e.target.files[0].name;
+        fileLabel.textContent = `📄 ${fileName}`;
+        fileLabelElement.classList.add('has-file');
+      } else {
+        fileLabel.textContent = '📄 Choose a document to upload (optional)';
+        fileLabelElement.classList.remove('has-file');
+      }
+    });
+  </script>
 </body>
 </html>

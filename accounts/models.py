@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Admin(models.Model):
@@ -21,9 +22,30 @@ class Student(models.Model):
     program_and_yr = models.CharField(max_length=100)
     scholarship = models.CharField(max_length=100, blank=True, null=True)
     password = models.CharField(max_length=100)
-    status = models.CharField(max_length=50, default='active')
+    status = models.CharField(max_length=50, default='pending')
     doc_submitted = models.FileField(upload_to='documents/', blank=True, null=True)
+    created_at = models.DateTimeField(null=True, blank=True)
+    updated_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.username
-# Create your models here.
+
+
+class Popup(models.Model):
+    POPUP_TYPES = [
+        ('info', 'Information'),
+        ('warning', 'Warning'),
+        ('success', 'Success'),
+        ('error', 'Error'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    popup_type = models.CharField(max_length=20, choices=POPUP_TYPES, default='info')
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    expires_at = models.DateTimeField(blank=True, null=True)
+    
+    def __str__(self):
+        return self.title
