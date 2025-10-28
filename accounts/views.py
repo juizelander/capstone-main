@@ -173,11 +173,13 @@ def admin_stats(request):
         total_students = Student.objects.filter(status='active').count()
         active_popups = Popup.objects.filter(is_active=True).count()
         pending_applications = Student.objects.filter(status='pending').count()
+        total_programs = Program.objects.count()
         
         return JsonResponse({
             'total_students': total_students,
             'active_popups': active_popups,
-            'pending_applications': pending_applications
+            'pending_applications': pending_applications,
+            'total_programs': total_programs
         })
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

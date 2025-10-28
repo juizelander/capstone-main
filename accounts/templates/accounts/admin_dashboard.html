@@ -4,12 +4,17 @@
 <head>
   <title>Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lemon+Milk:wght@300;400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}">
 <body>
   <header>
-    <h1>Admin Dashboard</h1>
-    <p>Welcome, {{ admin.admin_name }}!</p>
+    <h1>ScholarSync Subic</h1>
+    <p class="welcome-text">Welcome, {{ admin.admin_name }}!</p>
   </header>
 
   <div class="container">
@@ -37,11 +42,82 @@
           <h3>Dashboard Overview</h3>
           <p>Welcome to your admin dashboard. Use the sidebar to navigate between different sections.</p>
         </div>
-        <div class="card">
-          <h3>Quick Stats</h3>
-          <p>Total Students: <span id="total-students">Loading...</span></p>
-          <p>Active Popups: <span id="active-popups">Loading...</span></p>
-          <p>Pending Applications: <span id="pending-applications">Loading...</span></p>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+              <h4>Total Students</h4>
+              <span class="stat-number" id="total-students">Loading...</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-bell"></i>
+            </div>
+            <div class="stat-content">
+              <h4>Active Popups</h4>
+              <span class="stat-number" id="active-popups">Loading...</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+              <h4>Pending Applications</h4>
+              <span class="stat-number" id="pending-applications">Loading...</span>
+            </div>
+          </div>
+          
+          <div class="stat-card">
+            <div class="stat-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+              <h4>Total Programs</h4>
+              <span class="stat-number" id="total-programs">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h3>Application Trends</h3>
+            <div class="chart-controls">
+              <select id="chart-period" onchange="updateChart()">
+                <option value="7">Last 7 Days</option>
+                <option value="30" selected>Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="applicationsChart" width="400" height="200"></canvas>
+          </div>
+        </div>
+
+        <!-- Student Statistics Bar Chart -->
+        <div class="card chart-card">
+          <div class="card-header">
+            <h3>Student Statistics</h3>
+            <div class="chart-controls">
+              <select id="student-chart-type" onchange="updateStudentChart()">
+                <option value="status" selected>By Status</option>
+                <option value="program">By Program</option>
+                <option value="monthly">Monthly Registrations</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="studentChart" width="400" height="200"></canvas>
+          </div>
         </div>
       </div>
 
@@ -227,6 +303,8 @@
 
     // Initial loads
     loadDashboardStats();
+    initChart();
+    initStudentChart();
     // Preload student applications so it's ready when tab opens
     loadStudentApplications();
 });
@@ -402,10 +480,233 @@ function hideCreateProgram() {
           document.getElementById('total-students').textContent = data.total_students || 0;
           document.getElementById('active-popups').textContent = data.active_popups || 0;
           document.getElementById('pending-applications').textContent = data.pending_applications || 0;
+          document.getElementById('total-programs').textContent = data.total_programs || 0;
         })
         .catch(error => {
           console.error('Error loading stats:', error);
         });
+    }
+
+    // Chart functionality
+    let applicationsChart = null;
+    let studentChart = null;
+
+    function initChart() {
+      const ctx = document.getElementById('applicationsChart').getContext('2d');
+      
+      // Generate sample data for the last 30 days
+      const labels = [];
+      const data = [];
+      const today = new Date();
+      
+      for (let i = 29; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        // Generate random data for demo (replace with real data)
+        data.push(Math.floor(Math.random() * 10) + 1);
+      }
+
+      applicationsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Applications',
+            data: data,
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#667eea',
+            pointBorderColor: '#764ba2',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                stepSize: 1
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          },
+          elements: {
+            point: {
+              hoverBackgroundColor: '#764ba2'
+            }
+          }
+        }
+      });
+    }
+
+    function updateChart() {
+      const period = document.getElementById('chart-period').value;
+      const days = parseInt(period);
+      
+      // Generate new labels and data based on selected period
+      const labels = [];
+      const data = [];
+      const today = new Date();
+      
+      for (let i = days - 1; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        // Generate random data for demo (replace with real data)
+        data.push(Math.floor(Math.random() * 10) + 1);
+      }
+
+      if (applicationsChart) {
+        applicationsChart.data.labels = labels;
+        applicationsChart.data.datasets[0].data = data;
+        applicationsChart.update();
+      }
+    }
+
+    function initStudentChart() {
+      const ctx = document.getElementById('studentChart').getContext('2d');
+      
+      // Generate sample data for student status
+      const statusData = {
+        labels: ['Active', 'Pending', 'Rejected'],
+        datasets: [{
+          label: 'Students',
+          data: [45, 23, 8],
+          backgroundColor: [
+            'rgba(102, 126, 234, 0.8)',
+            'rgba(243, 156, 18, 0.8)',
+            'rgba(231, 76, 60, 0.8)'
+          ],
+          borderColor: [
+            '#667eea',
+            '#f39c12',
+            '#e74c3c'
+          ],
+          borderWidth: 2,
+          borderRadius: 8,
+          borderSkipped: false,
+        }]
+      };
+
+      studentChart = new Chart(ctx, {
+        type: 'bar',
+        data: statusData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.1)'
+              },
+              ticks: {
+                stepSize: 5
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          },
+          elements: {
+            bar: {
+              borderRadius: 8
+            }
+          }
+        }
+      });
+    }
+
+    function updateStudentChart() {
+      const chartType = document.getElementById('student-chart-type').value;
+      
+      if (!studentChart) return;
+
+      let newData;
+      
+      switch(chartType) {
+        case 'status':
+          newData = {
+            labels: ['Active', 'Pending', 'Rejected'],
+            datasets: [{
+              label: 'Students',
+              data: [45, 23, 8],
+              backgroundColor: [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(243, 156, 18, 0.8)',
+                'rgba(231, 76, 60, 0.8)'
+              ],
+              borderColor: ['#667eea', '#f39c12', '#e74c3c'],
+              borderWidth: 2,
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          };
+          break;
+        case 'program':
+          newData = {
+            labels: ['Computer Science', 'Business Admin', 'Engineering', 'Arts'],
+            datasets: [{
+              label: 'Students',
+              data: [32, 28, 15, 12],
+              backgroundColor: [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(118, 75, 162, 0.8)',
+                'rgba(39, 174, 96, 0.8)',
+                'rgba(243, 156, 18, 0.8)'
+              ],
+              borderColor: ['#667eea', '#764ba2', '#27ae60', '#f39c12'],
+              borderWidth: 2,
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          };
+          break;
+        case 'monthly':
+          newData = {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+              label: 'Registrations',
+              data: [12, 19, 8, 15, 22, 18],
+              backgroundColor: 'rgba(102, 126, 234, 0.8)',
+              borderColor: '#667eea',
+              borderWidth: 2,
+              borderRadius: 8,
+              borderSkipped: false,
+            }]
+          };
+          break;
+      }
+
+      studentChart.data = newData;
+      studentChart.update();
     }
 
     // Student Application Management Functions

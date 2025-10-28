@@ -10,7 +10,7 @@
 <body>
   <div class="auth-container">
     <div class="auth-header">
-      <h1>Welcome Back</h1>
+      <h1>ScholarSync <br>Subic</h1>
       <p>Sign in to your account</p>
     </div>
 
@@ -47,6 +47,223 @@
     <div class="auth-link">
       <p>Don't have an account? <a href="{% url 'accounts:register' %}">Register here</a></p>
     </div>
+
+    <div class="terms-section">
+      <button type="button" class="terms-button" onclick="openTermsModal()">Terms and Conditions</button>
+    </div>
   </div>
+
+  <!-- Terms and Conditions Modal -->
+  <div id="terms-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Terms and Conditions</h2>
+        <span class="close" onclick="closeTermsModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <h3>1. Acceptance of Terms</h3>
+        <p>By accessing and using this Student Management System, you accept and agree to be bound by the terms and provision of this agreement.</p>
+        
+        <h3>2. Use License</h3>
+        <p>Permission is granted to temporarily access the materials on ScholarSync Subic's website for personal, non-commercial transitory viewing only.</p>
+        
+        <h3>3. Privacy Policy</h3>
+        <p>Your privacy is important to us. We collect and use your personal information in accordance with our privacy policy to provide you with the best service.</p>
+        
+        <h3>4. User Responsibilities</h3>
+        <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account.</p>
+        
+        <h3>5. Prohibited Uses</h3>
+        <p>You may not use our service for any unlawful purpose or to solicit others to perform unlawful acts.</p>
+        
+        <h3>6. Disclaimer</h3>
+        <p>The materials on ScholarSync Subic's website are provided on an 'as is' basis. ScholarSync Subic makes no warranties, expressed or implied.</p>
+        
+        <h3>7. Contact Information</h3>
+        <p>If you have any questions about these Terms and Conditions, please contact us at admin@scholarsyncsubic.edu.ph</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeTermsModal()">I Understand</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .terms-section {
+      text-align: center;
+      margin-top: 25px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .terms-button {
+      background: transparent;
+      border: 2px solid #667eea;
+      color: #667eea;
+      padding: 12px 24px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+    }
+
+    .terms-button:hover {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .terms-button:active {
+      transform: translateY(0);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .close:hover {
+      opacity: 0.7;
+    }
+
+    .modal-body {
+      padding: 30px;
+      line-height: 1.6;
+    }
+
+    .modal-body h3 {
+      color: #667eea;
+      margin-top: 25px;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .modal-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .modal-body p {
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .modal-footer {
+      padding: 20px 30px;
+      border-top: 1px solid #eee;
+      text-align: right;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95%;
+        margin: 2% auto;
+      }
+      
+      .modal-body {
+        padding: 20px;
+      }
+      
+      .modal-header {
+        padding: 15px;
+      }
+      
+      .modal-header h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+
+  <script>
+    function openTermsModal() {
+      document.getElementById('terms-modal').style.display = 'block';
+    }
+
+    function closeTermsModal() {
+      document.getElementById('terms-modal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('terms-modal');
+      if (event.target === modal) {
+        closeTermsModal();
+      }
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeTermsModal();
+      }
+    });
+  </script>
 </body>
 </html>
