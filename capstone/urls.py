@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),   # landing page = login/register
     path('home/', include('home.urls')),  # dashboard after login
+    path('', include('home.urls')),
 ]

@@ -9,6 +9,9 @@ from django.utils import timezone
 from datetime import datetime
 import json
 from .models import Admin, Student, Popup
+from home.models import Program
+from django.http import HttpResponse
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -109,6 +112,25 @@ def logout_view(request):
     return redirect('accounts:login')
 
 
+def create_program(request):
+    print("🟢 create_program reached:", request.method)
+    if request.method == 'POST':
+        program_name = request.POST.get('program_name')
+        requirements = request.POST.get('requirements')
+        print("📦 POST DATA:", request.POST)
+
+        if not program_name:
+            messages.error(request, "Program name is required.")
+            return redirect('accounts:admin_dashboard')
+
+        Program.objects.create(program_name=program_name, requirements=requirements)
+        messages.success(request, f"Program '{program_name}' created successfully!")
+        print("✅ Program created:", program_name)
+        return redirect('accounts:admin_dashboard')
+
+    messages.error(request, "Invalid request.")
+    print("❌ Invalid request method")
+    return redirect('accounts:admin_dashboard')
 # Popup Management Views
 def admin_stats(request):
     """Get admin dashboard statistics"""

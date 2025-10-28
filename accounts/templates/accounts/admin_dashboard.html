@@ -1,6 +1,6 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
-  {% load static %}
 <head>
   <title>Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -109,51 +109,39 @@
       </div>
 
       <!-- Programs Tab Content -->
-      <div id="programs" class="tab-content">
-          <div class="card">
-              <h3>Program Management</h3>
-              <div class="program-actions">
-                  <button class="btn btn-primary" onclick="showCreateProgram()">
-                      Create New Program
-                  </button>
-              </div>
+<div id="programs" class="tab-content">
+  <div class="card">
+    <h3>Program Management</h3>
 
-              <div id="createProgramForm" class="program-form-wrapper hidden">
-                  <form class="program-form">
-                      {% csrf_token %}
-                      <div class="form-group">
-                          <label>Program Title</label>
-                          <input type="text" name="title" required>
-                      </div>
-                      
-                      <div class="form-group">
-                          <label>Description</label>
-                          <textarea name="description" rows="3" required></textarea>
-                      </div>
+    <div class="program-actions">
+      <button class="btn btn-primary" onclick="showCreateProgram()">
+        Create New Program
+      </button>
+    </div>
 
-                      <div class="form-row">
-                          <div class="form-group">
-                              <label>Start Date</label>
-                              <input type="date" name="start_date" required>
-                          </div>
-                          <div class="form-group">
-                              <label>End Date</label>
-                              <input type="date" name="end_date" required>
-                          </div>
-                      </div>
+    <div id="createProgramForm" class="program-form-wrapper">
+     <form class="program-form" method="POST">
+    {% csrf_token %}
+    <label for="p_name">Program Name</label>
+    <input id="p_name" name="program_name" type="text" required>
 
-                      <div class="form-actions">
-                          <button type="submit" class="btn btn-primary">Create</button>
-                          <button type="button" class="btn btn-secondary" onclick="hideCreateProgram()">Cancel</button>
-                      </div>
-                  </form>
-              </div>
+    <label for="p_req">Requirements</label>
+    <textarea id="p_req" name="requirements" rows="3"></textarea>
 
-              <div class="programs-list">
-                  <!-- Programs will load here -->
-              </div>
-          </div>
-      </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Create Program</button>
+    </div>
+</form>
+
+
+    </div>
+
+    <div class="programs-list">
+      <!-- Programs will load here -->
+    </div>
+  </div>
+</div>
+
     </div>
   </div>
 
@@ -204,7 +192,7 @@
   <script>
     // Tab switching functionality
     document.addEventListener('DOMContentLoaded', function() {
-    const tabs = document.querySelectorAll('.nav-item');
+    const tabs = document.querySelectorAll('.nav-link, .nav-item');
     const contents = document.querySelectorAll('.tab-content');
 
     tabs.forEach(tab => {
@@ -223,11 +211,27 @@
             // Show corresponding content
             const targetId = tab.getAttribute('data-tab');
             document.getElementById(targetId)?.classList.add('active');
+
+            // Lazy-load data when tab is opened
+            if (targetId === 'student-applications') {
+              loadStudentApplications();
+            } else if (targetId === 'notifications') {
+              loadPopups();
+            } else if (targetId === 'dashboard') {
+              loadDashboardStats();
+            } else if (targetId === 'programs') {
+              loadPrograms();
+            }
         });
     });
+
+    // Initial loads
+    loadDashboardStats();
+    // Preload student applications so it's ready when tab opens
+    loadStudentApplications();
 });
 
-// Program form toggle functions
+    // Program form toggle functions
 function showCreateProgram() {
     document.getElementById('createProgramForm').style.display = 'block';
 }
@@ -668,12 +672,12 @@ function hideCreateProgram() {
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    document.getElementById('createProgramForm').addEventListener('submit', async function(e) {
+    document.querySelector('.program-form').addEventListener('submit', async function(e) {
       e.preventDefault();
       const formData = new FormData(this);
       
       try {
-          const response = await fetch('/accounts/api/programs/create/', {
+          const response = await fetch('/home/create_program/', {
               method: 'POST',
               body: formData,
               headers: {
@@ -685,7 +689,8 @@ function hideCreateProgram() {
           if (data.success) {
               alert('Program created successfully!');
               this.reset();
-              toggleProgramForm();
+              hideCreateProgram();
+              await loadPrograms();
               // Optionally reload programs list
           } else {
               alert(data.error || 'Failed to create program');
@@ -695,6 +700,48 @@ function hideCreateProgram() {
           console.error(error);
       }
     });
+
+    async function loadPrograms() {
+      const container = document.querySelector('.programs-list');
+      const endpoints = ['/home/programs/', '/programs/'];
+      let data = null;
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, { credentials: 'same-origin' });
+          console.log('Programs fetch', url, res.status);
+          if (!res.ok) continue;
+          data = await res.json();
+          break;
+        } catch (e) {
+          console.warn('Programs fetch failed for', url, e);
+        }
+      }
+      container.innerHTML = '';
+      if (!data || !data.programs) {
+        container.innerHTML = '<p class="no-programs">Unable to load programs.</p>';
+        return;
+      }
+      if (data.programs.length === 0) {
+        container.innerHTML = '<p class="no-programs">No programs found.</p>';
+        return;
+      }
+      data.programs.forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'program-item';
+        el.innerHTML = `
+          <div class="program-header">
+            <h4>${p.program_name}</h4>
+          </div>
+          <div class="program-body">
+            <p>${p.requirements || ''}</p>
+          </div>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    // Initial loads
+    loadPrograms();
   </script>
 
   

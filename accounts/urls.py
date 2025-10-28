@@ -25,4 +25,7 @@ urlpatterns = [
     path('api/admin/student-applications/', views.get_student_applications, name='get_student_applications'),
     path('api/admin/student-applications/<int:student_id>/approve/', views.approve_student, name='approve_student'),
     path('api/admin/student-applications/<int:student_id>/reject/', views.reject_student, name='reject_student'),
+    # path('api/programs/create/', views.create_program, name='create_program'),
+    path('create_program/', views.create_program, name='create_program'),
+
 ]

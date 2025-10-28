@@ -49,3 +49,22 @@ class Popup(models.Model):
     
     def __str__(self):
         return self.title
+
+
+class Program(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    capacity = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "Program"
+        verbose_name_plural = "Programs"
+
+    def __str__(self):
+        return self.title
