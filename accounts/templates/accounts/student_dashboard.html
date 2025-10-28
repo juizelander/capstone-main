@@ -55,9 +55,6 @@
         <label for="program">Program</label>
         <select id="program" name="program" required>
           <option value="">Select a program</option>
-          <option value="leadership">Edukalinga</option>
-          <option value="research">TDP</option>
-          <option value="volunteer">Local Scholarship</option>
         </select>
 
         <label for="motivation">Why do you want to apply?</label>
@@ -81,9 +78,38 @@
   </footer>
 
   <script>
+    // Load programs into the dropdown from Home app endpoint
+    async function loadProgramsDropdown() {
+      const select = document.getElementById('program');
+      // Keep only the placeholder
+      select.innerHTML = '<option value="">Select a program</option>';
+      const endpoints = ['/home/programs/', '/programs/'];
+      let data = null;
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, { credentials: 'same-origin' });
+          if (!res.ok) continue;
+          data = await res.json();
+          break;
+        } catch (e) {
+          // try next
+        }
+      }
+      if (!data || !data.programs) return;
+      data.programs.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.program_id;
+        opt.textContent = p.program_name;
+        select.appendChild(opt);
+      });
+    }
+
+    // Populate on load
+    document.addEventListener('DOMContentLoaded', loadProgramsDropdown);
+
     // simple frontend-only handler: lists chosen files and shows a mock success message
-    function handleProgramSubmit(e) {
-      e.preventDefault(); // remove this when you wire backend
+    async function handleProgramSubmit(e) {
+      e.preventDefault();
       const form = document.getElementById('programForm');
       const files = document.getElementById('supporting_docs').files;
       const list = document.getElementById('file-list');
@@ -100,12 +126,7 @@
         return;
       }
 
-      if (files.length === 0) {
-        msg.textContent = 'No files selected. You can submit without files or attach multiple.';
-        msg.className = 'app-message error';
-        msg.style.display = 'block';
-        return;
-      }
+      // files optional for now
 
       // show file names and sizes
       const ul = document.createElement('ul');
@@ -117,10 +138,33 @@
       }
       list.appendChild(ul);
 
-      // Show a mock success message (replace with actual fetch() to submit to backend)
-      msg.textContent = 'Files ready. (This is a frontend test mode — no server request sent.)';
-      msg.className = 'app-message success';
-      msg.style.display = 'block';
+      // Submit application to backend
+      try {
+        const fd = new FormData(form);
+        const res = await fetch('/api/applications/create/', {
+          method: 'POST',
+          body: fd,
+          headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          msg.textContent = 'Application submitted successfully!';
+          msg.className = 'app-message success';
+          msg.style.display = 'block';
+          form.reset();
+          list.innerHTML = '';
+        } else {
+          msg.textContent = data.error || 'Failed to submit application';
+          msg.className = 'app-message error';
+          msg.style.display = 'block';
+        }
+      } catch (err) {
+        msg.textContent = 'Network error submitting application';
+        msg.className = 'app-message error';
+        msg.style.display = 'block';
+        console.error(err);
+      }
     }
 
     // optional: display file list on selection change immediately

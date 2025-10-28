@@ -12,6 +12,7 @@ class Admin(models.Model):
 
 
 class Student(models.Model):
+    student_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -68,3 +69,15 @@ class Program(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Application(models.Model):
+    app_id = models.AutoField(primary_key=True)
+    student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE, related_name='applications')
+    program = models.ForeignKey('home.Program', on_delete=models.CASCADE, related_name='account_applications')
+    requirement_status = models.CharField(max_length=100, default='submitted')
+    remarks = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Application {self.app_id} - {self.student.username}"

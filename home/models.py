@@ -49,7 +49,7 @@ class Program(models.Model):
 # -------------------------
 class Application(models.Model):
     app_id = models.AutoField(primary_key=True)
-    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    student = models.ForeignKey('accounts.Student', on_delete=models.CASCADE, related_name='home_applications')
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     requirement_status = models.CharField(max_length=100)
     remarks = models.TextField(blank=True, null=True)

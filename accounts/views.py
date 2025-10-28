@@ -9,7 +9,7 @@ from django.utils import timezone
 from datetime import datetime
 import json
 from .models import Admin, Student, Popup
-from home.models import Program
+from home.models import Program, Application
 from django.http import HttpResponse
 
 
@@ -31,7 +31,7 @@ def login_view(request):
             # Check if student is approved
             if student_user.status == 'active':
                 request.session['user_role'] = 'student'
-                request.session['user_id'] = student_user.id
+                request.session['user_id'] = student_user.pk
                 request.session['username'] = student_user.username
                 return redirect('accounts:student_dashboard')
             elif student_user.status == 'pending':
@@ -80,7 +80,7 @@ def register_view(request):
 
 def approve_student(request, student_id):
     if request.method == 'POST':
-        student = get_object_or_404(Student, id=student_id)
+        student = get_object_or_404(Student, pk=student_id)
         action = request.POST.get('action')
         
         if action == 'approve':
@@ -104,7 +104,7 @@ def student_dashboard(request):
     student_id = request.session.get('user_id')
     if not student_id:
         return redirect('login')
-    student = Student.objects.get(username=request.session['username'])
+    student = get_object_or_404(Student, pk=student_id)
     return render(request, 'accounts/student_dashboard.html', {'student': student})
 
 def logout_view(request):
@@ -131,6 +131,37 @@ def create_program(request):
     messages.error(request, "Invalid request.")
     print("❌ Invalid request method")
     return redirect('accounts:admin_dashboard')
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_student_application(request):
+    """Student submits application to a program"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+
+    try:
+        program_id = request.POST.get('program') or request.POST.get('program_id')
+        motivation = request.POST.get('motivation', '')
+
+        if not program_id:
+            return JsonResponse({'success': False, 'error': 'Program is required'}, status=400)
+
+        # Get entities
+        student = get_object_or_404(Student, pk=student_id)
+        program = get_object_or_404(Program, program_id=program_id)
+
+        app = Application.objects.create(
+            student=student,
+            program=program,
+            requirement_status='submitted',
+            remarks=motivation,
+        )
+
+        return JsonResponse({'success': True, 'application_id': app.app_id})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 # Popup Management Views
 def admin_stats(request):
     """Get admin dashboard statistics"""
@@ -316,12 +347,12 @@ def get_student_applications(request):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
     
     try:
-        students = Student.objects.all().order_by('-id')
+        students = Student.objects.all().order_by('-student_id')
         application_data = []
         
         for student in students:
             application_data.append({
-                'id': student.id,
+                'id': student.pk,
                 'username': student.username,
                 'first_name': student.first_name,
                 'last_name': student.last_name,
@@ -349,7 +380,7 @@ def approve_student(request, student_id):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
     
     try:
-        student = get_object_or_404(Student, id=student_id)
+        student = get_object_or_404(Student, pk=student_id)
         student.status = 'active'
         student.save()
         
@@ -370,7 +401,7 @@ def reject_student(request, student_id):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
     
     try:
-        student = get_object_or_404(Student, id=student_id)
+        student = get_object_or_404(Student, pk=student_id)
         student.status = 'rejected'
         student.save()
         

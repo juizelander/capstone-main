@@ -53,6 +53,101 @@ header {
   background-color: #40739e;
 }
 
+/* Sidebar / nav alignment - global rules to avoid clumped text */
+.sidebar,
+.side-nav,
+.nav-column,
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 220px;             /* fixed column width for consistent layout */
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* Generic link/item styling (covers anchors, buttons, list items) */
+.sidebar a,
+.sidebar .nav-item,
+.side-nav a,
+.side-nav .nav-item,
+.nav-column a,
+.nav-column .nav-item,
+.admin-sidebar a,
+.admin-sidebar .nav-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;     /* space between icon and text */
+  padding: 10px 12px !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Icon container (if you use <i> or <svg>) */
+.sidebar i,
+.sidebar .icon,
+.side-nav i,
+.side-nav .icon,
+.nav-column i,
+.nav-column .icon {
+  width: 20px;
+  min-width: 20px;
+  text-align: center;
+  color: var(--accent);
+  flex-shrink: 0;
+  font-size: 1.05rem;
+}
+
+/* Label span fallback if your HTML uses a span */
+.sidebar .label,
+.side-nav .label,
+.nav-column .label {
+  display: inline-block;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hover and active states */
+.sidebar a:hover,
+.sidebar .nav-item:hover,
+.side-nav a:hover,
+.side-nav .nav-item:hover {
+  background: var(--accent-02);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.sidebar .nav-item.active,
+.side-nav .nav-item.active {
+  background: var(--accent-04);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Ensure the sidebar column and main content keep spacing */
+.layout-with-sidebar,
+.admin-layout,
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* Fallback if your sidebar is placed inside a flex row */
+.row-with-sidebar {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
 /* Main content */
 .main-content {
   flex: 1;
@@ -667,4 +762,31 @@ form {
   .application-actions .btn {
     width: 100%;
   }
+}
+
+@media (max-width: 880px) {
+  .sidebar,
+  .side-nav,
+  .nav-column {
+    width: auto;
+    padding: 8px;
+    gap: 6px;
+  }
+  .layout-with-sidebar,
+  .admin-layout,
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar a,
+  .side-nav a {
+    padding: 8px 10px !important;
+    font-size: 0.92rem !important;
+  }
+}
+
+/* Tiny utility to ensure multiline labels do not collapse layout */
+.sidebar .nav-item .label,
+.side-nav .nav-item .label {
+  max-width: calc(100% - 36px);
+  display: inline-block;
 }

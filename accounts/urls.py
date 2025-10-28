@@ -27,5 +27,6 @@ urlpatterns = [
     path('api/admin/student-applications/<int:student_id>/reject/', views.reject_student, name='reject_student'),
     # path('api/programs/create/', views.create_program, name='create_program'),
     path('create_program/', views.create_program, name='create_program'),
+    path('api/applications/create/', views.create_student_application, name='create_student_application'),
 
 ]
