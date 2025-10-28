@@ -21,6 +21,10 @@
         <a href="#" class="nav-link" data-tab="notifications">Notification Center</a>
         <a href="#" class="nav-link" data-tab="students">Students</a>
         <a href="#" class="nav-link" data-tab="settings">Settings</a>
+        <a href="#" class="nav-item" data-tab="programs">
+          <i class="fas fa-graduation-cap"></i>
+          Programs
+        </a>
       </nav>
       <a href="{% url 'accounts:logout' %}" class="logout-btn">Logout</a>
     </div>
@@ -103,6 +107,53 @@
           <p>Admin settings and preferences will be implemented here.</p>
         </div>
       </div>
+
+      <!-- Programs Tab Content -->
+      <div id="programs" class="tab-content">
+          <div class="card">
+              <h3>Program Management</h3>
+              <div class="program-actions">
+                  <button class="btn btn-primary" onclick="showCreateProgram()">
+                      Create New Program
+                  </button>
+              </div>
+
+              <div id="createProgramForm" class="program-form-wrapper hidden">
+                  <form class="program-form">
+                      {% csrf_token %}
+                      <div class="form-group">
+                          <label>Program Title</label>
+                          <input type="text" name="title" required>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label>Description</label>
+                          <textarea name="description" rows="3" required></textarea>
+                      </div>
+
+                      <div class="form-row">
+                          <div class="form-group">
+                              <label>Start Date</label>
+                              <input type="date" name="start_date" required>
+                          </div>
+                          <div class="form-group">
+                              <label>End Date</label>
+                              <input type="date" name="end_date" required>
+                          </div>
+                      </div>
+
+                      <div class="form-actions">
+                          <button type="submit" class="btn btn-primary">Create</button>
+                          <button type="button" class="btn btn-secondary" onclick="hideCreateProgram()">Cancel</button>
+                      </div>
+                  </form>
+              </div>
+
+              <div class="programs-list">
+                  <!-- Programs will load here -->
+              </div>
+          </div>
+      </div>
     </div>
   </div>
 
@@ -153,35 +204,37 @@
   <script>
     // Tab switching functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const navLinks = document.querySelectorAll('.nav-link');
-      const tabContents = document.querySelectorAll('.tab-content');
+    const tabs = document.querySelectorAll('.nav-item');
+    const contents = document.querySelectorAll('.tab-content');
 
-      navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const targetTab = this.getAttribute('data-tab');
-          
-          // Remove active class from all nav links and tab contents
-          navLinks.forEach(nl => nl.classList.remove('active'));
-          tabContents.forEach(tc => tc.classList.remove('active'));
-          
-          // Add active class to clicked nav link and corresponding tab content
-          this.classList.add('active');
-          document.getElementById(targetTab).classList.add('active');
-          
-          // Load content for specific tabs
-          if (targetTab === 'notifications') {
-            loadPopups();
-          } else if (targetTab === 'student-applications') {
-            loadStudentApplications();
-          }
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // Remove active class from all tabs
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            // Hide all content sections
+            contents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            
+            // Show corresponding content
+            const targetId = tab.getAttribute('data-tab');
+            document.getElementById(targetId)?.classList.add('active');
         });
-      });
-
-      // Load initial dashboard data
-      loadDashboardStats();
     });
+});
 
+// Program form toggle functions
+function showCreateProgram() {
+    document.getElementById('createProgramForm').style.display = 'block';
+}
+
+function hideCreateProgram() {
+    document.getElementById('createProgramForm').style.display = 'none';
+}
     // Popup management functions
     function loadPopups() {
       fetch('/admin/popups/')
@@ -547,6 +600,45 @@
       });
     });
 
+    function getCsrf() {
+      const name = 'csrftoken=';
+      const c = document.cookie.split(';').map(s => s.trim()).find(s => s.startsWith(name));
+      return c ? decodeURIComponent(c.substring(name.length)) : '';
+    }
+
+    async function handleCreateProgram(e) {
+      e.preventDefault();
+      const form = document.getElementById('createProgramForm');
+      const endpoint = form.getAttribute('data-endpoint') || '/accounts/create-program/';
+      const msg = document.getElementById('createProgramMsg');
+
+      const fd = new FormData(form);
+
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          body: fd,
+          headers: { 'X-CSRFToken': getCsrf() },
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        msg.style.display = 'block';
+        if (res.ok && data.success) {
+          msg.className = 'app-message success';
+          msg.textContent = 'Program created.';
+          form.reset();
+          // optionally refresh program list via another fetch
+        } else {
+          msg.className = 'app-message error';
+          msg.textContent = data.error || 'Failed to create program.';
+        }
+      } catch (err) {
+        msg.style.display = 'block';
+        msg.className = 'app-message error';
+        msg.textContent = 'Network error.';
+      }
+    }
+
     // Utility function to get CSRF token
     function getCookie(name) {
       let cookieValue = null;
@@ -570,6 +662,41 @@
         closePopupModal();
       }
     }
+
+    function toggleProgramForm() {
+      const form = document.getElementById('programForm');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+
+    document.getElementById('createProgramForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      
+      try {
+          const response = await fetch('/accounts/api/programs/create/', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+              }
+          });
+          
+          const data = await response.json();
+          if (data.success) {
+              alert('Program created successfully!');
+              this.reset();
+              toggleProgramForm();
+              // Optionally reload programs list
+          } else {
+              alert(data.error || 'Failed to create program');
+          }
+      } catch (error) {
+          alert('Error creating program');
+          console.error(error);
+      }
+    });
   </script>
+
+  
 </body>
 </html>

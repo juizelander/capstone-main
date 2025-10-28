@@ -1,12 +1,143 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
 </head>
 <body>
-  <h1>Welcome, {{ student.username }}!</h1>
-  <p>This is the student dashboard.</p>
-  <a href="{% url 'accounts:logout' %}">Logout</a>
+  <header class="sd-header">
+    <div class="sd-brand">ScholarSync Subic</div>
+    <div class="sd-actions">
+      <span class="sd-username">Signed in as <strong>{{ student.username }}</strong></span>
+      <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="btn logout-btn">Logout</button>
+      </form>
+    </div>
+  </header>
 
+  <main class="sd-main">
+    <section class="sd-welcome card">
+      <h1>Welcome, {{ student.first_name|default:student.username }}!</h1>
+      <p class="muted">Access your profile, submitted documents, and announcements from the admin here.</p>
+
+      <div class="quick-links">
+        <a class="link-card" href="#">
+          <div class="link-title">Profile</div>
+          <div class="link-desc">View and update personal details</div>
+        </a>
+        <a class="link-card" href="#">
+          <div class="link-title">Documents</div>
+          <div class="link-desc">Uploaded documents & status</div>
+        </a>
+      </div>
+    </section>
+
+    <section class="sd-info card">
+      <h2>Account Status</h2>
+      <p>Status: <span class="status-pill">{{ student.status|default:"pending" }}</span></p>
+      <p>Registered on: <strong>{{ student.created_at|date:"F j, Y" }}</strong></p>
+    </section>
+
+    <!-- Program Application Section -->
+    <section id="program-application" class="card">
+      <h2>Apply for a Program</h2>
+      <p class="muted">Select a program and attach multiple supporting documents (PNG, JPG, PDF, DOCX).</p>
+
+      <div id="app-msg" class="app-message" style="display:none;"></div>
+
+      <!-- JS prevents actual POST so frontend can be tested without backend -->
+      <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
+        {% csrf_token %}
+        <label for="program">Program</label>
+        <select id="program" name="program" required>
+          <option value="">Select a program</option>
+          <option value="leadership">Edukalinga</option>
+          <option value="research">TDP</option>
+          <option value="volunteer">Local Scholarship</option>
+        </select>
+
+        <label for="motivation">Why do you want to apply?</label>
+        <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation" required></textarea>
+
+        <label for="supporting_docs">Supporting documents (you can select multiple)</label>
+        <input id="supporting_docs" name="supporting_docs" type="file"
+               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+
+        <div id="file-list" class="file-list" aria-live="polite"></div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">Submit Application</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="sd-footer">
+    <small>&copy; {{ now.year }} Lander Barrera</small>
+  </footer>
+
+  <script>
+    // simple frontend-only handler: lists chosen files and shows a mock success message
+    function handleProgramSubmit(e) {
+      e.preventDefault(); // remove this when you wire backend
+      const form = document.getElementById('programForm');
+      const files = document.getElementById('supporting_docs').files;
+      const list = document.getElementById('file-list');
+      const msg = document.getElementById('app-msg');
+
+      // Clear previous
+      list.innerHTML = '';
+      msg.style.display = 'none';
+
+      if (!form.program.value) {
+        msg.textContent = 'Please select a program.';
+        msg.className = 'app-message error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      if (files.length === 0) {
+        msg.textContent = 'No files selected. You can submit without files or attach multiple.';
+        msg.className = 'app-message error';
+        msg.style.display = 'block';
+        return;
+      }
+
+      // show file names and sizes
+      const ul = document.createElement('ul');
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const li = document.createElement('li');
+        li.textContent = `${f.name} — ${(f.size / 1024).toFixed(1)} KB`;
+        ul.appendChild(li);
+      }
+      list.appendChild(ul);
+
+      // Show a mock success message (replace with actual fetch() to submit to backend)
+      msg.textContent = 'Files ready. (This is a frontend test mode — no server request sent.)';
+      msg.className = 'app-message success';
+      msg.style.display = 'block';
+    }
+
+    // optional: display file list on selection change immediately
+    document.getElementById('supporting_docs').addEventListener('change', function () {
+      const files = this.files;
+      const list = document.getElementById('file-list');
+      list.innerHTML = '';
+      if (!files || files.length === 0) return;
+      const ul = document.createElement('ul');
+      for (let i = 0; i < files.length; i++) {
+        const f = files[i];
+        const li = document.createElement('li');
+        li.textContent = `${f.name} — ${(f.size / 1024).toFixed(1)} KB`;
+        ul.appendChild(li);
+      }
+      list.appendChild(ul);
+    });
+  </script>
 </body>
 </html>

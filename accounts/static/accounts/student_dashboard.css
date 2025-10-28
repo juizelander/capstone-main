@@ -1,0 +1,88 @@
+/* Basic student dashboard styles */
+
+:root{
+  --bg:#f5f7fb;
+  --card:#ffffff;
+  --muted:#666;
+  --accent:#9B5DE0;
+  --accent-02: rgba(155,93,224,0.04);
+  --accent-04: rgba(155,93,224,0.08);
+  --shadow: 0 6px 18px rgba(18,38,63,0.08);
+  --radius:10px;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:#12263f;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Header */
+.sd-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:18px 28px;
+  background:linear-gradient(90deg, var(--accent-02), #fff);
+  border-bottom:1px solid var(--accent-04);
+}
+
+.sd-brand{ font-weight:700; font-size:1.1rem; color:var(--accent); }
+.sd-actions{ display:flex; gap:12px; align-items:center; }
+.sd-username{ color:var(--muted); font-size:0.95rem; }
+.logout-form{ margin:0; }
+
+/* Buttons */
+.btn{ border:0; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:600; background:var(--accent); color:white; box-shadow: var(--shadow); }
+.logout-btn{ background:#ef5350; }
+
+/* Layout */
+.sd-main{ max-width:1100px; margin:28px auto; padding:0 20px; display:grid; grid-template-columns: 1fr 320px; gap:20px; }
+.card{ background:var(--card); padding:18px; border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--accent-02); }
+
+/* Welcome block */
+.sd-welcome h1{ margin:0 0 6px 0; font-size:1.4rem; }
+.muted{ color:var(--muted); margin:0 0 12px 0; }
+
+/* Quick links */
+.quick-links{ display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+.link-card{ display:block; min-width:160px; flex:1 1 160px; padding:12px; border-radius:8px; background:var(--accent-02); color:var(--accent); text-decoration:none; border:1px solid var(--accent-04); transition:transform .12s ease, box-shadow .12s ease; }
+.link-card:hover{ transform:translateY(-4px); box-shadow:0 10px 30px rgba(0,0,0,0.06); }
+.link-title{ font-weight:700; } .link-desc{ font-size:0.85rem; color:var(--muted); margin-top:6px; }
+
+/* Account status */
+.sd-info .status-pill{ display:inline-block; padding:6px 10px; border-radius:999px; background:#fff8e6; color:#a66a00; font-weight:700; border:1px solid #ffecb8; }
+
+/* Program application */
+#program-application{ grid-column: 1 / -1; margin-top:18px; padding:16px; background:var(--card); border-radius:var(--radius); border:1px solid var(--accent-02); }
+.program-form { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.program-form label { font-weight:600; font-size:0.95rem; }
+.program-form select, .program-form textarea, .program-form input[type="file"], .program-form input[type="text"], .program-form input[type="email"]{
+  width:100%; padding:8px 10px; border-radius:8px; border:1px solid #e6eef8; background:#fff; font-size:0.95rem; box-sizing:border-box;
+}
+.program-form textarea{ min-height:100px; resize:vertical; }
+.form-actions{ margin-top:8px; display:flex; gap:8px; align-items:center; }
+.program-form .btn{ background:var(--accent); color:#fff; padding:10px 14px; border-radius:8px; box-shadow:var(--shadow); }
+
+.file-list{ margin-top:6px; font-size:0.95rem; color:var(--muted); }
+.file-list ul{ margin:0; padding-left:18px; }
+.file-list li{ margin:4px 0; }
+
+/* message */
+.app-message{ margin:10px 0; padding:10px; border-radius:8px; display:block; }
+.app-message.success{ background:#e6ffef; color:#146a2b; border:1px solid #bff0c9; }
+.app-message.error{ background:#fff0f0; color:#7a0b00; border:1px solid #ffcfcc; }
+
+/* Footer */
+.sd-footer{ max-width:1100px; margin:22px auto 40px; padding:0 20px; text-align:center; color:var(--muted); font-size:0.9rem; }
+
+/* Responsive */
+@media (max-width:880px){
+  .sd-main{ grid-template-columns:1fr; padding:0 12px; }
+  .quick-links{ justify-content:space-between; }
+  #program-application{ padding:12px; }
+}

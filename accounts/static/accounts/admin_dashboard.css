@@ -105,6 +105,63 @@ header {
   display: block;
 }
 
+/* Program Management Section */
+.program-form-wrapper {
+  margin-top: 20px;
+  padding: 20px;
+  background: var(--accent-02);
+  border-radius: var(--radius);
+}
+
+.program-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 8px;
+  border: 1px solid var(--accent-02);
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.program-actions {
+  margin: 20px 0;
+}
+
+.programs-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.programs-list th,
+.programs-list td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--accent-02);
+}
+
+.programs-list th {
+  background: var(--accent-02);
+  font-weight: 600;
+}
+
 /* Card Header */
 .card-header {
   display: flex;
