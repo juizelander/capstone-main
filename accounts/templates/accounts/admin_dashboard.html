@@ -22,6 +22,7 @@
     <div class="sidebar">
       <nav>
         <a href="#" class="nav-link active" data-tab="dashboard">Dashboard</a>
+        <a href="#" class="nav-link" data-tab="student-registrations">Student Account Registration</a>
         <a href="#" class="nav-link" data-tab="student-applications">Student Applications</a>
         <a href="#" class="nav-link" data-tab="notifications">Notification Center</a>
         <a href="#" class="nav-link" data-tab="students">Students</a>
@@ -121,14 +122,14 @@
         </div>
       </div>
 
-      <!-- Student Applications Tab -->
-      <div id="student-applications" class="tab-content">
+      <!-- Student Account Registration Tab -->
+      <div id="student-registrations" class="tab-content">
         <div class="card">
           <div class="card-header">
-            <h3>Student Applications</h3>
+            <h3>Student Account Registration</h3>
             <div class="application-filters">
-              <select id="application-filter" onchange="filterApplications()">
-                <option value="all">All Applications</option>
+              <select id="registration-filter" onchange="filterRegistrations()">
+                <option value="all">All Registrations</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
@@ -136,8 +137,29 @@
             </div>
           </div>
           
-          <div class="application-list" id="application-list">
-            <!-- Applications will be loaded here via JavaScript -->
+          <div class="application-list" id="registration-list">
+            <!-- Student registrations will be loaded here via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Applications Tab -->
+      <div id="student-applications" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>Student Program Applications</h3>
+            <div class="application-filters">
+              <select id="program-application-filter" onchange="filterProgramApplications()">
+                <option value="all">All Applications</option>
+                <option value="submitted">Submitted</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="application-list" id="program-application-list">
+            <!-- Program applications will be loaded here via JavaScript -->
           </div>
         </div>
       </div>
@@ -289,8 +311,10 @@
             document.getElementById(targetId)?.classList.add('active');
 
             // Lazy-load data when tab is opened
-            if (targetId === 'student-applications') {
-              loadStudentApplications();
+            if (targetId === 'student-registrations') {
+              loadStudentRegistrations();
+            } else if (targetId === 'student-applications') {
+              loadProgramApplications();
             } else if (targetId === 'notifications') {
               loadPopups();
             } else if (targetId === 'dashboard') {
@@ -305,8 +329,8 @@
     loadDashboardStats();
     initChart();
     initStudentChart();
-    // Preload student applications so it's ready when tab opens
-    loadStudentApplications();
+    // Preload student registrations so it's ready when tab opens
+    loadStudentRegistrations();
 });
 
     // Program form toggle functions
@@ -709,8 +733,8 @@ function hideCreateProgram() {
       studentChart.update();
     }
 
-    // Student Application Management Functions
-    function loadStudentApplications() {
+    // Student Registration Management Functions
+    function loadStudentRegistrations() {
       console.log('Loading student applications...');
       fetch('/api/admin/student-applications/', {
         method: 'GET',
@@ -727,23 +751,23 @@ function hideCreateProgram() {
           return response.json();
         })
         .then(data => {
-          console.log('Applications data:', data);
-          const applicationList = document.getElementById('application-list');
-          applicationList.innerHTML = '';
+          console.log('Registrations data:', data);
+          const registrationList = document.getElementById('registration-list');
+          registrationList.innerHTML = '';
           
           if (data.applications.length === 0) {
-            applicationList.innerHTML = '<p class="no-applications">No student applications found.</p>';
+            registrationList.innerHTML = '<p class="no-applications">No student registrations found.</p>';
             return;
           }
           
           data.applications.forEach(application => {
             const applicationElement = createApplicationElement(application);
-            applicationList.appendChild(applicationElement);
+            registrationList.appendChild(applicationElement);
           });
         })
         .catch(error => {
-          console.error('Error loading applications:', error);
-          document.getElementById('application-list').innerHTML = '<p class="error">Error loading applications: ' + error.message + '</p>';
+          console.error('Error loading registrations:', error);
+          document.getElementById('registration-list').innerHTML = '<p class="error">Error loading registrations: ' + error.message + '</p>';
         });
     }
 
@@ -820,7 +844,7 @@ function hideCreateProgram() {
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            loadStudentApplications();
+            loadStudentRegistrations();
             loadDashboardStats(); // Refresh stats
           } else {
             alert('Error approving student: ' + data.error);
@@ -845,7 +869,7 @@ function hideCreateProgram() {
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            loadStudentApplications();
+            loadStudentRegistrations();
             loadDashboardStats(); // Refresh stats
           } else {
             alert('Error rejecting student: ' + data.error);
@@ -858,9 +882,150 @@ function hideCreateProgram() {
       }
     }
 
-    function filterApplications() {
-      const filter = document.getElementById('application-filter').value;
+    function filterRegistrations() {
+      const filter = document.getElementById('registration-filter').value;
       const applicationItems = document.querySelectorAll('.application-item');
+      
+      applicationItems.forEach(item => {
+        if (filter === 'all') {
+          item.style.display = 'block';
+        } else {
+          item.style.display = item.classList.contains(`application-${filter}`) ? 'block' : 'none';
+        }
+      });
+    }
+
+    // Program Application Management Functions
+    function loadProgramApplications() {
+      console.log('Loading program applications...');
+      fetch('/api/admin/program-applications/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+      })
+        .then(response => {
+          console.log('Program applications response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Program applications data:', data);
+          const applicationList = document.getElementById('program-application-list');
+          applicationList.innerHTML = '';
+          
+          if (data.applications.length === 0) {
+            applicationList.innerHTML = '<p class="no-applications">No program applications found.</p>';
+            return;
+          }
+          
+          data.applications.forEach(application => {
+            const applicationElement = createProgramApplicationElement(application);
+            applicationList.appendChild(applicationElement);
+          });
+        })
+        .catch(error => {
+          console.error('Error loading program applications:', error);
+          document.getElementById('program-application-list').innerHTML = '<p class="error">Error loading program applications: ' + error.message + '</p>';
+        });
+    }
+
+    function createProgramApplicationElement(application) {
+      const div = document.createElement('div');
+      div.className = `application-item application-${application.requirement_status}`;
+      div.innerHTML = `
+        <div class="application-header">
+          <h4>${application.student.first_name} ${application.student.last_name}</h4>
+          <div class="application-status">
+            <span class="status-badge status-${application.requirement_status}">${application.requirement_status}</span>
+          </div>
+        </div>
+        <div class="application-content">
+          <div class="application-details">
+            <div class="detail-row">
+              <span class="detail-label">Student:</span>
+              <span class="detail-value">${application.student.username}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Program:</span>
+              <span class="detail-value">${application.program.program_name}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Motivation:</span>
+              <span class="detail-value">${application.remarks || 'No motivation provided'}</span>
+            </div>
+            <div class="detail-row">
+              <span class="detail-label">Applied:</span>
+              <span class="detail-value">${application.created_at ? new Date(application.created_at).toLocaleDateString() : 'Date not available'}</span>
+            </div>
+          </div>
+          <div class="application-actions">
+            ${application.requirement_status === 'submitted' ? `
+              <button class="btn btn-success btn-sm" onclick="approveProgramApplication(${application.app_id})">Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectProgramApplication(${application.app_id})">Reject</button>
+            ` : `
+              <span class="action-completed">Action completed</span>
+            `}
+          </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function approveProgramApplication(applicationId) {
+      if (confirm('Are you sure you want to approve this program application?')) {
+        fetch(`/api/admin/program-applications/${applicationId}/approve/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            loadProgramApplications();
+          } else {
+            alert('Error approving program application: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error approving program application');
+        });
+      }
+    }
+
+    function rejectProgramApplication(applicationId) {
+      if (confirm('Are you sure you want to reject this program application?')) {
+        fetch(`/api/admin/program-applications/${applicationId}/reject/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            loadProgramApplications();
+          } else {
+            alert('Error rejecting program application: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error rejecting program application');
+        });
+      }
+    }
+
+    function filterProgramApplications() {
+      const filter = document.getElementById('program-application-filter').value;
+      const applicationItems = document.querySelectorAll('#program-application-list .application-item');
       
       applicationItems.forEach(item => {
         if (filter === 'all') {
@@ -1044,6 +1209,9 @@ function hideCreateProgram() {
     // Initial loads
     loadPrograms();
   </script>
+  <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
+    © 2024 Lander. All rights reserved.
+  </footer>
 
   
 </body>

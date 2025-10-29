@@ -53,9 +53,15 @@
       <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
         {% csrf_token %}
         <label for="program">Program</label>
-        <select id="program" name="program" required>
+        <select id="program" name="program" required onchange="showProgramDescription()">
           <option value="">Select a program</option>
         </select>
+
+        <!-- Program Description Area -->
+        <div id="program-description" class="program-description" style="display: none;">
+          <h4>Program Requirements</h4>
+          <div id="program-requirements" class="requirements-content"></div>
+        </div>
 
         <label for="motivation">Why do you want to apply?</label>
         <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation" required></textarea>
@@ -77,7 +83,31 @@
     <small>&copy; {{ now.year }} Lander Barrera</small>
   </footer>
 
+  <!-- Application Confirmation Modal -->
+  <div id="confirmation-modal" class="confirmation-modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Application Submitted Successfully!</h3>
+        <span class="close" onclick="closeConfirmationModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="success-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <p class="confirmation-message">
+          Thank you for applying! Please wait for admin approval. You will be notified once your application has been reviewed.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="closeConfirmationModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // Store programs data globally for easy access
+    let programsData = {};
+
     // Load programs into the dropdown from Home app endpoint
     async function loadProgramsDropdown() {
       const select = document.getElementById('program');
@@ -96,12 +126,42 @@
         }
       }
       if (!data || !data.programs) return;
+      
+      // Store programs data for later use
       data.programs.forEach(p => {
+        programsData[p.program_id] = p;
         const opt = document.createElement('option');
         opt.value = p.program_id;
         opt.textContent = p.program_name;
         select.appendChild(opt);
       });
+    }
+
+    // Show program description when a program is selected
+    function showProgramDescription() {
+      const select = document.getElementById('program');
+      const descriptionDiv = document.getElementById('program-description');
+      const requirementsDiv = document.getElementById('program-requirements');
+      
+      if (select.value && programsData[select.value]) {
+        const program = programsData[select.value];
+        requirementsDiv.textContent = program.requirements || 'No specific requirements listed.';
+        descriptionDiv.style.display = 'block';
+      } else {
+        descriptionDiv.style.display = 'none';
+      }
+    }
+
+    // Show application confirmation popup
+    function showApplicationConfirmation() {
+      const modal = document.getElementById('confirmation-modal');
+      modal.style.display = 'block';
+    }
+
+    // Close confirmation modal
+    function closeConfirmationModal() {
+      const modal = document.getElementById('confirmation-modal');
+      modal.style.display = 'none';
     }
 
     // Populate on load
@@ -149,11 +209,11 @@
         });
         const data = await res.json();
         if (res.ok && data.success) {
-          msg.textContent = 'Application submitted successfully!';
-          msg.className = 'app-message success';
-          msg.style.display = 'block';
+          // Show popup confirmation
+          showApplicationConfirmation();
           form.reset();
           list.innerHTML = '';
+          msg.style.display = 'none';
         } else {
           msg.textContent = data.error || 'Failed to submit application';
           msg.className = 'app-message error';

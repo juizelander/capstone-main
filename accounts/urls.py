@@ -28,5 +28,14 @@ urlpatterns = [
     # path('api/programs/create/', views.create_program, name='create_program'),
     path('create_program/', views.create_program, name='create_program'),
     path('api/applications/create/', views.create_student_application, name='create_student_application'),
+    
+    # Program application management endpoints
+    path('api/admin/program-applications/', views.get_program_applications, name='get_program_applications'),
+    path('api/admin/program-applications/<int:application_id>/approve/', views.approve_program_application, name='approve_program_application'),
+    path('api/admin/program-applications/<int:application_id>/reject/', views.reject_program_application, name='reject_program_application'),
+    
+    # Chart data endpoints
+    path('api/admin/charts/application-trends/', views.get_application_trends, name='get_application_trends'),
+    path('api/admin/charts/student-statistics/', views.get_student_statistics, name='get_student_statistics'),
 
 ]

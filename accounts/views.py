@@ -6,7 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
-from datetime import datetime
+from datetime import datetime, timedelta
+from django.db.models import Count
+from django.db.models.functions import TruncDay, TruncMonth
 import json
 from .models import Admin, Student, Popup
 from home.models import Program, Application
@@ -413,4 +415,231 @@ def reject_student(request, student_id):
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# Program Application Management Views
+def get_program_applications(request):
+    """Get all program applications for admin review"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        # First check if we have any applications
+        total_applications = Application.objects.count()
+        print(f"Debug: Total applications found: {total_applications}")
+        
+        if total_applications == 0:
+            return JsonResponse({'applications': []})
+        
+        # Get applications with related data
+        applications = Application.objects.select_related('student', 'program').all().order_by('-app_id')
+        application_data = []
+        
+        for app in applications:
+            try:
+                # Safely access student data
+                student_data = {
+                    'username': getattr(app.student, 'username', 'Unknown'),
+                    'first_name': getattr(app.student, 'first_name', 'Unknown'),
+                    'last_name': getattr(app.student, 'last_name', 'Unknown'),
+                    'email': getattr(app.student, 'email', 'Unknown'),
+                }
+                
+                # Safely access program data
+                program_data = {
+                    'program_name': getattr(app.program, 'program_name', 'Unknown Program'),
+                }
+                
+                application_data.append({
+                    'app_id': app.app_id,
+                    'student': student_data,
+                    'program': program_data,
+                    'requirement_status': getattr(app, 'requirement_status', 'unknown'),
+                    'remarks': getattr(app, 'remarks', ''),
+                    'created_at': getattr(app, 'created_at', None)
+                })
+                
+            except Exception as e:
+                print(f"Debug: Error processing application {getattr(app, 'app_id', 'unknown')}: {str(e)}")
+                continue
+        
+        return JsonResponse({'applications': application_data})
+        
+    except Exception as e:
+        print(f"Debug: Error in get_program_applications: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'error': f'Database error: {str(e)}'}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def approve_program_application(request, application_id):
+    """Approve a program application"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        application = get_object_or_404(Application, app_id=application_id)
+        application.requirement_status = 'approved'
+        application.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Program application approved successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def reject_program_application(request, application_id):
+    """Reject a program application"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        application = get_object_or_404(Application, app_id=application_id)
+        application.requirement_status = 'rejected'
+        application.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Program application rejected successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# Chart Data API Views
+def get_application_trends(request):
+    """Get application trends data for charts"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        period = request.GET.get('period', '30')  # Default to 30 days
+        days = int(period)
+        
+        # Calculate start date
+        end_date = timezone.now().date()
+        start_date = end_date - timedelta(days=days-1)
+        
+        # Get application data grouped by day
+        applications_by_day = Student.objects.filter(
+            created_at__date__gte=start_date,
+            created_at__date__lte=end_date
+        ).extra(
+            select={'day': 'date(created_at)'}
+        ).values('day').annotate(count=Count('id')).order_by('day')
+        
+        # Create a complete date range with counts
+        date_counts = {}
+        for item in applications_by_day:
+            date_counts[item['day']] = item['count']
+        
+        # Generate labels and data arrays
+        labels = []
+        data = []
+        current_date = start_date
+        
+        while current_date <= end_date:
+            date_str = current_date.strftime('%b %d')
+            labels.append(date_str)
+            data.append(date_counts.get(current_date, 0))
+            current_date += timedelta(days=1)
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+def get_student_statistics(request):
+    """Get student statistics data for charts"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        chart_type = request.GET.get('type', 'status')
+        
+        if chart_type == 'status':
+            # Get students by status
+            status_data = Student.objects.values('status').annotate(count=Count('id'))
+            
+            labels = []
+            data = []
+            colors = []
+            
+            status_colors = {
+                'active': 'rgba(102, 126, 234, 0.8)',
+                'pending': 'rgba(243, 156, 18, 0.8)',
+                'rejected': 'rgba(231, 76, 60, 0.8)'
+            }
+            
+            for item in status_data:
+                labels.append(item['status'].title())
+                data.append(item['count'])
+                colors.append(status_colors.get(item['status'], 'rgba(102, 126, 234, 0.8)'))
+            
+        elif chart_type == 'program':
+            # Get students by program
+            program_data = Student.objects.values('program_and_yr').annotate(count=Count('id')).order_by('-count')[:10]
+            
+            labels = []
+            data = []
+            colors = [
+                'rgba(102, 126, 234, 0.8)',
+                'rgba(118, 75, 162, 0.8)',
+                'rgba(39, 174, 96, 0.8)',
+                'rgba(243, 156, 18, 0.8)',
+                'rgba(231, 76, 60, 0.8)',
+                'rgba(52, 152, 219, 0.8)',
+                'rgba(155, 89, 182, 0.8)',
+                'rgba(46, 204, 113, 0.8)',
+                'rgba(230, 126, 34, 0.8)',
+                'rgba(231, 76, 60, 0.8)'
+            ]
+            
+            for i, item in enumerate(program_data):
+                labels.append(item['program_and_yr'])
+                data.append(item['count'])
+            
+            colors = colors[:len(labels)]
+            
+        elif chart_type == 'monthly':
+            # Get monthly registrations for the last 6 months
+            end_date = timezone.now().date()
+            start_date = end_date - timedelta(days=180)  # 6 months
+            
+            monthly_data = Student.objects.filter(
+                created_at__date__gte=start_date
+            ).extra(
+                select={'month': 'strftime("%Y-%m", created_at)'}
+            ).values('month').annotate(count=Count('id')).order_by('month')
+            
+            labels = []
+            data = []
+            
+            for item in monthly_data:
+                # Format month label
+                month_date = datetime.strptime(item['month'], '%Y-%m')
+                labels.append(month_date.strftime('%b'))
+                data.append(item['count'])
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data,
+            'colors': colors if chart_type in ['status', 'program'] else None
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
