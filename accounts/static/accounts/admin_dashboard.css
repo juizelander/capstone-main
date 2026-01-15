@@ -9,7 +9,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
   color: #333;
   min-height: 100vh;
 }
@@ -29,7 +29,7 @@ header {
 }
 
 header h1 {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #10B981, #F59E0B);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -49,12 +49,12 @@ header p {
   font-family: 'Lemon Milk', cursive !important;
   font-weight: 700 !important;
   font-size: 1.2rem !important;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #10B981, #F59E0B);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-top: 10px;
-  text-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+  text-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
 }
 
 /* Container */
@@ -111,7 +111,7 @@ header p {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
   transition: left 0.3s ease;
   z-index: -1;
 }
@@ -125,14 +125,14 @@ header p {
 .sidebar .nav-item:hover {
   color: white;
   transform: translateX(5px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .sidebar .nav-link.active,
 .sidebar .nav-item.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
   color: white;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
   transform: translateX(5px);
 }
 
@@ -155,7 +155,8 @@ header p {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 220px;             /* fixed column width for consistent layout */
+  width: 220px;
+  /* fixed column width for consistent layout */
   padding: 12px;
   box-sizing: border-box;
 }
@@ -171,7 +172,8 @@ header p {
 .admin-sidebar .nav-item {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;     /* space between icon and text */
+  gap: 10px !important;
+  /* space between icon and text */
   padding: 10px 12px !important;
   color: inherit !important;
   text-decoration: none !important;
@@ -193,7 +195,7 @@ header p {
   width: 20px;
   min-width: 20px;
   text-align: center;
-  color: var(--accent);
+  color: #10B981;
   flex-shrink: 0;
   font-size: 1.05rem;
 }
@@ -213,15 +215,15 @@ header p {
 .sidebar .nav-item:hover,
 .side-nav a:hover,
 .side-nav .nav-item:hover {
-  background: var(--accent-02);
-  color: var(--accent);
+  background: rgba(16, 185, 129, 0.04);
+  color: #10B981;
   transform: translateY(-1px);
 }
 
 .sidebar .nav-item.active,
 .side-nav .nav-item.active {
-  background: var(--accent-04);
-  color: var(--accent);
+  background: rgba(16, 185, 129, 0.08);
+  color: #10B981;
   font-weight: 700;
 }
 
@@ -309,13 +311,13 @@ header p {
   width: 60px;
   height: 60px;
   border-radius: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-size: 24px;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .stat-content h4 {
@@ -331,7 +333,7 @@ header p {
   color: #2d3748;
   font-size: 2rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #10B981, #F59E0B);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -365,9 +367,9 @@ header p {
 
 .chart-controls select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #10B981;
   background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Logout button */
@@ -488,12 +490,12 @@ header p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
   color: white;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
 }
 
 .btn-secondary {
@@ -566,7 +568,7 @@ header p {
 }
 
 .popup-item:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .popup-item.active {
@@ -655,7 +657,7 @@ header p {
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -665,7 +667,7 @@ header p {
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .modal-header {
@@ -770,7 +772,7 @@ form {
 }
 
 .application-item:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .application-item.application-pending {
@@ -902,74 +904,78 @@ form {
   .container {
     flex-direction: column;
   }
+
   .sidebar {
     width: 100%;
     flex-direction: row;
     overflow-x: auto;
   }
+
   .sidebar a {
     margin: 0 10px;
     padding: 10px 15px;
   }
+
   .logout-btn {
     margin: 10px 0;
   }
-  
+
   .card-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .popup-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .popup-actions {
     width: 100%;
     justify-content: flex-start;
   }
-  
+
   .popup-meta {
     flex-direction: column;
     gap: 5px;
   }
-  
+
   .modal-content {
     margin: 10% auto;
     width: 95%;
   }
-  
+
   .modal-footer {
     flex-direction: column;
   }
-  
+
   .modal-footer .btn {
     width: 100%;
   }
-  
+
   .application-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .application-details {
     grid-template-columns: 1fr;
   }
-  
+
   .application-actions {
     flex-direction: column;
   }
-  
+
   .application-actions .btn {
     width: 100%;
   }
 }
 
 @media (max-width: 880px) {
+
   .sidebar,
   .side-nav,
   .nav-column {
@@ -977,11 +983,13 @@ form {
     padding: 8px;
     gap: 6px;
   }
+
   .layout-with-sidebar,
   .admin-layout,
   .dashboard-layout {
     grid-template-columns: 1fr;
   }
+
   .sidebar a,
   .side-nav a {
     padding: 8px 10px !important;

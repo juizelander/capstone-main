@@ -554,13 +554,13 @@
           datasets: [{
             label: 'Applications',
             data: data,
-            borderColor: '#667eea',
-            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
             borderWidth: 3,
             fill: true,
             tension: 0.4,
-            pointBackgroundColor: '#667eea',
-            pointBorderColor: '#764ba2',
+            pointBackgroundColor: '#10B981',
+            pointBorderColor: '#F59E0B',
             pointBorderWidth: 2,
             pointRadius: 5,
             pointHoverRadius: 7
@@ -633,14 +633,14 @@
           label: 'Students',
           data: [45, 23, 8],
           backgroundColor: [
-            'rgba(102, 126, 234, 0.8)',
-            'rgba(243, 156, 18, 0.8)',
-            'rgba(231, 76, 60, 0.8)'
+            'rgba(16, 185, 129, 0.8)',
+            'rgba(245, 158, 11, 0.8)',
+            'rgba(239, 68, 68, 0.8)'
           ],
           borderColor: [
-            '#667eea',
-            '#f39c12',
-            '#e74c3c'
+            '#10B981',
+            '#F59E0B',
+            '#EF4444'
           ],
           borderWidth: 2,
           borderRadius: 8,
@@ -699,11 +699,11 @@
               label: 'Students',
               data: [45, 23, 8],
               backgroundColor: [
-                'rgba(102, 126, 234, 0.8)',
-                'rgba(243, 156, 18, 0.8)',
-                'rgba(231, 76, 60, 0.8)'
+                'rgba(16, 185, 129, 0.8)',
+                'rgba(245, 158, 11, 0.8)',
+                'rgba(239, 68, 68, 0.8)'
               ],
-              borderColor: ['#667eea', '#f39c12', '#e74c3c'],
+              borderColor: ['#10B981', '#F59E0B', '#EF4444'],
               borderWidth: 2,
               borderRadius: 8,
               borderSkipped: false,
@@ -717,12 +717,12 @@
               label: 'Students',
               data: [32, 28, 15, 12],
               backgroundColor: [
-                'rgba(102, 126, 234, 0.8)',
-                'rgba(118, 75, 162, 0.8)',
-                'rgba(39, 174, 96, 0.8)',
-                'rgba(243, 156, 18, 0.8)'
+                'rgba(16, 185, 129, 0.8)',
+                'rgba(245, 158, 11, 0.8)',
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(139, 92, 246, 0.8)'
               ],
-              borderColor: ['#667eea', '#764ba2', '#27ae60', '#f39c12'],
+              borderColor: ['#10B981', '#F59E0B', '#3B82F6', '#8B5CF6'],
               borderWidth: 2,
               borderRadius: 8,
               borderSkipped: false,
@@ -735,8 +735,8 @@
             datasets: [{
               label: 'Registrations',
               data: [12, 19, 8, 15, 22, 18],
-              backgroundColor: 'rgba(102, 126, 234, 0.8)',
-              borderColor: '#667eea',
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
+              borderColor: '#10B981',
               borderWidth: 2,
               borderRadius: 8,
               borderSkipped: false,
@@ -1230,7 +1230,186 @@
     }
 
     // Initial loads
+    // Initial loads
     loadPrograms();
+    loadPopups(); // Load notifications on start
+  </script>
+
+  <!-- Popup Modal -->
+  <div id="popup-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title">Create New Popup</h3>
+        <span class="close" onclick="closePopupModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="popup-form">
+          <input type="hidden" name="popup_id" id="popup_id">
+
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title" required>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="popup_type">Type</label>
+            <select id="popup_type" name="popup_type">
+              <option value="info">Information</option>
+              <option value="warning">Warning</option>
+              <option value="success">Success</option>
+              <option value="error">Error</option>
+            </select>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" id="is_active" name="is_active" checked>
+              Active
+            </label>
+          </div>
+
+          <div class="form-group">
+            <label for="expires_at">Expires At (Optional)</label>
+            <input type="datetime-local" id="expires_at" name="expires_at">
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePopupModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Popup</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Popup Management Functions
+    function loadPopups() {
+      const filter = document.getElementById('popup-filter') ? document.getElementById('popup-filter').value : 'all';
+
+      fetch('/api/admin/popups/', { credentials: 'same-origin' })
+        .then(res => res.json())
+        .then(data => {
+          const list = document.getElementById('popup-list');
+          if (!list) return;
+
+          if (!data.popups || data.popups.length === 0) {
+            list.innerHTML = '<p class="no-data">No notifications found.</p>';
+            return;
+          }
+
+          list.innerHTML = '';
+          const filtered = data.popups.filter(p => {
+            if (filter === 'all') return true;
+            if (filter === 'active') return p.is_active;
+            if (filter === 'inactive') return !p.is_active;
+            return p.popup_type === filter;
+          });
+
+          if (filtered.length === 0) {
+            list.innerHTML = '<p class="no-data">No matching notifications.</p>';
+            return;
+          }
+
+          filtered.forEach(p => {
+            const el = document.createElement('div');
+            el.className = `popup-item ${p.popup_type} ${p.is_active ? 'active' : 'inactive'}`;
+            el.innerHTML = `
+              <div class="popup-content">
+                <div class="popup-header-row">
+                  <span class="popup-type-badge ${p.popup_type}">${p.popup_type}</span>
+                  <span class="popup-status ${p.is_active ? 'active' : 'inactive'}">
+                    ${p.is_active ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+                <h4>${p.title}</h4>
+                <p>${p.message}</p>
+                <small>Created: ${new Date(p.created_at).toLocaleDateString()}</small>
+              </div>
+              <div class="popup-actions">
+                <button class="btn btn-sm btn-outline" onclick="togglePopup(${p.id})">
+                  ${p.is_active ? 'Deactivate' : 'Activate'}
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deletePopup(${p.id})">Delete</button>
+              </div>
+            `;
+            list.appendChild(el);
+          });
+
+          // Update dashboard stat if exists
+          const statEl = document.getElementById('active-popups');
+          if (statEl) {
+            const activeCount = data.popups.filter(p => p.is_active).length;
+            statEl.textContent = activeCount;
+          }
+        })
+        .catch(err => console.error('Error loading popups:', err));
+    }
+
+    function openPopupModal() {
+      const modal = document.getElementById('popup-modal');
+      const form = document.getElementById('popup-form');
+      if (modal && form) {
+        form.reset();
+        document.getElementById('popup_id').value = '';
+        document.getElementById('modal-title').textContent = 'Create New Popup';
+        modal.style.display = 'flex';
+      }
+    }
+
+    function closePopupModal() {
+      const modal = document.getElementById('popup-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function togglePopup(id) {
+      if (!confirm('Toggle this notification status?')) return;
+      fetch(`/api/admin/popups/${id}/toggle/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            loadPopups();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        });
+    }
+
+    function deletePopup(id) {
+      if (!confirm('Are you sure you want to delete this notification?')) return;
+      fetch(`/api/admin/popups/${id}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            loadPopups();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        });
+    }
+
+    function filterPopups() {
+      loadPopups();
+    }
   </script>
   <footer
     style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">

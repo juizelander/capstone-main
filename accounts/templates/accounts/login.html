@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 </head>
+
 <body>
   <div class="auth-container">
     <div class="auth-header">
@@ -15,22 +17,22 @@
     </div>
 
     {% if error %}
-      <div class="error-message">
-        {{ error }}
-      </div>
+    <div class="error-message">
+      {{ error }}
+    </div>
     {% endif %}
 
     {% if messages %}
-      {% for message in messages %}
-        <div class="success-message">
-          {{ message }}
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div class="success-message">
+      {{ message }}
+    </div>
+    {% endfor %}
     {% endif %}
 
     <form method="POST" class="auth-form">
       {% csrf_token %}
-      
+
       <div class="input-group">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" placeholder="Enter your username" required>
@@ -62,25 +64,31 @@
       </div>
       <div class="modal-body">
         <h3>1. Acceptance of Terms</h3>
-        <p>By accessing and using this Student Management System, you accept and agree to be bound by the terms and provision of this agreement.</p>
-        
+        <p>By accessing and using this Student Management System, you accept and agree to be bound by the terms and
+          provision of this agreement.</p>
+
         <h3>2. Use License</h3>
-        <p>Permission is granted to temporarily access the materials on ScholarSync Subic's website for personal, non-commercial transitory viewing only.</p>
-        
+        <p>Permission is granted to temporarily access the materials on ScholarSync Subic's website for personal,
+          non-commercial transitory viewing only.</p>
+
         <h3>3. Privacy Policy</h3>
-        <p>Your privacy is important to us. We collect and use your personal information in accordance with our privacy policy to provide you with the best service.</p>
-        
+        <p>Your privacy is important to us. We collect and use your personal information in accordance with our privacy
+          policy to provide you with the best service.</p>
+
         <h3>4. User Responsibilities</h3>
-        <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities that occur under their account.</p>
-        
+        <p>Users are responsible for maintaining the confidentiality of their account credentials and for all activities
+          that occur under their account.</p>
+
         <h3>5. Prohibited Uses</h3>
         <p>You may not use our service for any unlawful purpose or to solicit others to perform unlawful acts.</p>
-        
+
         <h3>6. Disclaimer</h3>
-        <p>The materials on ScholarSync Subic's website are provided on an 'as is' basis. ScholarSync Subic makes no warranties, expressed or implied.</p>
-        
+        <p>The materials on ScholarSync Subic's website are provided on an 'as is' basis. ScholarSync Subic makes no
+          warranties, expressed or implied.</p>
+
         <h3>7. Contact Information</h3>
-        <p>If you have any questions about these Terms and Conditions, please contact us at admin@scholarsyncsubic.edu.ph</p>
+        <p>If you have any questions about these Terms and Conditions, please contact us at
+          admin@scholarsyncsubic.edu.ph</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="closeTermsModal()">I Understand</button>
@@ -98,8 +106,8 @@
 
     .terms-button {
       background: transparent;
-      border: 2px solid #667eea;
-      color: #667eea;
+      border: 2px solid #10B981;
+      color: #10B981;
       padding: 12px 24px;
       border-radius: 12px;
       cursor: pointer;
@@ -107,14 +115,14 @@
       font-weight: 500;
       transition: all 0.3s ease;
       font-family: inherit;
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
     }
 
     .terms-button:hover {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
 
     .terms-button:active {
@@ -146,7 +154,7 @@
     }
 
     .modal-header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
       color: white;
       padding: 20px;
       border-radius: 8px 8px 0 0;
@@ -178,7 +186,7 @@
     }
 
     .modal-body h3 {
-      color: #667eea;
+      color: #10B981;
       margin-top: 25px;
       margin-bottom: 10px;
       font-size: 18px;
@@ -209,15 +217,15 @@
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
       color: white;
       border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
     }
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
     /* Responsive */
@@ -226,15 +234,15 @@
         width: 95%;
         margin: 2% auto;
       }
-      
+
       .modal-body {
         padding: 20px;
       }
-      
+
       .modal-header {
         padding: 15px;
       }
-      
+
       .modal-header h2 {
         font-size: 20px;
       }
@@ -251,7 +259,7 @@
     }
 
     // Close modal when clicking outside of it
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       const modal = document.getElementById('terms-modal');
       if (event.target === modal) {
         closeTermsModal();
@@ -259,11 +267,12 @@
     }
 
     // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') {
         closeTermsModal();
       }
     });
   </script>
 </body>
+
 </html>

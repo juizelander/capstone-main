@@ -7,12 +7,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Dashboard</title>
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
   <header class="sd-header">
     <div class="sd-brand">ScholarSync Subic</div>
+    <!-- DEBUG BUTTON -->
+    <button onclick="testPopup()" style="background:red;color:white;padding:5px;border-radius:4px;cursor:pointer;">Test
+      Popup</button>
     <div class="sd-actions">
+      <div class="notification-bell" onclick="toggleNotifications(event)">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+
+        <!-- Notification Dropdown -->
+        <div class="notification-dropdown" id="notification-dropdown">
+          <div class="notification-header">
+            <h4>Notifications</h4>
+            <span class="close-notifications" onclick="toggleNotifications(event)">&times;</span>
+          </div>
+          <div class="notification-list" id="notification-list">
+            <!-- Notifications loaded via JS -->
+          </div>
+        </div>
+      </div>
       <span class="sd-username">Signed in as <strong>{{ student.username }}</strong></span>
       <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
         {% csrf_token %}
@@ -186,6 +205,13 @@
       modal.style.display = 'none';
     }
 
+    // System Announcement Modal Logic
+    function closeAnnouncementModal() {
+      document.getElementById('announcement-modal').style.display = 'none';
+      // Mark as seen in session storage to avoid annoyance
+      sessionStorage.setItem('announcementSeen', 'true');
+    }
+
     // Populate on load
     document.addEventListener('DOMContentLoaded', loadProgramsDropdown);
 
@@ -250,21 +276,158 @@
     }
 
     // optional: display file list on selection change immediately
-    document.getElementById('supporting_docs').addEventListener('change', function () {
-      const files = this.files;
-      const list = document.getElementById('file-list');
-      list.innerHTML = '';
-      if (!files || files.length === 0) return;
-      const ul = document.createElement('ul');
-      for (let i = 0; i < files.length; i++) {
-        const f = files[i];
-        const li = document.createElement('li');
-        li.textContent = `${f.name} — ${(f.size / 1024).toFixed(1)} KB`;
-        ul.appendChild(li);
+    // Notification System
+    function toggleNotifications(e) {
+      if (e) e.stopPropagation();
+      const dropdown = document.getElementById('notification-dropdown');
+      dropdown.classList.toggle('show');
+    }
+
+    // Close notifications when clicking outside
+    document.addEventListener('click', function (e) {
+      const dropdown = document.getElementById('notification-dropdown');
+      const bell = document.querySelector('.notification-bell');
+
+      if (dropdown && dropdown.classList.contains('show')) {
+        if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
+          dropdown.classList.remove('show');
+        }
       }
-      list.appendChild(ul);
     });
+
+    async function loadNotifications() {
+      try {
+        const response = await fetch('/api/student/popups/', { credentials: 'same-origin' });
+        const data = await response.json();
+
+        const list = document.getElementById('notification-list');
+        const badge = document.getElementById('notification-badge');
+
+        if (data.popups && data.popups.length > 0) {
+          list.innerHTML = '';
+          badge.textContent = data.popups.length;
+          badge.style.display = 'block';
+
+          data.popups.forEach(popup => {
+            const item = document.createElement('div');
+            item.className = `notification-item ${popup.popup_type}`;
+            item.innerHTML = `
+              <div class="notif-icon">
+                <i class="fas ${getIconForType(popup.popup_type)}"></i>
+              </div>
+              <div class="notif-content">
+                <h5>${popup.title}</h5>
+                <p>${popup.message}</p>
+                <small>${new Date(popup.created_at).toLocaleDateString()}</small>
+              </div>
+            `;
+            list.appendChild(item);
+          });
+        } else {
+          list.innerHTML = '<div class="empty-notifications">No new notifications</div>';
+          badge.style.display = 'none';
+        }
+
+        // Check for auto-popup
+        console.log('Checking for auto-popup...', data.popups);
+        if (data.popups && data.popups.length > 0) {
+          // Get the latest popup
+          const latest = data.popups[0];
+          const seen = sessionStorage.getItem('lastSeenPopupId');
+          console.log('Latest popup:', latest.id, 'Seen:', seen);
+
+          // FORCE SHOW FOR DEBUGGING (Bypass session check)
+          // if (seen !== String(latest.id)) {
+          console.log('Showing popup:', latest.title);
+          showAnnouncementModal(latest);
+          // sessionStorage.setItem('lastSeenPopupId', latest.id);
+          // }
+        } else {
+          console.log('No popups to show');
+        }
+
+      } catch (error) {
+        console.error('Error loading notifications:', error);
+      }
+    }
+
+    function showAnnouncementModal(popup) {
+      const modal = document.getElementById('announcement-modal');
+      const title = document.getElementById('announcement-title');
+      const msg = document.getElementById('announcement-message');
+      const icon = document.getElementById('announcement-icon');
+
+      title.textContent = popup.title;
+      msg.textContent = popup.message;
+      icon.className = `fas ${getIconForType(popup.popup_type)}`;
+
+      // Color code header based on type
+      const header = modal.querySelector('.modal-header');
+      modal.className = `modal announcement-modal ${popup.popup_type}`;
+
+      modal.style.display = 'flex';
+    }
+
+
+    function getIconForType(type) {
+      switch (type) {
+        case 'warning': return 'fa-exclamation-triangle';
+        case 'error': return 'fa-times-circle';
+        case 'success': return 'fa-check-circle';
+        default: return 'fa-info-circle';
+      }
+    }
+
+    // Load notifications on start
+    document.addEventListener('DOMContentLoaded', loadNotifications);
+    console.log('Student Dashboard Script Loaded');
+
+    const docsInput = document.getElementById('supporting_docs');
+    if (docsInput) {
+      docsInput.addEventListener('change', function () {
+        const files = this.files;
+        const list = document.getElementById('file-list');
+        list.innerHTML = '';
+        if (!files || files.length === 0) return;
+        const ul = document.createElement('ul');
+        for (let i = 0; i < files.length; i++) {
+          const f = files[i];
+          const li = document.createElement('li');
+          li.textContent = `${f.name} — ${(f.size / 1024).toFixed(1)} KB`;
+          ul.appendChild(li);
+        }
+        list.appendChild(ul);
+      });
+    }
+
+    // Debug Function
+    function testPopup() {
+      showAnnouncementModal({
+        title: 'Test Announcement',
+        message: 'This is a test message to verify the modal works.',
+        popup_type: 'success'
+      });
+    }
   </script>
+
+  <!-- System Announcement Modal -->
+  <div id="announcement-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i id="announcement-icon" class="fas fa-info-circle"></i>
+          <h3 id="announcement-title">System Announcement</h3>
+        </div>
+        <span class="close" onclick="closeAnnouncementModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p id="announcement-message" class="confirmation-message"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeAnnouncementModal()">Dismiss</button>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

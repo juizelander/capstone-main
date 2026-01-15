@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -38,7 +38,7 @@ body {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #10B981, #F59E0B);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -109,9 +109,9 @@ input[name="first_name"]:focus,
 input[name="last_name"]:focus,
 textarea[name="address"]:focus {
     outline: none !important;
-    border-color: #667eea !important;
+    border-color: #10B981 !important;
     background: white !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
 }
 
 /* Debug styling - make inputs very obvious */
@@ -179,9 +179,9 @@ textarea::placeholder {
 .auth-form input:focus,
 .auth-form textarea:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #10B981;
     background: white;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Hover states */
@@ -191,7 +191,7 @@ textarea::placeholder {
 }
 
 .auth-form input[type="file"]:hover {
-    border-color: #667eea;
+    border-color: #10B981;
     background: #f7fafc;
 }
 
@@ -204,7 +204,7 @@ textarea::placeholder {
 
 /* Button styling */
 .auth-button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -214,12 +214,12 @@ textarea::placeholder {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
 .auth-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
 }
 
 .auth-button:active {
@@ -234,14 +234,14 @@ textarea::placeholder {
 }
 
 .auth-link a {
-    color: #667eea;
+    color: #10B981;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .auth-link a:hover {
-    color: #764ba2;
+    color: #F59E0B;
     text-decoration: underline;
 }
 
@@ -310,7 +310,7 @@ textarea::placeholder {
 }
 
 .file-upload-label:hover {
-    border-color: #667eea;
+    border-color: #10B981;
     background: #edf2f7;
     color: #4a5568;
 }

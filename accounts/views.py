@@ -11,6 +11,7 @@ from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
 from .models import Admin, Student, Popup
+from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
 
@@ -232,6 +233,36 @@ def get_popup(request, popup_id):
             'updated_at': popup.updated_at.isoformat(),
             'expires_at': popup.expires_at.isoformat() if popup.expires_at else None
         })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+def get_student_popups(request):
+    """Get active popups for students"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        now = timezone.now()
+        # Fetch active popups that haven't expired
+        popups = Popup.objects.filter(
+            is_active=True
+        ).filter(
+            models.Q(expires_at__isnull=True) | models.Q(expires_at__gt=now)
+        ).order_by('-created_at')
+        
+        popup_data = []
+        for popup in popups:
+            popup_data.append({
+                'id': popup.id,
+                'title': popup.title,
+                'message': popup.message,
+                'popup_type': popup.popup_type,
+                'created_at': popup.created_at.isoformat()
+            })
+        
+        return JsonResponse({'popups': popup_data})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
