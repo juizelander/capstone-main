@@ -1,12 +1,14 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Student Dashboard</title>
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
 </head>
+
 <body>
   <header class="sd-header">
     <div class="sd-brand">ScholarSync Subic</div>
@@ -50,7 +52,8 @@
       <div id="app-msg" class="app-message" style="display:none;"></div>
 
       <!-- JS prevents actual POST so frontend can be tested without backend -->
-      <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
+      <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form"
+        onsubmit="handleProgramSubmit(event)">
         {% csrf_token %}
         <label for="program">Program</label>
         <select id="program" name="program" required onchange="showProgramDescription()">
@@ -64,11 +67,12 @@
         </div>
 
         <label for="motivation">Why do you want to apply?</label>
-        <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation" required></textarea>
+        <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation"
+          required></textarea>
 
         <label for="supporting_docs">Supporting documents (you can select multiple)</label>
-        <input id="supporting_docs" name="supporting_docs" type="file"
-               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+        <input id="supporting_docs" name="supporting_docs" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+          multiple>
 
         <div id="file-list" class="file-list" aria-live="polite"></div>
 
@@ -95,7 +99,8 @@
           <i class="fas fa-check-circle"></i>
         </div>
         <p class="confirmation-message">
-          Thank you for applying! Please wait for admin approval. You will be notified once your application has been reviewed.
+          Thank you for applying! Please wait for admin approval. You will be notified once your application has been
+          reviewed.
         </p>
       </div>
       <div class="modal-footer">
@@ -111,7 +116,6 @@
     // Load programs into the dropdown from Home app endpoint
     async function loadProgramsDropdown() {
       const select = document.getElementById('program');
-      // Keep only the placeholder
       select.innerHTML = '<option value="">Select a program</option>';
       const endpoints = ['/home/programs/', '/programs/'];
       let data = null;
@@ -126,13 +130,31 @@
         }
       }
       if (!data || !data.programs) return;
-      
-      // Store programs data for later use
+
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // compare dates only
+
       data.programs.forEach(p => {
         programsData[p.program_id] = p;
         const opt = document.createElement('option');
         opt.value = p.program_id;
-        opt.textContent = p.program_name;
+
+        // Check expiration
+        let isExpired = false;
+        if (p.application_end_date) {
+          const endDate = new Date(p.application_end_date);
+          if (now > endDate) {
+            isExpired = true;
+          }
+        }
+
+        if (isExpired) {
+          opt.textContent = `${p.program_name} (Expired)`;
+          opt.disabled = true;
+        } else {
+          opt.textContent = p.program_name;
+        }
+
         select.appendChild(opt);
       });
     }
@@ -142,7 +164,7 @@
       const select = document.getElementById('program');
       const descriptionDiv = document.getElementById('program-description');
       const requirementsDiv = document.getElementById('program-requirements');
-      
+
       if (select.value && programsData[select.value]) {
         const program = programsData[select.value];
         requirementsDiv.textContent = program.requirements || 'No specific requirements listed.';
@@ -244,4 +266,5 @@
     });
   </script>
 </body>
+
 </html>

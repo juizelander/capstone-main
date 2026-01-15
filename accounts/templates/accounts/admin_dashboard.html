@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Admin Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}">
+
 <body>
   <header>
     <h1>ScholarSync Subic</h1>
@@ -43,7 +45,7 @@
           <h3>Dashboard Overview</h3>
           <p>Welcome to your admin dashboard. Use the sidebar to navigate between different sections.</p>
         </div>
-        
+
         <!-- Statistics Cards -->
         <div class="stats-grid">
           <div class="stat-card">
@@ -55,7 +57,7 @@
               <span class="stat-number" id="total-students">Loading...</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-bell"></i>
@@ -65,7 +67,7 @@
               <span class="stat-number" id="active-popups">Loading...</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-clock"></i>
@@ -75,7 +77,7 @@
               <span class="stat-number" id="pending-applications">Loading...</span>
             </div>
           </div>
-          
+
           <div class="stat-card">
             <div class="stat-icon">
               <i class="fas fa-graduation-cap"></i>
@@ -136,7 +138,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="application-list" id="registration-list">
             <!-- Student registrations will be loaded here via JavaScript -->
           </div>
@@ -157,7 +159,7 @@
               </select>
             </div>
           </div>
-          
+
           <div class="application-list" id="program-application-list">
             <!-- Program applications will be loaded here via JavaScript -->
           </div>
@@ -171,7 +173,7 @@
             <h3>Notification Center</h3>
             <button class="btn btn-primary" onclick="openPopupModal()">Create New Popup</button>
           </div>
-          
+
           <div class="popup-filters">
             <select id="popup-filter" onchange="filterPopups()">
               <option value="all">All Popups</option>
@@ -207,38 +209,52 @@
       </div>
 
       <!-- Programs Tab Content -->
-<div id="programs" class="tab-content">
-  <div class="card">
-    <h3>Program Management</h3>
+      <div id="programs" class="tab-content">
+        <div class="card">
+          <h3>Program Management</h3>
 
-    <div class="program-actions">
-      <button class="btn btn-primary" onclick="showCreateProgram()">
-        Create New Program
-      </button>
-    </div>
+          <div class="program-actions">
+            <button class="btn btn-primary" onclick="showCreateProgram()">
+              Create New Program
+            </button>
+          </div>
 
-    <div id="createProgramForm" class="program-form-wrapper">
-     <form class="program-form" method="POST">
-    {% csrf_token %}
-    <label for="p_name">Program Name</label>
-    <input id="p_name" name="program_name" type="text" required>
+          <div id="createProgramForm" class="program-form-wrapper">
+            <form class="program-form" method="POST">
+              {% csrf_token %}
+              <label for="p_name">Program Name</label>
+              <input id="p_name" name="program_name" type="text" required>
 
-    <label for="p_req">Requirements</label>
-    <textarea id="p_req" name="requirements" rows="3"></textarea>
+              <label for="p_req">Requirements</label>
+              <textarea id="p_req" name="requirements" rows="3"></textarea>
 
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">Create Program</button>
-    </div>
-</form>
+              <div class="form-group" style="margin-top: 15px;">
+                <label>Application Period</label>
+                <div style="display: flex; gap: 10px;">
+                  <div style="flex: 1;">
+                    <label for="p_start" style="font-size: 0.9em;">Start Date</label>
+                    <input id="p_start" name="application_start_date" type="date">
+                  </div>
+                  <div style="flex: 1;">
+                    <label for="p_end" style="font-size: 0.9em;">End Date</label>
+                    <input id="p_end" name="application_end_date" type="date">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Create Program</button>
+              </div>
+            </form>
 
 
-    </div>
+          </div>
 
-    <div class="programs-list">
-      <!-- Programs will load here -->
-    </div>
-  </div>
-</div>
+          <div class="programs-list">
+            <!-- Programs will load here -->
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -289,58 +305,58 @@
 
   <script>
     // Tab switching functionality
-    document.addEventListener('DOMContentLoaded', function() {
-    const tabs = document.querySelectorAll('.nav-link, .nav-item');
-    const contents = document.querySelectorAll('.tab-content');
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('.nav-link, .nav-item');
+      const contents = document.querySelectorAll('.tab-content');
 
-    tabs.forEach(tab => {
+      tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            // Remove active class from all tabs
-            tabs.forEach(t => t.classList.remove('active'));
-            
-            // Hide all content sections
-            contents.forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked tab
-            tab.classList.add('active');
-            
-            // Show corresponding content
-            const targetId = tab.getAttribute('data-tab');
-            document.getElementById(targetId)?.classList.add('active');
+          e.preventDefault();
 
-            // Lazy-load data when tab is opened
-            if (targetId === 'student-registrations') {
-              loadStudentRegistrations();
-            } else if (targetId === 'student-applications') {
-              loadProgramApplications();
-            } else if (targetId === 'notifications') {
-              loadPopups();
-            } else if (targetId === 'dashboard') {
-              loadDashboardStats();
-            } else if (targetId === 'programs') {
-              loadPrograms();
-            }
+          // Remove active class from all tabs
+          tabs.forEach(t => t.classList.remove('active'));
+
+          // Hide all content sections
+          contents.forEach(c => c.classList.remove('active'));
+
+          // Add active class to clicked tab
+          tab.classList.add('active');
+
+          // Show corresponding content
+          const targetId = tab.getAttribute('data-tab');
+          document.getElementById(targetId)?.classList.add('active');
+
+          // Lazy-load data when tab is opened
+          if (targetId === 'student-registrations') {
+            loadStudentRegistrations();
+          } else if (targetId === 'student-applications') {
+            loadProgramApplications();
+          } else if (targetId === 'notifications') {
+            loadPopups();
+          } else if (targetId === 'dashboard') {
+            loadDashboardStats();
+          } else if (targetId === 'programs') {
+            loadPrograms();
+          }
         });
+      });
+
+      // Initial loads
+      loadDashboardStats();
+      initChart();
+      initStudentChart();
+      // Preload student registrations so it's ready when tab opens
+      loadStudentRegistrations();
     });
 
-    // Initial loads
-    loadDashboardStats();
-    initChart();
-    initStudentChart();
-    // Preload student registrations so it's ready when tab opens
-    loadStudentRegistrations();
-});
-
     // Program form toggle functions
-function showCreateProgram() {
-    document.getElementById('createProgramForm').style.display = 'block';
-}
+    function showCreateProgram() {
+      document.getElementById('createProgramForm').style.display = 'block';
+    }
 
-function hideCreateProgram() {
-    document.getElementById('createProgramForm').style.display = 'none';
-}
+    function hideCreateProgram() {
+      document.getElementById('createProgramForm').style.display = 'none';
+    }
     // Popup management functions
     function loadPopups() {
       fetch('/admin/popups/')
@@ -348,12 +364,12 @@ function hideCreateProgram() {
         .then(data => {
           const popupList = document.getElementById('popup-list');
           popupList.innerHTML = '';
-          
+
           if (data.popups.length === 0) {
             popupList.innerHTML = '<p class="no-popups">No popups found.</p>';
             return;
           }
-          
+
           data.popups.forEach(popup => {
             const popupElement = createPopupElement(popup);
             popupList.appendChild(popupElement);
@@ -395,7 +411,7 @@ function hideCreateProgram() {
       const modal = document.getElementById('popup-modal');
       const form = document.getElementById('popup-form');
       const title = document.getElementById('modal-title');
-      
+
       if (popupId) {
         title.textContent = 'Edit Popup';
         // Load popup data for editing
@@ -416,7 +432,7 @@ function hideCreateProgram() {
         form.reset();
         document.getElementById('popup-id').value = '';
       }
-      
+
       modal.style.display = 'block';
     }
 
@@ -436,14 +452,14 @@ function hideCreateProgram() {
           'Content-Type': 'application/json',
         },
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          loadPopups();
-        } else {
-          alert('Error toggling popup: ' + data.error);
-        }
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            loadPopups();
+          } else {
+            alert('Error toggling popup: ' + data.error);
+          }
+        });
     }
 
     function deletePopup(popupId) {
@@ -455,21 +471,21 @@ function hideCreateProgram() {
             'Content-Type': 'application/json',
           },
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            loadPopups();
-          } else {
-            alert('Error deleting popup: ' + data.error);
-          }
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              loadPopups();
+            } else {
+              alert('Error deleting popup: ' + data.error);
+            }
+          });
       }
     }
 
     function filterPopups() {
       const filter = document.getElementById('popup-filter').value;
       const popupItems = document.querySelectorAll('.popup-item');
-      
+
       popupItems.forEach(item => {
         if (filter === 'all') {
           item.style.display = 'block';
@@ -517,12 +533,12 @@ function hideCreateProgram() {
 
     function initChart() {
       const ctx = document.getElementById('applicationsChart').getContext('2d');
-      
+
       // Generate sample data for the last 30 days
       const labels = [];
       const data = [];
       const today = new Date();
-      
+
       for (let i = 29; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
@@ -586,12 +602,12 @@ function hideCreateProgram() {
     function updateChart() {
       const period = document.getElementById('chart-period').value;
       const days = parseInt(period);
-      
+
       // Generate new labels and data based on selected period
       const labels = [];
       const data = [];
       const today = new Date();
-      
+
       for (let i = days - 1; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
@@ -609,7 +625,7 @@ function hideCreateProgram() {
 
     function initStudentChart() {
       const ctx = document.getElementById('studentChart').getContext('2d');
-      
+
       // Generate sample data for student status
       const statusData = {
         labels: ['Active', 'Pending', 'Rejected'],
@@ -670,12 +686,12 @@ function hideCreateProgram() {
 
     function updateStudentChart() {
       const chartType = document.getElementById('student-chart-type').value;
-      
+
       if (!studentChart) return;
 
       let newData;
-      
-      switch(chartType) {
+
+      switch (chartType) {
         case 'status':
           newData = {
             labels: ['Active', 'Pending', 'Rejected'],
@@ -754,12 +770,12 @@ function hideCreateProgram() {
           console.log('Registrations data:', data);
           const registrationList = document.getElementById('registration-list');
           registrationList.innerHTML = '';
-          
+
           if (data.applications.length === 0) {
             registrationList.innerHTML = '<p class="no-applications">No student registrations found.</p>';
             return;
           }
-          
+
           data.applications.forEach(application => {
             const applicationElement = createApplicationElement(application);
             registrationList.appendChild(applicationElement);
@@ -841,19 +857,19 @@ function hideCreateProgram() {
             'Content-Type': 'application/json',
           },
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            loadStudentRegistrations();
-            loadDashboardStats(); // Refresh stats
-          } else {
-            alert('Error approving student: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error approving student application');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              loadStudentRegistrations();
+              loadDashboardStats(); // Refresh stats
+            } else {
+              alert('Error approving student: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error approving student application');
+          });
       }
     }
 
@@ -866,26 +882,26 @@ function hideCreateProgram() {
             'Content-Type': 'application/json',
           },
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            loadStudentRegistrations();
-            loadDashboardStats(); // Refresh stats
-          } else {
-            alert('Error rejecting student: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error rejecting student application');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              loadStudentRegistrations();
+              loadDashboardStats(); // Refresh stats
+            } else {
+              alert('Error rejecting student: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error rejecting student application');
+          });
       }
     }
 
     function filterRegistrations() {
       const filter = document.getElementById('registration-filter').value;
       const applicationItems = document.querySelectorAll('.application-item');
-      
+
       applicationItems.forEach(item => {
         if (filter === 'all') {
           item.style.display = 'block';
@@ -916,12 +932,12 @@ function hideCreateProgram() {
           console.log('Program applications data:', data);
           const applicationList = document.getElementById('program-application-list');
           applicationList.innerHTML = '';
-          
+
           if (data.applications.length === 0) {
             applicationList.innerHTML = '<p class="no-applications">No program applications found.</p>';
             return;
           }
-          
+
           data.applications.forEach(application => {
             const applicationElement = createProgramApplicationElement(application);
             applicationList.appendChild(applicationElement);
@@ -984,18 +1000,18 @@ function hideCreateProgram() {
             'Content-Type': 'application/json',
           },
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            loadProgramApplications();
-          } else {
-            alert('Error approving program application: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error approving program application');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              loadProgramApplications();
+            } else {
+              alert('Error approving program application: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error approving program application');
+          });
       }
     }
 
@@ -1008,25 +1024,25 @@ function hideCreateProgram() {
             'Content-Type': 'application/json',
           },
         })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            loadProgramApplications();
-          } else {
-            alert('Error rejecting program application: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error rejecting program application');
-        });
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              loadProgramApplications();
+            } else {
+              alert('Error rejecting program application: ' + data.error);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error rejecting program application');
+          });
       }
     }
 
     function filterProgramApplications() {
       const filter = document.getElementById('program-application-filter').value;
       const applicationItems = document.querySelectorAll('#program-application-list .application-item');
-      
+
       applicationItems.forEach(item => {
         if (filter === 'all') {
           item.style.display = 'block';
@@ -1037,14 +1053,14 @@ function hideCreateProgram() {
     }
 
     // Form submission
-    document.getElementById('popup-form').addEventListener('submit', function(e) {
+    document.getElementById('popup-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      
+
       const formData = new FormData(this);
       const popupId = formData.get('popup_id');
       const url = popupId ? `/api/admin/popups/${popupId}/edit/` : '/api/admin/popups/create/';
       const method = popupId ? 'PUT' : 'POST';
-      
+
       fetch(url, {
         method: method,
         headers: {
@@ -1059,15 +1075,15 @@ function hideCreateProgram() {
           expires_at: formData.get('expires_at') || null,
         }),
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          closePopupModal();
-          loadPopups();
-        } else {
-          alert('Error saving popup: ' + data.error);
-        }
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            closePopupModal();
+            loadPopups();
+          } else {
+            alert('Error saving popup: ' + data.error);
+          }
+        });
     });
 
     function getCsrf() {
@@ -1126,7 +1142,7 @@ function hideCreateProgram() {
     }
 
     // Close modal when clicking outside
-    window.onclick = function(event) {
+    window.onclick = function (event) {
       const modal = document.getElementById('popup-modal');
       if (event.target === modal) {
         closePopupModal();
@@ -1138,32 +1154,32 @@ function hideCreateProgram() {
       form.style.display = form.style.display === 'none' ? 'block' : 'none';
     }
 
-    document.querySelector('.program-form').addEventListener('submit', async function(e) {
+    document.querySelector('.program-form').addEventListener('submit', async function (e) {
       e.preventDefault();
       const formData = new FormData(this);
-      
+
       try {
-          const response = await fetch('/home/create_program/', {
-              method: 'POST',
-              body: formData,
-              headers: {
-                  'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-              }
-          });
-          
-          const data = await response.json();
-          if (data.success) {
-              alert('Program created successfully!');
-              this.reset();
-              hideCreateProgram();
-              await loadPrograms();
-              // Optionally reload programs list
-          } else {
-              alert(data.error || 'Failed to create program');
+        const response = await fetch('/home/create_program/', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
           }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          alert('Program created successfully!');
+          this.reset();
+          hideCreateProgram();
+          await loadPrograms();
+          // Optionally reload programs list
+        } else {
+          alert(data.error || 'Failed to create program');
+        }
       } catch (error) {
-          alert('Error creating program');
-          console.error(error);
+        alert('Error creating program');
+        console.error(error);
       }
     });
 
@@ -1200,6 +1216,13 @@ function hideCreateProgram() {
           </div>
           <div class="program-body">
             <p>${p.requirements || ''}</p>
+            ${(p.application_start_date || p.application_end_date) ? `
+                <div class="program-period" style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <i class="fas fa-calendar-alt"></i> 
+                    Application Period: 
+                    ${p.application_start_date || 'N/A'} to ${p.application_end_date || 'N/A'}
+                </div>
+            ` : ''}
           </div>
         `;
         container.appendChild(el);
@@ -1209,10 +1232,12 @@ function hideCreateProgram() {
     // Initial loads
     loadPrograms();
   </script>
-  <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
+  <footer
+    style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
     © 2024 Lander. All rights reserved.
   </footer>
 
-  
+
 </body>
+
 </html>

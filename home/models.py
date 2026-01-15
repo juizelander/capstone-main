@@ -39,6 +39,8 @@ class Program(models.Model):
     program_id = models.AutoField(primary_key=True)
     program_name = models.CharField(max_length=100)
     requirements = models.TextField(blank=True, null=True)
+    application_start_date = models.DateField(null=True, blank=True)
+    application_end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.program_name

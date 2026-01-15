@@ -6,11 +6,15 @@ def create_program(request):
     if request.method == 'POST':
         program_name = request.POST.get('program_name')
         requirements = request.POST.get('requirements')
+        application_start_date = request.POST.get('application_start_date') or None
+        application_end_date = request.POST.get('application_end_date') or None
 
         if program_name:  # simple validation
             Program.objects.create(
                 program_name=program_name,
-                requirements=requirements
+                requirements=requirements,
+                application_start_date=application_start_date,
+                application_end_date=application_end_date
             )
             return JsonResponse({'success': True, 'message': 'Program created successfully'})
         else:
@@ -25,7 +29,9 @@ def get_programs(request):
         {
             'program_id': p.program_id,
             'program_name': p.program_name,
-            'requirements': p.requirements or ''
+            'requirements': p.requirements or '',
+            'application_start_date': p.application_start_date,
+            'application_end_date': p.application_end_date
         }
         for p in programs
     ]
