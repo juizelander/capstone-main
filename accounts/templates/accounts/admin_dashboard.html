@@ -242,6 +242,9 @@
                 </div>
               </div>
 
+              <label for="p_img" style="margin-top: 15px;">Background Image</label>
+              <input id="p_img" name="program_image" type="file" accept="image/*">
+
               <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Create Program</button>
               </div>
@@ -1210,19 +1213,26 @@
       data.programs.forEach(p => {
         const el = document.createElement('div');
         el.className = 'program-item';
+        // Add background image style if available
+        const imageStyle = p.program_image ? `background-image: url('${p.program_image}');` : '';
+        const hasImageClass = p.program_image ? 'has-image' : '';
+
         el.innerHTML = `
-          <div class="program-header">
-            <h4>${p.program_name}</h4>
-          </div>
-          <div class="program-body">
-            <p>${p.requirements || ''}</p>
-            ${(p.application_start_date || p.application_end_date) ? `
-                <div class="program-period" style="margin-top: 10px; font-size: 0.9em; color: #666;">
-                    <i class="fas fa-calendar-alt"></i> 
-                    Application Period: 
-                    ${p.application_start_date || 'N/A'} to ${p.application_end_date || 'N/A'}
-                </div>
-            ` : ''}
+          ${p.program_image ? `<div class="program-img-header" style="background-image: url('${p.program_image}');"></div>` : ''}
+          <div class="program-content">
+            <div class="program-header">
+              <h4>${p.program_name}</h4>
+            </div>
+            <div class="program-body">
+              <p>${p.requirements || ''}</p>
+              ${(p.application_start_date || p.application_end_date) ? `
+                  <div class="program-period">
+                      <i class="fas fa-calendar-alt"></i> 
+                      Application Period: 
+                      ${p.application_start_date || 'N/A'} to ${p.application_end_date || 'N/A'}
+                  </div>
+              ` : ''}
+            </div>
           </div>
         `;
         container.appendChild(el);
