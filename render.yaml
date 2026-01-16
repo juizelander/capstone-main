@@ -2,11 +2,13 @@ databases:
   - name: capstone
     databaseName: capstone
     user: capstone
+    plan: free # Explicitly request the free tier
 
 services:
   - type: web
     name: capstone
     env: python
+    plan: free # Explicitly request the free tier
     buildCommand: "./build.sh"
     startCommand: "gunicorn capstone.wsgi:application"
     envVars:
@@ -18,3 +20,5 @@ services:
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
+      - key: PYTHON_VERSION
+        value: 3.9.0
