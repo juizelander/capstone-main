@@ -1,0 +1,258 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ScholarSync Subic - Welcome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lemon+Milk:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}">
+    <style>
+        /* Specific overrides for landing page */
+        body {
+            overflow-x: hidden;
+        }
+
+        .landing-container {
+            display: block;
+            /* Override flex from .container */
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .landing-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .landing-logo {
+            background: linear-gradient(135deg, #10B981, #F59E0B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Lemon Milk', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .landing-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .landing-hero {
+            padding: 150px 40px 80px;
+            text-align: center;
+            color: white;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .landing-hero h1 {
+            font-family: 'Lemon Milk', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .landing-hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-landing {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary-landing {
+            background: white;
+            color: #10B981;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary-landing:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: #f8fafc;
+        }
+
+        .btn-outline-landing {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline-landing:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .features-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 80px 40px;
+            color: #2d3748;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: #10B981;
+            margin-bottom: 15px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .feature-card p {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="landing-header">
+        <div class="landing-logo">ScholarSync Subic</div>
+        <div class="landing-nav">
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary"
+                style="background: transparent; color: #10B981; border: 2px solid #10B981; box-shadow: none;">Login</a>
+            <a href="{% url 'accounts:register' %}" class="btn btn-primary">Register</a>
+        </div>
+    </header>
+
+    <div class="landing-container">
+        <section class="landing-hero">
+            <h1>Catchy Phrase here,<br>Nyenyenye student scholarship</h1>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.    </p>
+            <div class="cta-buttons">
+                <a href="{% url 'accounts:register' %}" class="btn-landing btn-primary-landing">Apply Now</a>
+                <a href="#features" class="btn-landing btn-outline-landing">Learn More</a>
+            </div>
+        </section>
+
+        <section id="features" class="features-section">
+            <div class="section-title">
+                <h2>Why ScholarSync?</h2>
+                <p>Designed to make scholarship administration seamless for everyone.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h3>Easy Application</h3>
+                    <p>Apply for multiple scholarship programs with a single profile using our streamlined application
+                        process.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Real-time Updates</h3>
+                    <p>Stay informed with instant notifications about your application status and important
+                        announcements.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Transparent</h3>
+                    <p>Your data is protected, and our selection process ensures fairness and transparency for all
+                        applicants.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Lander. All rights reserved.</p>
+        </footer>
+    </div>
+
+</body>
+
+</html>

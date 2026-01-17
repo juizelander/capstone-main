@@ -16,6 +16,10 @@ from home.models import Program, Application
 from django.http import HttpResponse
 
 
+def landing_page_view(request):
+    return render(request, 'accounts/landing_page.html')
+
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']

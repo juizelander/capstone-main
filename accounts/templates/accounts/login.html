@@ -6,10 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Student Management System</title>
   {% load static %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 </head>
 
 <body>
+  <div class="back-nav">
+    <a href="{% url 'accounts:landing' %}" class="back-btn">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
   <div class="auth-container">
     <div class="auth-header">
       <h1>ScholarSync <br>Subic</h1>
@@ -97,6 +103,38 @@
   </div>
 
   <style>
+    body {
+      overflow: hidden;
+      /* Hide scrollbar */
+    }
+
+    .back-nav {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 50px;
+      text-decoration: none;
+      color: #10B981;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-5px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      background: white;
+    }
+
     .terms-section {
       text-align: center;
       margin-top: 25px;
