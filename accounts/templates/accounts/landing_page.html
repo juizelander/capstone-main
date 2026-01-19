@@ -188,6 +188,28 @@
             color: white;
             font-size: 0.9rem;
         }
+
+        .features {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 80px 40px;
+            color: #2d3748;
+            margin-top: 40px;
+        }
+
+        .feature-item {
+            margin-bottom: 40px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #10B981;
+        }
+
+        .feature-item p {
+            color: #718096;
+            line-height: 1.6;
+        }
     </style>
 </head>
 
@@ -204,7 +226,7 @@
 
     <div class="landing-container">
         <section class="landing-hero">
-            <h1>Catchy Phrase here,<br>Nyenyenye student scholarship</h1>
+            <h1>ScholarSync Subic</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.     Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.    </p>
             <div class="cta-buttons">
                 <a href="{% url 'accounts:register' %}" class="btn-landing btn-primary-landing">Apply Now</a>
@@ -244,6 +266,52 @@
                     <h3>Secure & Transparent</h3>
                     <p>Your data is protected, and our selection process ensures fairness and transparency for all
                         applicants.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Announcements</h2>
+            <div class="feature-item">
+                <h3>Latest Updates</h3>
+                <p>Stay informed with our recent announcements.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Upcoming Events</h3>
+                <p>Check out what's happening next.</p>
+            </div>
+            <!-- Add more announcement items as needed -->
+        </section>
+
+        <section id="programs" class="features-section" style="margin-top: 80px;">
+            <div class="section-title">
+                <h2>Upcoming and Available Programs</h2>
+                <p>Explore the latest scholarship opportunities and events.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" style="background-image: url('{% static 'accounts/images/program1.jpg' %}'); background-size: cover; background-position: center;">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Program Title 1</h3>
+                    <p>Description of the first program.</p>
+                </div>
+
+                <div class="feature-card" style="background-image: url('{% static 'accounts/images/program2.jpg' %}'); background-size: cover; background-position: center;">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3>Program Title 2</h3>
+                    <p>Description of the second program.</p>
+                </div>
+
+                <div class="feature-card" style="background-image: url('{% static 'accounts/images/program3.jpg' %}'); background-size: cover; background-position: center;">
+                    <div class="feature-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <h3>Program Title 3</h3>
+                    <p>Description of the third program.</p>
                 </div>
             </div>
         </section>
