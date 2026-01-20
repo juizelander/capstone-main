@@ -1101,3 +1101,77 @@ form {
   max-width: calc(100% - 36px);
   display: inline-block;
 }
+
+/* Student List */
+.student-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.student-item {
+  background-color: white;
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.student-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.student-item.student-active {
+  border-left: 4px solid #27ae60;
+}
+
+.student-item.student-inactive {
+  border-left: 4px solid #95a5a6;
+}
+
+.student-item.student-pending {
+  border-left: 4px solid #f39c12;
+}
+
+.student-item.student-rejected {
+  border-left: 4px solid #e74c3c;
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.student-info h4 {
+  margin: 0;
+  color: #2f3640;
+  font-size: 16px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.student-username {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.student-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.student-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.student-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 10px;
+  border-top: 1px solid #ecf0f1;
+}

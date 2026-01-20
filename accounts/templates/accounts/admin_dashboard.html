@@ -23,12 +23,24 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <nav>
-        <a href="#" class="nav-link active" data-tab="dashboard">Dashboard</a>
-        <a href="#" class="nav-link" data-tab="student-registrations">Student Account Registration</a>
-        <a href="#" class="nav-link" data-tab="student-applications">Student Applications</a>
-        <a href="#" class="nav-link" data-tab="notifications">Notification Center</a>
-        <a href="#" class="nav-link" data-tab="students">Students</a>
-        <a href="#" class="nav-link" data-tab="settings">Settings</a>
+        <a href="#" class="nav-link active" data-tab="dashboard">
+          <i class="fas fa-chart-line"></i> Dashboard
+        </a>
+        <a href="#" class="nav-link" data-tab="student-registrations">
+          <i class="fas fa-user-plus"></i> Student Registration
+        </a>
+        <a href="#" class="nav-link" data-tab="student-applications">
+          <i class="fas fa-file-alt"></i> Program Applications
+        </a>
+        <a href="#" class="nav-link" data-tab="notifications">
+          <i class="fas fa-bell"></i> Notifications
+        </a>
+        <a href="#" class="nav-link" data-tab="students">
+          <i class="fas fa-users-cog"></i> Student Management
+        </a>
+        <a href="#" class="nav-link" data-tab="settings">
+          <i class="fas fa-cog"></i> Settings
+        </a>
         <a href="#" class="nav-item" data-tab="programs">
           <i class="fas fa-graduation-cap"></i>
           Programs
@@ -195,8 +207,26 @@
       <!-- Students Tab -->
       <div id="students" class="tab-content">
         <div class="card">
-          <h3>Student Management</h3>
-          <p>Student management features will be implemented here.</p>
+          <div class="card">
+            <div class="card-header">
+              <h3>Student Management</h3>
+              <div class="application-filters">
+                <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
+                  class="search-input">
+                <select id="student-status-filter" onchange="filterStudents()">
+                  <option value="all">All Students</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="student-list" id="student-list">
+              <!-- Students will be loaded here via JavaScript -->
+            </div>
+          </div>
         </div>
       </div>
 
@@ -340,6 +370,8 @@
             loadDashboardStats();
           } else if (targetId === 'programs') {
             loadPrograms();
+          } else if (targetId === 'students') {
+            loadStudents();
           }
         });
       });
@@ -1419,6 +1451,127 @@
 
     function filterPopups() {
       loadPopups();
+    }
+
+    // Student Management Functions
+    function loadStudents() {
+      console.log('Loading students...');
+      fetch('/api/admin/student-applications/', { // Reusing this endpoint as it returns all students
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+      })
+        .then(response => response.json())
+        .then(data => {
+          const list = document.getElementById('student-list');
+          if (!list) return;
+
+          list.innerHTML = '';
+
+          if (!data.applications || data.applications.length === 0) {
+            list.innerHTML = '<p class="no-data">No students found.</p>';
+            return;
+          }
+
+          data.applications.forEach(student => {
+            const el = createStudentElement(student);
+            list.appendChild(el);
+          });
+        })
+        .catch(err => console.error('Error loading students:', err));
+    }
+
+    function createStudentElement(student) {
+      const div = document.createElement('div');
+      div.className = `student-item student-${student.status}`;
+      // Add data attributes for filtering
+      div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
+      div.dataset.status = student.status;
+
+      const isActive = student.status === 'active';
+      const isInactive = student.status === 'inactive';
+
+      div.innerHTML = `
+        <div class="student-header">
+            <div class="student-info">
+                <h4>${student.first_name} ${student.last_name}</h4> 
+                <span class="student-username">(@${student.username})</span>
+            </div>
+            <span class="status-badge status-${student.status}">${student.status}</span>
+        </div>
+        <div class="student-body">
+            <div class="student-details-grid">
+                <div class="detail-item">
+                    <span class="label">Program:</span>
+                    <span class="value">${student.program_and_yr}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Email:</span>
+                    <span class="value">${student.email}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="label">Contact:</span>
+                    <span class="value">${student.contact_num}</span>
+                </div>
+            </div>
+            
+            <div class="student-actions">
+                <button class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'}" 
+                        onclick="toggleStudentStatus(${student.id}, '${student.status}')">
+                    ${isActive ? 'Deactivate' : 'Activate'}
+                </button>
+            </div>
+        </div>
+      `;
+      return div;
+    }
+
+    function toggleStudentStatus(studentId, currentStatus) {
+      const action = currentStatus === 'active' ? 'deactivate' : 'activate';
+      if (!confirm(`Are you sure you want to ${action} this student?`)) return;
+
+      fetch(`/api/admin/students/${studentId}/toggle/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Reload list to update UI
+            loadStudents();
+            // Optionally update stats
+            loadDashboardStats();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(err => {
+          console.error('Error toggling student status:', err);
+          alert('An error occurred.');
+        });
+    }
+
+    function filterStudents() {
+      const searchText = document.getElementById('student-search').value.toLowerCase();
+      const statusFilter = document.getElementById('student-status-filter').value;
+      const items = document.querySelectorAll('.student-item');
+
+      items.forEach(item => {
+        const nameMatch = item.dataset.name.includes(searchText);
+        const statusMatch = statusFilter === 'all' || item.dataset.status === statusFilter;
+
+        if (nameMatch && statusMatch) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
     }
   </script>
   <footer

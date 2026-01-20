@@ -45,6 +45,8 @@ def login_view(request):
                 return render(request, 'accounts/login.html', {'error': 'Your account is pending approval. Please wait for admin approval.'})
             elif student_user.status == 'rejected':
                 return render(request, 'accounts/login.html', {'error': 'Your account has been rejected. Please contact the administrator.'})
+            elif student_user.status == 'inactive':
+                return render(request, 'accounts/login.html', {'error': 'Account disabled'})
 
         # Invalid credentials
         return render(request, 'accounts/login.html', {'error': 'Invalid username or password'})
@@ -447,6 +449,38 @@ def reject_student(request, student_id):
         return JsonResponse({
             'success': True,
             'message': 'Student application rejected successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def toggle_student_status(request, student_id):
+    """Toggle student active status"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        
+        # If currently active, deactivate (set to inactive/suspended)
+        # Using 'inactive' as the status for deactivated students
+        if student.status == 'active':
+            student.status = 'inactive'
+            action = 'deactivated'
+        else:
+            # If rejected, pending, or inactive, set to active
+            student.status = 'active'
+            action = 'activated'
+            
+        student.save()
+        
+        return JsonResponse({
+            'success': True,
+            'status': student.status,
+            'message': f'Student {action} successfully'
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
