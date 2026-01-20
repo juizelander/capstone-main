@@ -1,0 +1,5 @@
+commit 0d870058d7f4335850cc26651d3ef69e63836f8f
+Author: Michael James Feliminiano <Mfeliminiano17>
+Date:   Wed Jan 21 00:38:47 2026 +0800
+
+    program application fixed, added favicon

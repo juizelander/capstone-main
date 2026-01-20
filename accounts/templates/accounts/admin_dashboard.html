@@ -12,7 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
 </head>
-<link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
 
 <body>
   <header>
@@ -1669,42 +1669,121 @@
         <span class="close" onclick="closeApplicationModal()">&times;</span>
       </div>
       <div class="modal-body">
-        <div class="detail-row">
-          <span class="detail-label">Student:</span>
-          <span class="detail-value" id="app-modal-student"></span>
+        <div class="app-detail-grid">
+          <div class="detail-row">
+            <span class="detail-label">Student</span>
+            <span class="detail-value" id="app-modal-student"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Program</span>
+            <span class="detail-value" id="app-modal-program"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Status</span>
+            <span class="detail-value" id="app-modal-status"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value" id="app-modal-email"></span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Applied On</span>
+            <span class="detail-value" id="app-modal-date"></span>
+          </div>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">Program:</span>
-          <span class="detail-value" id="app-modal-program"></span>
+
+        <div style="margin-bottom: 25px;">
+          <h4 class="modal-section-title">Documents</h4>
+          <div id="app-modal-document"></div>
         </div>
-        <div class="detail-row">
-          <span class="detail-label">Status:</span>
-          <span class="detail-value" id="app-modal-status"></span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Email:</span>
-          <span class="detail-value" id="app-modal-email"></span>
-        </div>
-        <div class="detail-row">
-          <span class="detail-label">Applied:</span>
-          <span class="detail-value" id="app-modal-date"></span>
-        </div>
-        <div class="detail-row" style="flex-direction: column; align-items: flex-start; width: 100%;">
-          <span class="detail-label">Document:</span>
-          <div id="app-modal-document" style="width: 100%; margin-top: 10px;"></div>
-        </div>
-        <div class="detail-row" style="flex-direction: column; align-items: flex-start;">
-          <span class="detail-label">Motivation/Remarks:</span>
-          <p class="detail-value" id="app-modal-motivation"
-            style="margin-top: 5px; background: #f8fafc; padding: 10px; border-radius: 6px; width: 100%;"></p>
+
+        <div>
+          <h4 class="modal-section-title">Motivation / Remarks</h4>
+          <div class="motivation-box" id="app-modal-motivation"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="closeApplicationModal()">Close</button>
+        <button class="btn btn-secondary" onclick="closeApplicationModal()">Close</button>
       </div>
     </div>
   </div>
 
+  <script>
+    // ... (previous scripts) ...
+
+    function viewApplication(appId) {
+      const app = currentApplications.find(a => a.app_id === appId);
+      if (!app) return;
+
+      document.getElementById('app-modal-student').textContent = `${app.student.first_name} ${app.student.last_name} (@${app.student.username})`;
+      document.getElementById('app-modal-program').textContent = app.program.program_name;
+      document.getElementById('app-modal-status').textContent = app.requirement_status;
+      document.getElementById('app-modal-email').textContent = app.student.email;
+      document.getElementById('app-modal-date').textContent = app.created_at ? new Date(app.created_at).toLocaleString() : 'N/A';
+
+      // Colorize status
+      const statusEl = document.getElementById('app-modal-status');
+      statusEl.className = `detail-value status-badge status-${app.requirement_status}`;
+      statusEl.style.display = 'inline-block';
+
+      const docContainer = document.getElementById('app-modal-document');
+      docContainer.innerHTML = ''; // Clear previous content
+
+      const documents = app.documents || [];
+      // Backward compatibility: check if doc_submitted exists and isn't already in documents list
+      if (app.student.doc_submitted && documents.length === 0) {
+        documents.push({ url: app.student.doc_submitted, name: 'Document' });
+      }
+
+      if (documents.length > 0) {
+        documents.forEach(doc => {
+          const fileExt = doc.url.split('.').pop().toLowerCase();
+          const docWrapper = document.createElement('div');
+          docWrapper.className = 'document-wrapper';
+
+          const title = document.createElement('div');
+          title.className = 'document-title';
+          title.textContent = doc.name || 'Document';
+          docWrapper.appendChild(title);
+
+          if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileExt)) {
+            docWrapper.innerHTML += `<img src="${doc.url}" alt="Submitted Document" class="document-preview-img">`;
+          } else if (fileExt === 'pdf') {
+            docWrapper.innerHTML += `
+                <iframe src="${doc.url}" class="document-preview-frame"></iframe>
+                <div style="text-align: right;">
+                  <a href="${doc.url}" target="_blank" class="btn btn-sm btn-secondary"><i class="fas fa-external-link-alt"></i> Open PDF in New Tab</a>
+                </div>
+            `;
+          } else if (['doc', 'docx'].includes(fileExt)) {
+            docWrapper.innerHTML += `
+                <div class="document-fallback">
+                    <i class="fas fa-file-word"></i>
+                    <p>Word documents cannot be previewed directly.</p>
+                    <a href="${doc.url}" download class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Download Document</a>
+                </div>
+             `;
+          } else {
+            docWrapper.innerHTML += `
+                <div class="document-fallback">
+                    <i class="fas fa-file"></i>
+                    <p>Preview not available for this file type.</p>
+                    <a href="${doc.url}" download class="btn btn-sm btn-primary"><i class="fas fa-download"></i> Download File</a>
+                </div>
+             `;
+          }
+          docContainer.appendChild(docWrapper);
+        });
+      } else {
+        docContainer.innerHTML = '<p class="text-muted" style="padding: 10px; font-style: italic;">No document submitted</p>';
+      }
+
+      const motivationEl = document.getElementById('app-modal-motivation');
+      motivationEl.textContent = app.remarks || 'No motivation provided.';
+
+      document.getElementById('application-modal').style.display = 'block';
+    }
+  </script>
 </body>
 
 </html>

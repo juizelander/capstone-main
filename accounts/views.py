@@ -739,3 +739,28 @@ def get_student_statistics(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+
+@csrf_exempt
+def get_my_applications(request):
+    """Get logged-in student's applications"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        applications = Application.objects.filter(student=student).select_related('program').order_by('-created_at')
+        
+        app_list = []
+        for app in applications:
+            app_list.append({
+                'app_id': app.app_id,
+                'program_name': app.program.program_name,
+                'requirement_status': app.requirement_status,
+                'remarks': app.remarks,
+                'created_at': app.created_at.isoformat() if app.created_at else None
+            })
+            
+        return JsonResponse({'applications': app_list})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

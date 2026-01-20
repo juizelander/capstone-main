@@ -63,6 +63,22 @@
       <p>Registered on: <strong>{{ student.created_at|date:"F j, Y" }}</strong></p>
     </section>
 
+    <!-- My Applications Section -->
+    <section id="my-applications" class="card">
+      <div class="card-header-flex">
+        <h2>My Applications</h2>
+        <button class="btn btn-sm btn-outline" onclick="loadMyApplications()">
+          <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+      </div>
+      <p class="muted">Track the status of your program applications.</p>
+
+      <div id="application-list" class="application-list">
+        <!-- Applications loaded here -->
+        <p class="loading-text">Loading applications...</p>
+      </div>
+    </section>
+
     <!-- Program Application Section -->
     <section id="program-application" class="card">
       <h2>Apply for a Program</h2>
@@ -262,6 +278,9 @@
           form.reset();
           list.innerHTML = '';
           msg.style.display = 'none';
+
+          // Refresh the application list
+          loadMyApplications();
         } else {
           msg.textContent = data.error || 'Failed to submit application';
           msg.className = 'app-message error';
@@ -399,6 +418,111 @@
         list.appendChild(ul);
       });
     }
+
+
+
+
+    // Load student's applications (Stepper Redesign)
+    async function loadMyApplications() {
+      const container = document.getElementById('application-list');
+      container.innerHTML = '<p class="loading-text">Loading applications...</p>';
+
+      try {
+        const res = await fetch('/api/student/applications/', { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (data.applications && data.applications.length > 0) {
+          container.innerHTML = '';
+          data.applications.forEach(app => {
+            const el = document.createElement('div');
+            el.className = 'application-card';
+
+            // Determine Active Steps
+            let step1Class = 'completed'; // Submitted is always done if it exists
+            let step2Class = 'active'; // Under Review default
+            let step3Class = '';
+            let progressWidth = '50%'; // Halfway
+
+            if (app.requirement_status === 'approved') {
+              step2Class = 'completed';
+              step3Class = 'completed'; // Result OK
+              progressWidth = '100%';
+            } else if (app.requirement_status === 'rejected') {
+              step2Class = 'completed';
+              step3Class = 'rejected'; // Result Failed
+              progressWidth = '100%';
+            } else {
+              // Pending/Submitted
+              step2Class = 'active'; // Current step
+              progressWidth = '50%';
+            }
+
+            const dateStr = new Date(app.created_at).toLocaleDateString();
+
+            el.innerHTML = `
+                        <div class="app-card-header">
+                            <h4>${app.program_name}</h4>
+                            <span class="status-text ${getStatusColor(app.requirement_status)}">
+                                ${app.requirement_status}
+                            </span>
+                        </div>
+
+                        <div class="stepper-container">
+                            <div class="step-line"></div>
+                            <div class="step-line-progress" style="width: ${progressWidth}"></div>
+
+                            <!-- Step 1 -->
+                            <div class="step-item ${step1Class}">
+                                <div class="step-circle">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="step-label">Application Submitted</div>
+                                <div class="step-date">${dateStr}</div>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="step-item ${step2Class}">
+                                <div class="step-circle">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <div class="step-label">Under Review</div>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="step-item ${step3Class}">
+                                <div class="step-circle">
+                                    <i class="fas ${app.requirement_status === 'rejected' ? 'fa-times' : 'fa-check'}"></i>
+                                </div>
+                                <div class="step-label">Result</div>
+                            </div>
+                        </div>
+                        
+                        ${app.remarks ? `<p class="app-remarks" style="margin-top:20px;">Admins Remarks: "${app.remarks}"</p>` : ''}
+                    `;
+            container.appendChild(el);
+          });
+        } else {
+          container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open"></i>
+                        <p>You haven't applied to any programs yet.</p>
+                    </div>
+                `;
+        }
+      } catch (err) {
+        console.error('Error loading applications:', err);
+        container.innerHTML = '<p class="error-text">Failed to load applications. Please try again.</p>';
+      }
+    }
+
+    function getStatusColor(status) {
+      if (status === 'approved') return 'ok';
+      if (status === 'rejected') return 'no';
+      return 'pending';
+    }
+
+    // Load applications on start
+    document.addEventListener('DOMContentLoaded', loadMyApplications);
 
 
   </script>
