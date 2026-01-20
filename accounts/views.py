@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
-from .models import Admin, Student, Popup
+from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument
 from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
@@ -64,23 +64,34 @@ def register_view(request):
         address = request.POST.get('address')
         contact_num = request.POST.get('contact_num')
         program_and_yr = request.POST.get('program_and_yr')
-        document = request.FILES.get('document')
-        status='pending'  # Set initial status as pending
+        program_and_yr = request.POST.get('program_and_yr')
+        documents = request.FILES.getlist('document') # Capture multiple files
+        
+        # Determine initial status
+        status='pending'  
 
-        # create student
+        # Create student (save first document to doc_submitted for backward compatibility if needed)
+        first_doc = documents[0] if documents else None
+
         student = Student.objects.create(
             username=username,
             password=password,
             first_name=first_name,
             last_name=last_name,
             email=email,
-            bday=bday,  # <-- include birthday here
+            bday=bday,  
             address=address,
             contact_num=contact_num,
             program_and_yr=program_and_yr,
-            doc_submitted=document,
-            status='pending'  # Set initial status as pending
+            doc_submitted=first_doc,
+            status='pending' 
         )
+        
+        # Save all documents
+        for doc in documents:
+            StudentDocument.objects.create(student=student, file=doc)
+
+        student.save()
         student.save()
         messages.success(request, "Registration successful! Your account is pending admin approval. You will be notified once approved.")
         return redirect('accounts:login')
@@ -167,6 +178,11 @@ def create_student_application(request):
             requirement_status='submitted',
             remarks=motivation,
         )
+
+        # Handle multiple supporting documents
+        documents = request.FILES.getlist('supporting_docs')
+        for doc in documents:
+            ApplicationDocument.objects.create(application=app, file=doc)
 
         return JsonResponse({'success': True, 'application_id': app.app_id})
     except Exception as e:
@@ -513,7 +529,17 @@ def get_program_applications(request):
                     'first_name': getattr(app.student, 'first_name', 'Unknown'),
                     'last_name': getattr(app.student, 'last_name', 'Unknown'),
                     'email': getattr(app.student, 'email', 'Unknown'),
+                    'doc_submitted': app.student.doc_submitted.url if app.student.doc_submitted else None,
                 }
+                
+                # Fetch documents for this application
+                documents_list = []
+                app_docs = app.documents.all()
+                for doc in app_docs:
+                     documents_list.append({
+                        'url': doc.file.url, 
+                        'name': doc.file.name.split('/')[-1]
+                     })
                 
                 # Safely access program data
                 program_data = {
@@ -524,6 +550,7 @@ def get_program_applications(request):
                     'app_id': app.app_id,
                     'student': student_data,
                     'program': program_data,
+                    'documents': documents_list,
                     'requirement_status': getattr(app, 'requirement_status', 'unknown'),
                     'remarks': getattr(app, 'remarks', ''),
                     'created_at': getattr(app, 'created_at', None)

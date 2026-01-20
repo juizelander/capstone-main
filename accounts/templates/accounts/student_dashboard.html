@@ -8,14 +8,14 @@
   <title>Student Dashboard</title>
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
 </head>
 
 <body>
   <header class="sd-header">
     <div class="sd-brand">ScholarSync Subic</div>
     <!-- DEBUG BUTTON -->
-    <button onclick="testPopup()" style="background:red;color:white;padding:5px;border-radius:4px;cursor:pointer;">Test
-      Popup</button>
+
     <div class="sd-actions">
       <div class="notification-bell" onclick="toggleNotifications(event)">
         <i class="fas fa-bell"></i>
@@ -400,14 +400,7 @@
       });
     }
 
-    // Debug Function
-    function testPopup() {
-      showAnnouncementModal({
-        title: 'Test Announcement',
-        message: 'This is a test message to verify the modal works.',
-        popup_type: 'success'
-      });
-    }
+
   </script>
 
   <!-- System Announcement Modal -->

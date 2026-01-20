@@ -22,3 +22,9 @@ urlpatterns = [
     path('', include('accounts.urls')),   # landing page = login/register
     path('home/', include('home.urls')),  # dashboard after login
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

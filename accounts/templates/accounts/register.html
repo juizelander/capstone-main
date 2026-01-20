@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register - Student Management System</title>
   {% load static %}
+  <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
 </head>
+
 <body>
   <div class="auth-container registration-container">
     <div class="auth-header">
@@ -15,22 +18,22 @@
     </div>
 
     {% if messages %}
-      {% for message in messages %}
-        <div class="success-message">
-          {{ message }}
-        </div>
-      {% endfor %}
+    {% for message in messages %}
+    <div class="success-message">
+      {{ message }}
+    </div>
+    {% endfor %}
     {% endif %}
 
     <form method="POST" enctype="multipart/form-data" class="auth-form">
       {% csrf_token %}
-      
+
       <div class="form-row">
         <div class="input-group">
           <label for="first_name">First Name</label>
           <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
         </div>
-        
+
         <div class="input-group">
           <label for="last_name">Last Name</label>
           <input type="text" id="last_name" name="last_name" placeholder="Enter your last name" required>
@@ -57,7 +60,7 @@
           <label for="bday">Birthday</label>
           <input type="date" id="bday" name="bday" required>
         </div>
-        
+
         <div class="input-group">
           <label for="contact_num">Contact Number</label>
           <input type="text" id="contact_num" name="contact_num" placeholder="Your phone number" required>
@@ -74,39 +77,42 @@
         <textarea id="address" name="address" placeholder="Enter your complete address" rows="3" required></textarea>
       </div>
 
-      <div class="input-group">
-        <label for="document">Document Upload</label>
-        <div class="file-upload">
-          <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-          <label for="document" class="file-upload-label">
-            <span id="file-label">📄 Choose a document to upload (optional)</span>
-          </label>
-        </div>
-      </div>
+      <span id="file-label">📄 Choose documents to upload (multiple allowed)</span>
+      </label>
+  </div>
+  </div>
 
-      <button type="submit" class="auth-button">Create Account</button>
-    </form>
-
-    <div class="auth-link">
-      <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+  <div class="input-group">
+    <label for="document">Document Upload</label>
+    <div class="file-upload">
+      <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+      </label>
     </div>
+  </div>
+
+  <button type="submit" class="auth-button">Create Account</button>
+  </form>
+
+  <div class="auth-link">
+    <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+  </div>
   </div>
 
   <script>
     // File upload handling
-    document.getElementById('document').addEventListener('change', function(e) {
+    document.getElementById('document').addEventListener('change', function (e) {
       const fileLabel = document.getElementById('file-label');
       const fileLabelElement = fileLabel.parentElement;
-      
+
       if (e.target.files.length > 0) {
-        const fileName = e.target.files[0].name;
-        fileLabel.textContent = `📄 ${fileName}`;
+        fileLabel.textContent = `📄 ${e.target.files.length} file(s) selected`;
         fileLabelElement.classList.add('has-file');
       } else {
-        fileLabel.textContent = '📄 Choose a document to upload (optional)';
+        fileLabel.textContent = '📄 Choose documents to upload (multiple allowed)';
         fileLabelElement.classList.remove('has-file');
       }
     });
   </script>
 </body>
+
 </html>

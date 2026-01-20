@@ -32,6 +32,15 @@ class Student(models.Model):
         return self.username
 
 
+class StudentDocument(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='documents')
+    file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Document for {self.student.username}"
+
+
 class Popup(models.Model):
     POPUP_TYPES = [
         ('info', 'Information'),
@@ -81,3 +90,12 @@ class Application(models.Model):
 
     def __str__(self):
         return f"Application {self.app_id} - {self.student.username}"
+
+
+class ApplicationDocument(models.Model):
+    application = models.ForeignKey('home.Application', on_delete=models.CASCADE, related_name='documents')
+    file = models.FileField(upload_to='application_docs/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Doc for App {self.application.app_id}"

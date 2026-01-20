@@ -1,0 +1,6 @@
+Total ApplicationDocuments: 9
+Last Application ID: 18 by user
+Documents linked to Last App: 3
+ - application_docs/whiteboard_export_6_ltN1ade.docx (ID: 7, Uploaded: 2026-01-20 15:50:17.649707+00:00)
+ - application_docs/avatar_2.png (ID: 8, Uploaded: 2026-01-20 15:50:17.660708+00:00)
+ - application_docs/Class_Job_List_Planner_Document_in_Modern_and_Simple_Style_Zb6NCq6.pdf (ID: 9, Uploaded: 2026-01-20 15:50:17.671600+00:00)
