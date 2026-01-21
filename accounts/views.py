@@ -17,7 +17,14 @@ from django.http import HttpResponse
 
 
 def landing_page_view(request):
-    return render(request, 'accounts/landing_page.html')
+    try:
+        # Fetch active programs
+        active_programs = Program.objects.filter(is_active=True)
+    except Exception:
+        # Fallback if migration hasn't run yet or other error
+        active_programs = []
+    
+    return render(request, 'accounts/landing_page.html', {'active_programs': active_programs})
 
 
 def login_view(request):
@@ -53,13 +60,36 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
+import re
+
 def register_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Password Validation
+        if not re.match(r'^(?=.*\d)(?=.*[A-Z]).{8,}$', password):
+            messages.error(request, "Password must be at least 8 characters long, contain at least one capital letter and one number.")
+            return render(request, 'accounts/register.html')
+
+        if password != confirm_password:
+             messages.error(request, "Passwords do not match.")
+             return render(request, 'accounts/register.html')
+        
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         email = request.POST.get('email')
+
+        # Check for duplicates
+        if Student.objects.filter(email=email).exists():
+            messages.error(request, "Email address is already in use.")
+            return render(request, 'accounts/register.html')
+            
+        if Student.objects.filter(username=username).exists():
+            messages.error(request, "Username is already taken.")
+            return render(request, 'accounts/register.html')
+
         bday = request.POST.get('bday')  # <-- capture birthday
         address = request.POST.get('address')
         contact_num = request.POST.get('contact_num')

@@ -7,19 +7,19 @@
   <title>Register - Student Management System</title>
   {% load static %}
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
-  <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/style.css' %}?v=3">
 </head>
 
 <body>
   <div class="auth-container registration-container">
     <div class="auth-header">
       <h1>Create Account</h1>
-      <p> Bakit nga ba mahal kita kahit na may mahal ka nang iba <br> bat baliw na baliw ako sayo</p>
+      <p>Join ScholarSync Subic today to access scholarship opportunities and manage your applications efficiently.</p>
     </div>
 
     {% if messages %}
     {% for message in messages %}
-    <div class="success-message">
+    <div class="{{ message.tags }}-message">
       {{ message }}
     </div>
     {% endfor %}
@@ -52,8 +52,87 @@
 
       <div class="input-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" placeholder="Create a password" required>
+        <input type="password" id="password" name="password"
+          placeholder="Passwword must contain one number, one uppercase letter, and should be 8 characters minimum"
+          required pattern="(?=.*\d)(?=.*[A-Z]).{8,}"
+          title="Must contain at least one number and one uppercase letter, and at least 8 or more characters">
+        <ul id="password-requirements"
+          style="list-style: none; padding: 0; margin-top: 5px; font-size: 0.85rem; color: #718096;">
+          <li id="req-length" class="req-item"><i class="fas fa-times-circle" style="color: #bbb;"></i> At least 8
+            characters</li>
+          <li id="req-number" class="req-item"><i class="fas fa-times-circle" style="color: #bbb;"></i> At least 1
+            number</li>
+          <li id="req-capital" class="req-item"><i class="fas fa-times-circle" style="color: #bbb;"></i> At least 1
+            capital letter</li>
+        </ul>
       </div>
+
+      <div class="input-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password"
+          required>
+        <span id="password-match-msg" style="font-size: 0.8rem; display: none;"></span>
+      </div>
+
+      <script>
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm_password');
+        const matchMsg = document.getElementById('password-match-msg');
+
+        // Requirement elements
+        const reqLength = document.getElementById('req-length');
+        const reqNumber = document.getElementById('req-number');
+        const reqCapital = document.getElementById('req-capital');
+
+        function updateRequirement(element, isValid) {
+          const icon = element.querySelector('i');
+          if (isValid) {
+            element.style.color = '#10B981'; // Green
+            icon.className = 'fas fa-check-circle';
+            icon.style.color = '#10B981';
+          } else {
+            element.style.color = '#718096'; // Default gray
+            icon.className = 'fas fa-times-circle';
+            icon.style.color = '#bbb';
+          }
+        }
+
+        function checkPasswordRequirements() {
+          const val = passwordInput.value;
+          updateRequirement(reqLength, val.length >= 8);
+          updateRequirement(reqNumber, /\d/.test(val));
+          updateRequirement(reqCapital, /[A-Z]/.test(val));
+        }
+
+        function checkPasswordMatch() {
+          const password = passwordInput.value;
+          const confirm = confirmInput.value;
+
+          checkPasswordRequirements(); // Check requirements while typing
+
+          if (confirm.length > 0) {
+            matchMsg.style.display = 'block';
+            if (password === confirm) {
+              matchMsg.textContent = 'Passwords match';
+              matchMsg.style.color = 'green';
+              confirmInput.setCustomValidity('');
+            } else {
+              matchMsg.textContent = 'Passwords do not match';
+              matchMsg.style.color = 'red';
+              confirmInput.setCustomValidity('Passwords do not match');
+            }
+          } else {
+            matchMsg.style.display = 'none';
+            confirmInput.setCustomValidity('');
+          }
+        }
+
+        passwordInput.addEventListener('input', checkPasswordMatch);
+        confirmInput.addEventListener('input', checkPasswordMatch);
+
+        // Initial check
+        checkPasswordRequirements();
+      </script>
 
       <div class="form-row">
         <div class="input-group">
@@ -77,25 +156,28 @@
         <textarea id="address" name="address" placeholder="Enter your complete address" rows="3" required></textarea>
       </div>
 
-      <span id="file-label">📄 Choose documents to upload (multiple allowed)</span>
-      </label>
-  </div>
-  </div>
+      <div class="input-group">
+        <label for="document">Document Upload</label>
+        <div class="file-upload">
+          <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
+          <label for="document" class="file-upload-label" id="file-label">
+            📄 Choose documents to upload (multiple allowed)
+          </label>
+        </div>
+      </div>
 
-  <div class="input-group">
-    <label for="document">Document Upload</label>
-    <div class="file-upload">
-      <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple>
-      </label>
+      <button type="submit" class="auth-button">Create Account</button>
+    </form>
+
+    <div class="auth-link">
+      <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+      <div style="margin-top: 15px;">
+        <a href="{% url 'accounts:landing' %}"
+          style="color: #718096; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px;">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
     </div>
-  </div>
-
-  <button type="submit" class="auth-button">Create Account</button>
-  </form>
-
-  <div class="auth-link">
-    <p>Already have an account? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
-  </div>
   </div>
 
   <script>

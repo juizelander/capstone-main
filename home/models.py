@@ -42,6 +42,7 @@ class Program(models.Model):
     application_start_date = models.DateField(null=True, blank=True)
     application_end_date = models.DateField(null=True, blank=True)
     program_image = models.ImageField(upload_to='program_images/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.program_name
