@@ -333,9 +333,28 @@ textarea::placeholder {
 
 /* Responsive design */
 @media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 10px;
+    }
+
+    .back-nav {
+        position: static;
+        width: 100%;
+        margin-bottom: 20px;
+        display: flex;
+        /* alignment */
+        justify-content: flex-start;
+        /* aligns to left, or center if preferred */
+    }
+
     .auth-container {
         padding: 30px 20px;
-        margin: 10px;
+        margin: 0;
+        width: 100%;
+        max-width: 95%;
+        /* Use almost full width */
     }
 
     .auth-header h1 {
@@ -353,24 +372,23 @@ textarea::placeholder {
 }
 
 @media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-
     .auth-container {
-        padding: 20px 15px;
+        padding: 25px 15px;
     }
 
     .auth-header h1 {
-        font-size: 1.8rem;
+        font-size: 1.75rem;
     }
 
     .auth-form input,
     .auth-form textarea {
-        padding: 12px 15px;
+        padding: 12px 15px !important;
+        /* Override aggressive !important from earlier if needed, though earlier was useful */
+        font-size: 0.95rem !important;
     }
 
     .auth-button {
         padding: 12px 25px;
+        font-size: 1rem;
     }
 }

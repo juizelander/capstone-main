@@ -57,6 +57,7 @@ class Application(models.Model):
     program = models.ForeignKey(Program, on_delete=models.CASCADE)
     requirement_status = models.CharField(max_length=100)
     remarks = models.TextField(blank=True, null=True)
+    is_remarks_viewed = models.BooleanField(default=False)
     notification = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 

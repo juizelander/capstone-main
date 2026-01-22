@@ -1002,3 +1002,83 @@ body {
 .announcement-modal.error .modal-header i {
   color: #EF4444;
 }
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 640px) {
+  .sd-header {
+    padding: 15px 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .sd-brand {
+    font-size: 1.2rem;
+  }
+
+  .sd-actions {
+    margin-left: auto;
+    /* Push actions to right */
+    gap: 10px;
+  }
+
+  .sd-username {
+    display: none;
+    /* Hide username on small screens to save space */
+  }
+
+  .sd-main {
+    grid-template-columns: 1fr;
+    padding: 0 15px;
+    margin-top: 20px;
+  }
+
+  .notification-dropdown {
+    width: 280px;
+    right: -10px;
+    /* Adjust alignment */
+  }
+
+  .stepper-container {
+    padding: 0;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+  }
+
+  .step-circle {
+    width: 30px;
+    height: 30px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sd-header {
+    padding: 10px 15px;
+  }
+
+  .sd-brand {
+    font-size: 1.1rem;
+  }
+
+  .sd-brand img {
+    height: 35px;
+  }
+
+  .app-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .stepper-container {
+    overflow-x: auto;
+    /* Allow horizontal scroll if needed or just let it shrink */
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 10px auto;
+  }
+}

@@ -608,8 +608,12 @@ def approve_program_application(request, application_id):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
     
     try:
+        data = json.loads(request.body)
+        remarks = data.get('remarks', '')
+
         application = get_object_or_404(Application, app_id=application_id)
         application.requirement_status = 'approved'
+        application.remarks = remarks
         application.save()
         
         return JsonResponse({
@@ -629,8 +633,12 @@ def reject_program_application(request, application_id):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
     
     try:
+        data = json.loads(request.body)
+        remarks = data.get('remarks', '')
+
         application = get_object_or_404(Application, app_id=application_id)
         application.requirement_status = 'rejected'
+        application.remarks = remarks
         application.save()
         
         return JsonResponse({
@@ -788,9 +796,30 @@ def get_my_applications(request):
                 'program_name': app.program.program_name,
                 'requirement_status': app.requirement_status,
                 'remarks': app.remarks,
+                'is_remarks_viewed': getattr(app, 'is_remarks_viewed', False),
                 'created_at': app.created_at.isoformat() if app.created_at else None
             })
             
         return JsonResponse({'applications': app_list})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def mark_remarks_viewed(request, application_id):
+    """Mark application remarks as viewed"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        # Verify the application belongs to this student
+        app = get_object_or_404(Application, app_id=application_id, student__pk=student_id)
+        
+        app.is_remarks_viewed = True
+        app.save()
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

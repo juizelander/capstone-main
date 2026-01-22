@@ -11,6 +11,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Lemon+Milk:wght@300;400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <style>
+    .ql-editor {
+      min-height: 150px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+  </style>
 </head>
 <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
 
@@ -1106,53 +1115,121 @@
       }
     }
 
-    function approveProgramApplication(applicationId) {
-      if (confirm('Are you sure you want to approve this program application?')) {
-        fetch(`/api/admin/program-applications/${applicationId}/approve/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              loadProgramApplications();
-            } else {
-              alert('Error approving program application: ' + data.error);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Error approving program application');
-          });
+    let currentAppId = null;
+    let currentAction = null;
+
+    function openRemarksModal(appId, action) {
+      currentAppId = appId;
+      currentAction = action;
+
+      const modal = document.getElementById('remarks-modal');
+      const title = document.getElementById('remarks-modal-title');
+      const submitBtn = document.getElementById('remarks-submit-btn');
+
+      if (action === 'approve') {
+        title.textContent = 'Approve Application';
+        submitBtn.textContent = 'Approve';
+        submitBtn.className = 'btn btn-success';
+      } else {
+        title.textContent = 'Reject Application';
+        submitBtn.textContent = 'Reject';
+        submitBtn.className = 'btn btn-danger';
       }
+
+      document.getElementById('remarks-hidden-input').value = '';
+      if (quill) {
+        quill.setText('');
+      }
+      modal.style.display = 'block';
+    }
+
+    var quill;
+    document.addEventListener('DOMContentLoaded', function () {
+      quill = new Quill('#remarks-editor-container', {
+        theme: 'snow',
+        placeholder: 'Enter admin remarks here...',
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'font': [] }],
+            [{ 'align': [] }],
+            ['clean']
+          ]
+        }
+      });
+    });
+
+    function closeRemarksModal() {
+      document.getElementById('remarks-modal').style.display = 'none';
+      currentAppId = null;
+      currentAction = null;
+    }
+
+    function approveProgramApplication(applicationId) {
+      openRemarksModal(applicationId, 'approve');
     }
 
     function rejectProgramApplication(applicationId) {
-      if (confirm('Are you sure you want to reject this program application?')) {
-        fetch(`/api/admin/program-applications/${applicationId}/reject/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              loadProgramApplications();
-            } else {
-              alert('Error rejecting program application: ' + data.error);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Error rejecting program application');
-          });
-      }
+      openRemarksModal(applicationId, 'reject');
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const remarksForm = document.getElementById('remarks-form');
+      if (remarksForm) {
+        remarksForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          if (!currentAppId || !currentAction) return;
+
+          if (!currentAppId || !currentAction) return;
+
+          // Get HTML content from Quill
+          const remarks = quill.root.innerHTML;
+          const endpoint = `/api/admin/program-applications/${currentAppId}/${currentAction}/`;
+
+          fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ remarks: remarks })
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                closeRemarksModal();
+                loadProgramApplications();
+              } else {
+                alert('Error: ' + data.error);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred.');
+            });
+        });
+      }
+
+      // Close modal when clicking outside
+      const remarksModal = document.getElementById('remarks-modal');
+      if (remarksModal) {
+        window.addEventListener('click', function (event) {
+          if (event.target === remarksModal) {
+            closeRemarksModal();
+          }
+        });
+      }
+    });
 
     function filterProgramApplications() {
       const filter = document.getElementById('program-application-filter').value;
@@ -1708,6 +1785,32 @@
     </div>
   </div>
 
+  <!-- Remarks Modal -->
+  <div id="remarks-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="remarks-modal-title">Application Remarks</h3>
+        <span class="close" onclick="closeRemarksModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="remarks-form">
+          <div class="form-group">
+            <label for="remarks-text" style="font-weight: bold; margin-bottom: 8px; display: block;">Remarks /
+              Comments</label>
+            <label for="remarks-editor" style="font-weight: bold; margin-bottom: 8px; display: block;">Remarks /
+              Comments</label>
+            <div id="remarks-editor-container" style="background: white;"></div>
+            <input type="hidden" name="remarks" id="remarks-hidden-input">
+          </div>
+          <div class="modal-footer" style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeRemarksModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="remarks-submit-btn">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ... (previous scripts) ...
 
@@ -1779,7 +1882,7 @@
       }
 
       const motivationEl = document.getElementById('app-modal-motivation');
-      motivationEl.textContent = app.remarks || 'No motivation provided.';
+      motivationEl.innerHTML = app.remarks || 'No motivation provided.';
 
       document.getElementById('application-modal').style.display = 'block';
     }

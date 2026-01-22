@@ -9,6 +9,25 @@
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
+  <style>
+    /* Indicator for unread remarks */
+    .remarks-btn {
+      position: relative;
+    }
+
+    .remarks-indicator {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 10px;
+      height: 10px;
+      background-color: #ef4444;
+      /* Red color */
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+  </style>
 </head>
 
 <body>
@@ -425,6 +444,8 @@
 
 
 
+    let studentApplications = {}; // Store applications globally
+
     // Load student's applications (Stepper Redesign)
     async function loadMyApplications() {
       const container = document.getElementById('application-list');
@@ -436,7 +457,11 @@
 
         if (data.applications && data.applications.length > 0) {
           container.innerHTML = '';
+          studentApplications = {}; // Reset global store
+
           data.applications.forEach(app => {
+            studentApplications[app.app_id] = app; // Store app data
+
             const el = document.createElement('div');
             el.className = 'application-card';
 
@@ -500,7 +525,16 @@
                             </div>
                         </div>
                         
-                        ${app.remarks ? `<p class="app-remarks" style="margin-top:20px;">Admins Remarks: "${app.remarks}"</p>` : ''}
+
+                        <div style="margin-top: 15px; text-align: right;">
+                           ${app.remarks ? `
+                             <button class="btn btn-sm btn-outline remarks-btn" id="remarks-btn-${app.app_id}" 
+                                     onclick="openStudentRemarksModal(${app.app_id}, ${!app.is_remarks_viewed})">
+                               View Remarks
+                               ${!app.is_remarks_viewed ? '<span class="remarks-indicator"></span>' : ''}
+                             </button>
+                           ` : ''}
+                        </div>
                     `;
             container.appendChild(el);
           });
@@ -528,7 +562,70 @@
     document.addEventListener('DOMContentLoaded', loadMyApplications);
 
 
+    function openStudentRemarksModal(appId, isUnread) {
+      const app = studentApplications[appId];
+      if (!app) return;
+
+      document.getElementById('student-remarks-content').innerHTML = app.remarks; // Use innerHTML for rich text
+      document.getElementById('student-remarks-title').textContent = 'Remarks for ' + app.program_name;
+      document.getElementById('student-remarks-modal').style.display = 'block';
+
+      if (isUnread) {
+        // Remove indicator locally
+        const btn = document.getElementById(`remarks-btn-${appId}`);
+        if (btn) {
+          const indicator = btn.querySelector('.remarks-indicator');
+          if (indicator) indicator.remove();
+        }
+
+        // Call API to mark as viewed
+        fetch(`/api/applications/${appId}/mark-remarks-viewed/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+          credentials: 'same-origin'
+        }).catch(err => console.error('Error marking remarks as viewed:', err));
+      }
+    }
+
+    function closeStudentRemarksModal() {
+      document.getElementById('student-remarks-modal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+      const modal = document.getElementById('student-remarks-modal');
+      if (event.target === modal) {
+        closeStudentRemarksModal();
+      }
+      // Also handle other modals if needed, or merge logic
+      const confirmModal = document.getElementById('confirmation-modal');
+      if (event.target === confirmModal) {
+        closeConfirmationModal();
+      }
+      const announceModal = document.getElementById('announcement-modal');
+      if (event.target === announceModal) {
+        closeAnnouncementModal();
+      }
+    }
+
   </script>
+
+  <!-- Student Remarks Modal -->
+  <div id="student-remarks-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="student-remarks-title">Remarks</h3>
+        <span class="close" onclick="closeStudentRemarksModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p id="student-remarks-content" style="white-space: pre-wrap; font-size: 1.1em; color: #333; line-height: 1.6;">
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeStudentRemarksModal()">Close</button>
+      </div>
+    </div>
+  </div>
 
   <!-- System Announcement Modal -->
   <div id="announcement-modal" class="modal" style="display: none;">

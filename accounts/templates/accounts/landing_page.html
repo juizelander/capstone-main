@@ -310,14 +310,60 @@
         @media (max-width: 992px) {
             .program-card {
                 flex: 0 0 calc(50% - 14px);
-                /* 2 cards on tablet */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .landing-header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+                background: rgba(255, 255, 255, 0.98);
+            }
+
+            .landing-nav {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .landing-hero {
+                padding: 140px 20px 60px;
+            }
+
+            .landing-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .landing-hero p {
+                font-size: 1rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .btn-landing {
+                width: 100%;
+                text-align: center;
+                display: block;
+                /* Ensure it behaves like a block for width to work */
+                box-sizing: border-box;
+                /* Include padding in width */
+            }
+
+            .features-grid,
+            .programs-grid {
+                grid-template-columns: 1fr;
+                /* Stack cards on mobile */
+                padding: 0 20px;
             }
         }
 
         @media (max-width: 640px) {
             .program-card {
                 flex: 0 0 calc(100% - 10px);
-                /* 1 card on mobile */
             }
 
             .carousel-wrapper {
@@ -326,7 +372,6 @@
 
             .carousel-btn {
                 display: none;
-                /* Hide buttons on mobile, allow swipe */
             }
 
             .carousel-container {

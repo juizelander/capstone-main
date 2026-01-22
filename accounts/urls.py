@@ -32,6 +32,7 @@ urlpatterns = [
     path('create_program/', views.create_program, name='create_program'),
     path('api/applications/create/', views.create_student_application, name='create_student_application'),
     path('api/student/applications/', views.get_my_applications, name='get_my_applications'),
+    path('api/applications/<int:application_id>/mark-remarks-viewed/', views.mark_remarks_viewed, name='mark_remarks_viewed'),
     
     # Program application management endpoints
     path('api/admin/program-applications/', views.get_program_applications, name='get_program_applications'),
