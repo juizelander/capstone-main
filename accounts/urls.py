@@ -16,6 +16,7 @@ urlpatterns = [
     
     # Popup management endpoints
     path('api/student/popups/', views.get_student_popups, name='get_student_popups'),
+    path('api/student/popups/<int:popup_id>/mark-viewed/', views.mark_popup_viewed, name='mark_popup_viewed'),
     path('api/admin/popups/', views.get_popups, name='get_popups'),
     path('api/admin/popups/<int:popup_id>/', views.get_popup, name='get_popup'),
     path('api/admin/popups/create/', views.create_popup, name='create_popup'),

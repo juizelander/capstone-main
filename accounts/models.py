@@ -22,6 +22,7 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     program_and_yr = models.CharField(max_length=100)
     scholarship = models.CharField(max_length=100, blank=True, null=True)
+    sex = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')], default='Male')
     password = models.CharField(max_length=100)
     status = models.CharField(max_length=50, default='pending')
     doc_submitted = models.FileField(upload_to='documents/', blank=True, null=True)
@@ -56,6 +57,7 @@ class Popup(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     expires_at = models.DateTimeField(blank=True, null=True)
+    seen_by = models.ManyToManyField(Student, blank=True, related_name='seen_popups')
     
     def __str__(self):
         return self.title
@@ -86,6 +88,7 @@ class Application(models.Model):
     program = models.ForeignKey('home.Program', on_delete=models.CASCADE, related_name='account_applications')
     requirement_status = models.CharField(max_length=100, default='submitted')
     remarks = models.TextField(blank=True, null=True)
+    is_remarks_viewed = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

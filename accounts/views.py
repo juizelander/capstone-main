@@ -94,7 +94,7 @@ def register_view(request):
         address = request.POST.get('address')
         contact_num = request.POST.get('contact_num')
         program_and_yr = request.POST.get('program_and_yr')
-        program_and_yr = request.POST.get('program_and_yr')
+        sex = request.POST.get('sex')
         documents = request.FILES.getlist('document') # Capture multiple files
         
         # Determine initial status
@@ -113,6 +113,7 @@ def register_view(request):
             address=address,
             contact_num=contact_num,
             program_and_yr=program_and_yr,
+            sex=sex,
             doc_submitted=first_doc,
             status='pending' 
         )
@@ -169,11 +170,13 @@ def create_program(request):
         requirements = request.POST.get('requirements')
         print("📦 POST DATA:", request.POST)
 
+        program_type = request.POST.get('program_type')
+
         if not program_name:
             messages.error(request, "Program name is required.")
             return redirect('accounts:admin_dashboard')
 
-        Program.objects.create(program_name=program_name, requirements=requirements)
+        Program.objects.create(program_name=program_name, requirements=requirements, program_type=program_type)
         messages.success(request, f"Program '{program_name}' created successfully!")
         print("✅ Program created:", program_name)
         return redirect('accounts:admin_dashboard')
@@ -297,11 +300,15 @@ def get_student_popups(request):
     
     try:
         now = timezone.now()
-        # Fetch active popups that haven't expired
+        student = get_object_or_404(Student, pk=student_id)
+
+        # Fetch active popups that haven't expired and not seen by student
         popups = Popup.objects.filter(
             is_active=True
         ).filter(
             models.Q(expires_at__isnull=True) | models.Q(expires_at__gt=now)
+        ).exclude(
+            seen_by=student
         ).order_by('-created_at')
         
         popup_data = []
@@ -317,6 +324,25 @@ def get_student_popups(request):
         return JsonResponse({'popups': popup_data})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def mark_popup_viewed(request, popup_id):
+    """Mark a popup as viewed by the student"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        popup = get_object_or_404(Popup, id=popup_id)
+        student = get_object_or_404(Student, pk=student_id)
+        
+        popup.seen_by.add(student)
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @csrf_exempt
@@ -796,7 +822,7 @@ def get_my_applications(request):
                 'program_name': app.program.program_name,
                 'requirement_status': app.requirement_status,
                 'remarks': app.remarks,
-                'is_remarks_viewed': getattr(app, 'is_remarks_viewed', False),
+                'is_remarks_viewed': app.is_remarks_viewed,
                 'created_at': app.created_at.isoformat() if app.created_at else None
             })
             

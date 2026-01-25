@@ -8,7 +8,7 @@ def create_program(request):
         requirements = request.POST.get('requirements')
         application_start_date = request.POST.get('application_start_date') or None
         application_end_date = request.POST.get('application_end_date') or None
-        program_image = request.FILES.get('program_image')
+        program_type = request.POST.get('program_type')
 
         if program_name:  # simple validation
             Program.objects.create(
@@ -16,7 +16,8 @@ def create_program(request):
                 requirements=requirements,
                 application_start_date=application_start_date,
                 application_end_date=application_end_date,
-                program_image=program_image
+                program_image=program_image,
+                program_type=program_type
             )
             return JsonResponse({'success': True, 'message': 'Program created successfully'})
         else:
@@ -34,7 +35,8 @@ def get_programs(request):
             'requirements': p.requirements or '',
             'application_start_date': p.application_start_date,
             'application_end_date': p.application_end_date,
-            'program_image': p.program_image.url if p.program_image else None
+            'program_image': p.program_image.url if p.program_image else None,
+            'program_type': p.program_type
         }
         for p in programs
     ]

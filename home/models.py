@@ -42,6 +42,12 @@ class Program(models.Model):
     application_start_date = models.DateField(null=True, blank=True)
     application_end_date = models.DateField(null=True, blank=True)
     program_image = models.ImageField(upload_to='program_images/', blank=True, null=True)
+    PROGRAM_TYPES = [
+        ('Financial Assistance', 'Financial Assistance'),
+        ('Scholarship', 'Scholarship'),
+        ('Other', 'Other'),
+    ]
+    program_type = models.CharField(max_length=50, choices=PROGRAM_TYPES, default='Other')
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

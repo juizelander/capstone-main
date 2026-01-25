@@ -19,6 +19,18 @@
       font-family: inherit;
       font-size: 14px;
     }
+
+    .program-type-badge {
+      display: inline-block;
+      padding: 0.25em 0.8em;
+      font-size: 0.75em;
+      font-weight: 700;
+      color: #fff;
+      background-color: #4a5568;
+      border-radius: 9999px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
   </style>
 </head>
 <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
@@ -264,6 +276,13 @@
               {% csrf_token %}
               <label for="p_name">Program Name</label>
               <input id="p_name" name="program_name" type="text" required>
+
+              <label for="p_type">Program Type</label>
+              <select id="p_type" name="program_type" required>
+                <option value="Financial Assistance">Financial Assistance</option>
+                <option value="Scholarship">Scholarship</option>
+                <option value="Other">Other</option>
+              </select>
 
               <label for="p_req">Requirements</label>
               <textarea id="p_req" name="requirements" rows="3"></textarea>
@@ -1411,6 +1430,7 @@
           <div class="program-content">
             <div class="program-header">
               <h4>${p.program_name}</h4>
+              <span class="program-type-badge">${p.program_type || 'Other'}</span>
             </div>
             <div class="program-body">
               <p>${p.requirements || ''}</p>

@@ -169,6 +169,7 @@
   <script>
     // Store programs data globally for easy access
     let programsData = {};
+    let currentPopupId = null; // Store current popup ID
 
     // Load programs into the dropdown from Home app endpoint
     async function loadProgramsDropdown() {
@@ -246,6 +247,11 @@
     // System Announcement Modal Logic
     function closeAnnouncementModal() {
       document.getElementById('announcement-modal').style.display = 'none';
+      // Mark as viewed in backend
+      if (currentPopupId) {
+        markPopupRead(currentPopupId, null);
+        currentPopupId = null;
+      }
       // Mark as seen in session storage to avoid annoyance
       sessionStorage.setItem('announcementSeen', 'true');
     }
@@ -361,6 +367,11 @@
                 <p>${popup.message}</p>
                 <small>${new Date(popup.created_at).toLocaleDateString()}</small>
               </div>
+              <div class="notif-actions" style="margin-left: auto;">
+                  <button class="btn btn-sm" onclick="markPopupRead(${popup.id}, event)" title="Mark as Read" style="background: transparent; color: #666; padding: 2px;">
+                    <i class="fas fa-check"></i>
+                  </button>
+              </div>
             `;
             list.appendChild(item);
           });
@@ -393,6 +404,7 @@
     }
 
     function showAnnouncementModal(popup) {
+      currentPopupId = popup.id;
       const modal = document.getElementById('announcement-modal');
       const title = document.getElementById('announcement-title');
       const msg = document.getElementById('announcement-message');
@@ -407,6 +419,23 @@
       modal.className = `modal announcement-modal ${popup.popup_type}`;
 
       modal.style.display = 'flex';
+    }
+
+    function markPopupRead(popupId, event) {
+      if (event) event.stopPropagation();
+
+      fetch(`/api/student/popups/${popupId}/mark-viewed/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+        credentials: 'same-origin'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            loadNotifications(); // Reload list
+          }
+        })
+        .catch(err => console.error('Error marking popup as read:', err));
     }
 
 
