@@ -849,3 +849,27 @@ def mark_remarks_viewed(request, application_id):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def student_voucher_view(request, application_id):
+    """View to generic voucher for accepted students"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return redirect('accounts:login')
+    
+    student = get_object_or_404(Student, pk=student_id)
+    application = get_object_or_404(Application, app_id=application_id, student=student)
+    
+    # Check if application is approved
+    if application.requirement_status != 'approved':
+        # You might want to show a message or redirect
+        messages.error(request, "Voucher is only available for approved applications.")
+        return redirect('accounts:student_dashboard')
+        
+    context = {
+        'student': student,
+        'application': application,
+        'program': application.program,
+        'now': timezone.now()
+    }
+    return render(request, 'accounts/student_voucher.html', context)

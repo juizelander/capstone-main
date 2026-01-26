@@ -555,7 +555,13 @@
                         </div>
                         
 
-                        <div style="margin-top: 15px; text-align: right;">
+                        <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                           ${app.requirement_status === 'approved' ? `
+                             <a href="/student/voucher/${app.app_id}/" target="_blank" class="btn btn-sm btn-primary" style="background-color: #2563eb; color: white; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; padding: 5px 10px; border-radius: 4px;">
+                               <i class="fas fa-ticket-alt"></i> Print Voucher
+                             </a>
+                           ` : ''}
+
                            ${app.remarks ? `
                              <button class="btn btn-sm btn-outline remarks-btn" id="remarks-btn-${app.app_id}" 
                                      onclick="openStudentRemarksModal(${app.app_id}, ${!app.is_remarks_viewed})">

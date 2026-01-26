@@ -43,5 +43,8 @@ urlpatterns = [
     # Chart data endpoints
     path('api/admin/charts/application-trends/', views.get_application_trends, name='get_application_trends'),
     path('api/admin/charts/student-statistics/', views.get_student_statistics, name='get_student_statistics'),
+    
+    # Student Voucher
+    path('student/voucher/<int:application_id>/', views.student_voucher_view, name='student_voucher'),
 
 ]

@@ -1,0 +1,356 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Voucher - {{ student.first_name }} {{ student.last_name }}</title>
+    <!-- Use html2pdf.js for client-side PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            /* Green Theme from System */
+            --bg-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            --accent: #10B981;
+            --accent-dark: #059669;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .voucher-container {
+            background-color: white;
+            width: 800px;
+            max-width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            border: 2px solid #e2e8f0;
+        }
+
+        .voucher-header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-area {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .voucher-title {
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .voucher-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .voucher-body {
+            padding: 40px;
+            display: flex;
+            gap: 40px;
+        }
+
+        .voucher-details {
+            flex: 2;
+        }
+
+        .voucher-sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-left: 2px dashed #e2e8f0;
+            padding-left: 40px;
+        }
+
+        .detail-group {
+            margin-bottom: 25px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 1.25rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .program-name {
+            font-size: 1.8rem;
+            color: var(--accent-dark);
+            font-weight: 700;
+            margin-bottom: 30px;
+            line-height: 1.3;
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #cbd5e1;
+            color: var(--text-dark);
+        }
+
+        .ticket-id {
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 20px;
+            background-color: #ecfdf5;
+            /* Light green tint */
+            color: var(--accent-dark);
+            font-size: 0.9rem;
+            border-top: 1px solid #d1fae5;
+        }
+
+        .actions-bar {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            background-color: white;
+            color: var(--accent-dark);
+            border: 2px solid var(--accent);
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-btn.primary {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn.primary:hover {
+            background-color: var(--accent-dark);
+        }
+
+        /* Loading Overlay for PDF generation */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+                display: block;
+            }
+
+            .voucher-container {
+                box-shadow: none;
+                border: 2px solid #000;
+                /* High contrast for print */
+                width: 100%;
+                max-width: none;
+                margin: 0;
+            }
+
+            .actions-bar {
+                display: none;
+            }
+
+            .voucher-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .footer-note {
+                background-color: #f1f5f9 !important;
+                /* Lighter/Grey for eco print */
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 10px; color: var(--text-dark); font-weight: 600;">Generating PDF...</p>
+    </div>
+
+    <div class="voucher-container" id="voucher-content">
+        <div class="voucher-header">
+            <div class="logo-area">
+                <i class="fas fa-graduation-cap"></i> ScholarSync
+            </div>
+            <h1 class="voucher-title">Official Voucher</h1>
+            <div class="voucher-subtitle">Financial Assistance Program Acceptance</div>
+        </div>
+
+        <div class="voucher-body">
+            <div class="voucher-details">
+                <div class="program-name">{{ program.program_name }}</div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Beneficiary Name</div>
+                    <div class="detail-value">{{ student.first_name }} {{ student.last_name }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Student ID / Username</div>
+                    <div class="detail-value">{{ student.username }}</div>
+                </div>
+
+                <div class="detail-group">
+                    <div class="detail-label">Issued Date</div>
+                    <div class="detail-value">{{ now|date:"F j, Y" }}</div>
+                </div>
+            </div>
+
+            <div class="voucher-sidebar">
+                <div class="qr-placeholder">
+                    <i class="fas fa-qrcode" style="font-size: 80px; opacity: 0.8;"></i>
+                </div>
+                <div class="ticket-id">APP-{{ application.app_id }}</div>
+                <div style="font-size: 0.8rem; margin-top: 5px; color: var(--text-muted);">Ref Number</div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            This voucher serves as proof of acceptance. Please present this document at the designated potential event
+            or verification booth.
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <button class="action-btn" onclick="window.print()">
+            <i class="fas fa-print"></i> Print
+        </button>
+        <button class="action-btn primary" onclick="downloadPDF()">
+            <i class="fas fa-download"></i> Download PDF
+        </button>
+    </div>
+
+    <script>
+        function downloadPDF() {
+            const element = document.getElementById('voucher-content');
+            const overlay = document.getElementById('loading-overlay');
+            const btn = document.querySelector('.action-btn.primary');
+
+            // Show loading
+            overlay.style.display = 'flex';
+
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5], // margin in inches
+                filename: 'ScholarSync_Voucher_{{ student.username }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
+            };
+
+            // Use html2pdf
+            html2pdf().set(opt).from(element).save().then(function () {
+                overlay.style.display = 'none';
+            }).catch(function (err) {
+                console.error(err);
+                overlay.style.display = 'none';
+                alert('Error generating PDF. Please try the Print option instead.');
+            });
+        }
+    </script>
+
+</body>
+
+</html>
