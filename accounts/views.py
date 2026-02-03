@@ -14,6 +14,7 @@ from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument
 from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
+import csv
 
 
 def landing_page_view(request):
@@ -147,8 +148,10 @@ def admin_dashboard(request):
     admin_id = request.session.get('user_id')
     if not admin_id:
         return redirect('login')
-    admin = Admin.objects.get(admin_id=admin_id)
-    return render(request, 'accounts/admin_dashboard.html', {'admin': admin})
+    admin = Admin.objects.get(admin_id=admin_id)    
+    programs = Program.objects.all()
+
+    return render(request, 'accounts/admin_dashboard.html', {'admin': admin, 'programs': programs})
 
 
 def student_dashboard(request):
@@ -230,13 +233,16 @@ def admin_stats(request):
     try:
         total_students = Student.objects.filter(status='active').count()
         active_popups = Popup.objects.filter(is_active=True).count()
-        pending_applications = Student.objects.filter(status='pending').count()
+        pending_student_registrations = Student.objects.filter(status='pending').count()
+        pending_program_applications = Application.objects.filter(requirement_status='submitted').count()
         total_programs = Program.objects.count()
         
         return JsonResponse({
             'total_students': total_students,
             'active_popups': active_popups,
-            'pending_applications': pending_applications,
+            'pending_applications': pending_student_registrations, # Keeping for backward compatibility
+            'pending_student_registrations': pending_student_registrations,
+            'pending_program_applications': pending_program_applications,
             'total_programs': total_programs
         })
     except Exception as e:
@@ -558,6 +564,65 @@ def toggle_student_status(request, student_id):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
+@csrf_exempt
+@require_http_methods(["POST"])
+def edit_student(request, student_id):
+    """Edit student details"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        # Handle both JSON and Form data
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST
+
+        student.first_name = data.get('first_name', student.first_name)
+        student.last_name = data.get('last_name', student.last_name)
+        student.username = data.get('username', student.username)
+        student.email = data.get('email', student.email)
+        student.contact_num = data.get('contact_num', student.contact_num)
+        student.address = data.get('address', student.address)
+        student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
+        
+        # Only allow changing status if provided
+        if 'status' in data:
+            student.status = data['status']
+
+        student.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Student details updated successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def delete_student(request, student_id):
+    """Delete a student account"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        username = student.username
+        student.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Student {username} deleted successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
 # Program Application Management Views
 def get_program_applications(request):
     """Get all program applications for admin review"""
@@ -691,12 +756,12 @@ def get_application_trends(request):
         start_date = end_date - timedelta(days=days-1)
         
         # Get application data grouped by day
-        applications_by_day = Student.objects.filter(
+        applications_by_day = Application.objects.filter(
             created_at__date__gte=start_date,
             created_at__date__lte=end_date
         ).extra(
             select={'day': 'date(created_at)'}
-        ).values('day').annotate(count=Count('id')).order_by('day')
+        ).values('day').annotate(count=Count('app_id')).order_by('day')
         
         # Create a complete date range with counts
         date_counts = {}
@@ -873,3 +938,102 @@ def student_voucher_view(request, application_id):
         'now': timezone.now()
     }
     return render(request, 'accounts/student_voucher.html', context)
+
+
+def generate_report(request):
+    """Generate and export reports"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        report_type = request.GET.get('type')
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        status = request.GET.get('status')
+        program_id = request.GET.get('program')
+        export_csv = request.GET.get('export') == 'true'
+
+        data = []
+        filename = f"report_{report_type}_{datetime.now().strftime('%Y%m%d')}"
+
+        if report_type == 'students':
+            # Base query
+            query = Student.objects.all().order_by('-created_at')
+
+            # Filters
+            if start_date:
+                query = query.filter(created_at__date__gte=start_date)
+            if end_date:
+                query = query.filter(created_at__date__lte=end_date)
+            if status and status != 'all':
+                query = query.filter(status=status)
+            # Program filter for students is based on 'program_and_yr' string
+            # This might be tricky if it's just free text in Student model
+            # But let's try if the user passes something matching
+            
+            # For data creation
+            header = ['Student ID', 'Username', 'First Name', 'Last Name', 'Email', 'Program', 'Status', 'Date Joined']
+            
+            for s in query:
+                data.append({
+                    'id': s.student_id,
+                    'username': s.username,
+                    'first_name': s.first_name,
+                    'last_name': s.last_name,
+                    'email': s.email,
+                    'program': s.program_and_yr,
+                    'status': s.status,
+                    'created_at': s.created_at.strftime('%Y-%m-%d') if s.created_at else 'N/A'
+                })
+
+        elif report_type == 'applications':
+            # Base query
+            query = Application.objects.select_related('student', 'program').all().order_by('-created_at')
+
+            # Filters
+            if start_date:
+                query = query.filter(created_at__date__gte=start_date)
+            if end_date:
+                query = query.filter(created_at__date__lte=end_date)
+            if status and status != 'all':
+                query = query.filter(requirement_status=status)
+            if program_id and program_id != 'all':
+                query = query.filter(program_id=program_id)
+
+            header = ['App ID', 'Student', 'Program', 'Status', 'Date Submitted']
+            
+            for app in query:
+                data.append({
+                    'id': app.app_id,
+                    'student': f"{app.student.first_name} {app.student.last_name}",
+                    'program': app.program.program_name,
+                    'status': app.requirement_status,
+                    'created_at': app.created_at.strftime('%Y-%m-%d') if app.created_at else 'N/A'
+                })
+        
+        else:
+             return JsonResponse({'error': 'Invalid report type'}, status=400)
+
+        # Handle CSV Export
+        if export_csv:
+            response = HttpResponse(content_type='text/csv')
+            response['Content-Disposition'] = f'attachment; filename="{filename}.csv"'
+
+            writer = csv.writer(response)
+            writer.writerow(header)
+
+            if report_type == 'students':
+                 for row in data:
+                    writer.writerow([row['id'], row['username'], row['first_name'], row['last_name'], row['email'], row['program'], row['status'], row['created_at']])
+            else:
+                for row in data:
+                    writer.writerow([row['id'], row['student'], row['program'], row['status'], row['created_at']])
+
+            return response
+        
+        # Return JSON for table view
+        return JsonResponse({'data': data})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

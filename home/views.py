@@ -48,3 +48,48 @@ def get_programs(request):
         for p in programs
     ]
     return JsonResponse({'programs': data})
+
+
+def edit_program(request, program_id):
+    if request.method == 'POST':
+        try:
+            program = Program.objects.get(program_id=program_id)
+            
+            program.program_name = request.POST.get('program_name', program.program_name)
+            program.requirements = request.POST.get('requirements', program.requirements)
+            program.program_type = request.POST.get('program_type', program.program_type)
+            
+            start_date = request.POST.get('application_start_date')
+            if start_date: 
+                program.application_start_date = start_date
+            
+            end_date = request.POST.get('application_end_date')
+            if end_date:
+                program.application_end_date = end_date
+                
+            if 'program_image' in request.FILES:
+                program.program_image = request.FILES['program_image']
+                
+            program.save()
+            
+            return JsonResponse({'success': True, 'message': 'Program updated successfully'})
+        except Program.DoesNotExist:
+             return JsonResponse({'success': False, 'error': 'Program not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def delete_program(request, program_id):
+    if request.method == 'POST':
+        try:
+            program = Program.objects.get(program_id=program_id)
+            program.delete()
+            return JsonResponse({'success': True, 'message': 'Program deleted successfully'})
+        except Program.DoesNotExist:
+             return JsonResponse({'success': False, 'error': 'Program not found'})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})

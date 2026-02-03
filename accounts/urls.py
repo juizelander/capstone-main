@@ -23,12 +23,15 @@ urlpatterns = [
     path('api/admin/popups/<int:popup_id>/edit/', views.edit_popup, name='edit_popup'),
     path('api/admin/popups/<int:popup_id>/toggle/', views.toggle_popup, name='toggle_popup'),
     path('api/admin/popups/<int:popup_id>/delete/', views.delete_popup, name='delete_popup'),
+    path('api/admin/reports/', views.generate_report, name='generate_report'),
     
     # Student application management endpoints
     path('api/admin/student-applications/', views.get_student_applications, name='get_student_applications'),
     path('api/admin/student-applications/<int:student_id>/approve/', views.approve_student, name='approve_student'),
     path('api/admin/student-applications/<int:student_id>/reject/', views.reject_student, name='reject_student'),
     path('api/admin/students/<int:student_id>/toggle/', views.toggle_student_status, name='toggle_student_status'),
+    path('api/admin/students/<int:student_id>/edit/', views.edit_student, name='edit_student'),
+    path('api/admin/students/<int:student_id>/delete/', views.delete_student, name='delete_student'),
     # path('api/programs/create/', views.create_program, name='create_program'),
     path('create_program/', views.create_program, name='create_program'),
     path('api/applications/create/', views.create_student_application, name='create_student_application'),
