@@ -15,6 +15,13 @@ from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
 import csv
+import os
+from django.conf import settings
+from docx import Document
+from docx.shared import Inches, Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
 
 
 def landing_page_view(request):
@@ -1030,6 +1037,192 @@ def generate_report(request):
                 for row in data:
                     writer.writerow([row['id'], row['student'], row['program'], row['status'], row['created_at']])
 
+            return response
+        
+        # Handle Word Export
+        # Handle Word Export
+        if request.GET.get('export') == 'word':
+            document = Document()
+            
+            # Set Font to Calibri
+            style = document.styles['Normal']
+            font = style.font
+            font.name = 'Calibri'
+            font.size = Pt(11) # Default size, usually 11 for Calibri
+            
+            # Adjust Margins
+            section = document.sections[0]
+            section.top_margin = Inches(0.5)
+            section.left_margin = Inches(0.5)
+            section.right_margin = Inches(0.5)
+            section.bottom_margin = Inches(0.5)
+
+            
+            # Header Setup
+            header_section = section.header
+            header_section.is_linked_to_previous = False
+            
+            # Use a table for header layout to align Logo Left and Title Center
+            # 3 columns: Left (Logo), Center (Title), Right (Balance/Empty)
+            htable = header_section.add_table(1, 3, width=Inches(7.5)) # Width = 8.5 - 0.5 - 0.5
+            htable.autofit = False
+            htable.columns[0].width = Inches(1.5)
+            htable.columns[1].width = Inches(4.5)
+            htable.columns[2].width = Inches(1.5)
+            
+            # Cell 0: Logo
+            cell0 = htable.cell(0, 0)
+            # Remove default empty paragraph if needed, or just use it
+            p0 = cell0.paragraphs[0]
+            p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            
+            logo_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'subic_seal.png')
+            if os.path.exists(logo_path):
+                run0 = p0.add_run()
+                run0.add_picture(logo_path, height=Inches(0.8)) # Changed to height
+            
+            # Cell 1: Title
+            cell1 = htable.cell(0, 1)
+            p1 = cell1.paragraphs[0]
+            p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run1 = p1.add_run('ScholarSync Subic')
+            run1.bold = True
+            run1.font.size = Pt(22) 
+            
+            # Cell 2: Second Logo
+            cell2 = htable.cell(0, 2)
+            p2 = cell2.paragraphs[0]
+            p2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            
+            logo2_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'scholarsync_logo.png')
+            if os.path.exists(logo2_path):
+                run2 = p2.add_run()
+                run2.add_picture(logo2_path, height=Inches(0.8)) # Changed to height
+            
+            # Remove the default empty paragraph in the header if it causes spacing issues?
+            # No, standard is just adding it. But usually header starts with one P. 
+            # Let's remove the default paragraph to avoid top padding.
+            if len(header_section.paragraphs) > 0:
+                header_section.paragraphs[0]._element.getparent().remove(header_section.paragraphs[0]._element)
+
+            # Add a paragraph for the separator line
+            border_paragraph = header_section.add_paragraph()
+            border_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            border_paragraph.paragraph_format.space_after = Pt(0)
+            
+            # Apply bottom border to this paragraph using OXML
+            p = border_paragraph._p
+            pPr = p.get_or_add_pPr()
+            pBdr = OxmlElement('w:pBdr')
+            bottom = OxmlElement('w:bottom')
+            bottom.set(qn('w:val'), 'single')
+            bottom.set(qn('w:sz'), '6')  # 1/8 pt, so 6 is 3/4 pt. Thin line.
+            bottom.set(qn('w:space'), '1')
+            bottom.set(qn('w:color'), 'CCCCCC') # Gray color
+            pBdr.append(bottom)
+            pPr.append(pBdr)
+
+            
+            # Subtitle (Body)
+            # Subtitle (Body)
+            subtitle = document.add_paragraph()
+            subtitle_run = subtitle.add_run(f'Report: {report_type.title()}')
+            subtitle_run.bold = True
+            subtitle_run.underline = True
+            subtitle_run.font.size = Pt(14)
+            subtitle.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            subtitle.paragraph_format.space_after = Pt(6) # Small space before table
+            
+            # Spacer removed to bring closer to table
+            
+            # Filter headers for Word (Remove Email and Status)
+            word_header = list(header)
+            fields_to_remove = ['Email', 'Status']
+            for field in fields_to_remove:
+                if field in word_header:
+                    word_header.remove(field)
+
+            # Table
+            table = document.add_table(rows=1, cols=len(word_header))
+            table.style = 'Table Grid'
+            
+            # Helper function for shading
+            def set_cell_background(cell, color_hex):
+                tcPr = cell._tc.get_or_add_tcPr()
+                shd = OxmlElement('w:shd')
+                shd.set(qn('w:val'), 'clear')
+                shd.set(qn('w:color'), 'auto')
+                shd.set(qn('w:fill'), color_hex)
+                tcPr.append(shd)
+
+            # Table Header
+            hdr_cells = table.rows[0].cells
+            for i, col_name in enumerate(word_header):
+                cell = hdr_cells[i]
+                set_cell_background(cell, '2E8B57') # Sea Green
+                run = cell.paragraphs[0].add_run(col_name)
+                run.bold = True
+                run.font.color.rgb = RGBColor(255, 255, 255) # White text
+                cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+            
+            # Table Data
+            rows_data = [] # Collect data first to iterate easily
+            if report_type == 'students':
+                for row in data:
+                    rows_data.append([
+                        str(row.get('id', '')),
+                        str(row.get('username', '')),
+                        str(row.get('first_name', '')),
+                        str(row.get('last_name', '')),
+                        str(row.get('program', '')),
+                        str(row.get('created_at', ''))
+                    ])
+            else:
+                for row in data:
+                    rows_data.append([
+                        str(row.get('id', '')),
+                        str(row.get('student', '')),
+                        str(row.get('program', '')),
+                        str(row.get('created_at', ''))
+                    ])
+
+            for index, row_content in enumerate(rows_data):
+                row_cells = table.add_row().cells
+                is_even = (index % 2 == 0)
+                bg_color = 'E8F5E9' if is_even else 'FFFFFF' # Light Green / White
+                
+                for i, text in enumerate(row_content):
+                    cell = row_cells[i]
+                    cell.text = text
+                    # Apply background color
+                    if is_even: # Only apply if not white (default)
+                         set_cell_background(cell, bg_color)
+            
+            # Metadata (Below Table)
+            document.add_paragraph() # Spacer
+            meta = document.add_paragraph()
+            meta.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            gen_run = meta.add_run(f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
+            gen_run.font.color.rgb = RGBColor(128, 128, 128) # Gray color
+            
+            if start_date:
+                meta.add_run(f'Start Date: {start_date}\n')
+            if end_date:
+                meta.add_run(f'End Date: {end_date}')
+
+            # Signature Section
+            document.add_paragraph() # Spacer
+            
+            signature = document.add_paragraph()
+            signature.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            sig_run = signature.add_run('Approved by: ____________________')
+            sig_run.font.name = 'Calibri'
+            sig_run.font.size = Pt(12)
+            sig_run.font.color.rgb = RGBColor(0, 0, 0) # Black color explicitly
+            
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+            response['Content-Disposition'] = f'attachment; filename="{filename}.docx"'
+            document.save(response)
             return response
         
         # Return JSON for table view

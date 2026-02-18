@@ -400,7 +400,8 @@
 
             <div class="form-actions" style="margin-bottom: 0;">
               <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
-              <button class="btn btn-success" onclick="exportReport()">Export CSV</button>
+              <button class="btn btn-success" onclick="exportReport('csv')">Export CSV</button>
+              <button class="btn btn-info" onclick="exportReport('word')">Export Word</button>
             </div>
           </div>
 
@@ -655,7 +656,7 @@
       });
     }
 
-    function exportReport() {
+    function exportReport(format = 'csv') {
       const type = document.getElementById('report-type').value;
       const startDate = document.getElementById('report-start-date').value;
       const endDate = document.getElementById('report-end-date').value;
@@ -667,7 +668,7 @@
         start_date: startDate,
         end_date: endDate,
         status: status,
-        export: 'true'
+        export: format
       });
 
       if (type === 'applications') {
