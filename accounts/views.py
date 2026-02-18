@@ -1126,7 +1126,7 @@ def generate_report(request):
             # Subtitle (Body)
             # Subtitle (Body)
             subtitle = document.add_paragraph()
-            subtitle_run = subtitle.add_run(f'Report: {report_type.title()}')
+            subtitle_run = subtitle.add_run(f'REPORT: {report_type.upper()}')
             subtitle_run.bold = True
             subtitle_run.underline = True
             subtitle_run.font.size = Pt(14)
