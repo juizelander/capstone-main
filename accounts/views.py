@@ -256,6 +256,38 @@ def admin_stats(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_change_password(request):
+    """Change admin password"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+        
+        if not new_password or not confirm_password:
+            return JsonResponse({'success': False, 'error': 'Both password fields are required.'})
+            
+        if new_password != confirm_password:
+            return JsonResponse({'success': False, 'error': 'Passwords do not match.'})
+            
+        # Password strength validation (optional but good to have)
+        # Removed per user request
+        
+        admin = Admin.objects.get(admin_id=admin_id)
+        admin.password = new_password
+        admin.save()
+        
+        return JsonResponse({'success': True, 'message': 'Password changed successfully.'})
+        
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
 def get_popups(request):
     """Get all popups for the admin"""
     admin_id = request.session.get('user_id')
