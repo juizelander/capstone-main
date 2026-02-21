@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lemon+Milk:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -89,6 +89,10 @@
         <a href="#" class="nav-item" data-tab="programs">
           <i class="fas fa-graduation-cap"></i>
           Programs
+        </a>
+        <a href="#" class="nav-link" data-tab="inbox">
+          <i class="fas fa-inbox"></i> Inbox / Support
+          <span class="nav-badge" id="badge-inbox">0</span>
         </a>
       </nav>
       <a href="{% url 'accounts:logout' %}" class="logout-btn">Logout</a>
@@ -275,6 +279,43 @@
         </div>
       </div>
 
+      <!-- Inbox / Support Tab -->
+      <div id="inbox" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>Inbox / Support Tickets</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <button class="btn btn-sm btn-outline" onclick="loadAdminMessages()">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+              <div class="application-filters" style="margin: 0;">
+                <select id="inbox-filter" onchange="filterAdminMessages()" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
+                  <option value="all">All Messages</option>
+                  <option value="unread">Unread Only</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          
+          <div class="overflow-x-auto" style="margin-top: 15px;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                  <th style="padding: 12px; text-align: left;">Status</th>
+                  <th style="padding: 12px; text-align: left;">Student</th>
+                  <th style="padding: 12px; text-align: left;">Subject</th>
+                  <th style="padding: 12px; text-align: left;">Date</th>
+                  <th style="padding: 12px; text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="admin-inbox-list">
+                <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- Settings Tab -->
       <div id="settings" class="tab-content">
         <div class="card">
@@ -435,6 +476,45 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Admin Reply Modal -->
+  <div id="admin-reply-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div class="modal-content" style="background-color: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #1e293b; font-size: 1.25rem;">Reply to Ticket</h3>
+        <span class="close" onclick="closeAdminReplyModal()" style="cursor: pointer; font-size: 24px; color: #64748b;">&times;</span>
+      </div>
+      
+      <div style="background-color: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+        <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;" id="admin-reply-avatar">S</div>
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+              <strong style="color: #1e293b; font-size: 1.1rem;" id="admin-reply-sender">Student Name</strong>
+              <small style="color: #64748b;" id="admin-reply-date">Date Time</small>
+            </div>
+            <strong style="color: #334155; display: block; margin-bottom: 8px;" id="admin-reply-subject">Subject</strong>
+            <p style="margin: 0; color: #475569; line-height: 1.5; white-space: pre-wrap;" id="admin-reply-body">Message body...</p>
+          </div>
+        </div>
+      </div>
+      
+      <form id="admin-reply-form" onsubmit="handleAdminReplySubmit(event)">
+        <input type="hidden" id="admin-reply-student-id">
+        <div id="admin-reply-msg" style="display: none; padding: 10px; border-radius: 6px; margin-bottom: 15px;"></div>
+        
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Your Reply</label>
+          <textarea id="admin-reply-text" rows="5" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical;" required placeholder="Type your reply here..."></textarea>
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAdminReplyModal()" style="padding: 8px 16px; background-color: #e2e8f0; color: #475569; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="adminReplyBtn" style="padding: 8px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Reply</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -906,6 +986,7 @@
           updateBadge('badge-registrations', data.pending_student_registrations);
           updateBadge('badge-applications', data.pending_program_applications);
           updateBadge('badge-notifications', data.active_popups);
+          updateBadge('badge-inbox', data.unread_messages);
         })
         .catch(error => {
           console.error('Error loading stats:', error);
@@ -1725,12 +1806,80 @@
         container.appendChild(el);
       });
     }
-
-    // Initial loads
-    // Initial loads
-    loadPrograms();
-    loadPopups(); // Load notifications on start
   </script>
+
+  <!-- Inbox / Support Tab -->
+  <div id="inbox" class="tab-content" style="display: none;">
+    <div class="card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>Inbox & Support Tickets</h3>
+        <div style="display: flex; gap: 10px;">
+          <select id="inbox-filter" onchange="filterAdminMessages()" style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: 'Roboto', sans-serif;">
+            <option value="all">All Messages</option>
+            <option value="unread">Unread Only</option>
+          </select>
+          <button class="btn btn-primary" onclick="loadAdminMessages()">Refresh</button>
+        </div>
+      </div>
+      <div class="table-container shadow-sm border border-gray-100 rounded-xl">
+        <table>
+          <thead>
+            <tr style="background-color: #f8fafc;">
+              <th style="width: 50px;">Status</th>
+              <th>Student</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th style="text-align: center; width: 120px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="admin-inbox-list">
+            <!-- Messages will be injected here -->
+            <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- End of Main Content -->
+
+<!-- View/Reply Message Modal (Admin) -->
+<div id="admin-reply-modal" class="modal">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3 id="admin-reply-subject">Message Subject</h3>
+      <span class="close" onclick="closeAdminReplyModal()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
+        <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #ebf4ff; color: #3182ce; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;" id="admin-reply-avatar">
+          S
+        </div>
+        <div>
+          <div style="font-weight: bold; color: #2d3748; font-size: 1.1rem;" id="admin-reply-sender">Student Name</div>
+          <div style="font-size: 0.85rem; color: #718096;" id="admin-reply-date">Jan 1, 2024</div>
+        </div>
+      </div>
+      <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <p id="admin-reply-body" style="white-space: pre-wrap; margin: 0; color: #4a5568; line-height: 1.6;"></p>
+      </div>
+      
+      <form id="adminReplyForm" onsubmit="handleAdminReplySubmit(event)">
+        <input type="hidden" id="admin-reply-student-id">
+        <div class="form-group" style="margin-bottom: 15px;">
+          <label for="admin-reply-text" style="font-weight: 600; margin-bottom: 8px; display: block; color: #4a5568;">Your Reply</label>
+          <textarea id="admin-reply-text" name="body" required rows="4" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-family: 'Roboto', sans-serif;" placeholder="Type your response here..."></textarea>
+        </div>
+        <div id="admin-reply-msg" style="display: none; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center;"></div>
+        <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" class="btn" style="background-color: #e2e8f0; color: #4a5568;" onclick="closeAdminReplyModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="adminReplyBtn">Send Reply</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
   <!-- Popup Modal -->
   <div id="popup-modal" class="modal">
@@ -1908,7 +2057,8 @@
       loadPopups();
     }
 
-    // Student Management Functions
+    let currentStudents = [];
+
     function loadStudents() {
       console.log('Loading students...');
       fetch('/api/admin/student-applications/', { // Reusing this endpoint as it returns all students
@@ -1929,6 +2079,8 @@
             list.innerHTML = '<p class="no-data">No students found.</p>';
             return;
           }
+
+          currentStudents = data.applications;
 
           data.applications.forEach(student => {
             const el = createStudentElement(student);
@@ -1973,7 +2125,7 @@
             </div>
             
             <div class="student-actions">
-                <button class="btn btn-sm btn-info" onclick='openEditStudentModal(${JSON.stringify(student).replace(/'/g, "&#39;")})'>
+                <button class="btn btn-sm btn-info" onclick='openEditStudentModal(${student.id})'>
                     <i class="fas fa-edit"></i> Edit
                 </button>
                 <button class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'}" 
@@ -1988,6 +2140,188 @@
       `;
       return div;
     }
+
+    // Inbox & Ticketing System Functions
+    let adminMessages = [];
+
+    async function loadAdminMessages() {
+      const filter = document.getElementById('inbox-filter').value;
+      const list = document.getElementById('admin-inbox-list');
+      list.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>';
+      
+      try {
+        const res = await fetch('/api/messages/');
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          adminMessages = data.messages;
+          let filteredMessages = adminMessages;
+          
+          if (filter === 'unread') {
+            filteredMessages = adminMessages.filter(m => !m.is_read && m.sender_type === 'student');
+          }
+
+          // Update Badge
+          const unreadCount = adminMessages.filter(m => !m.is_read && m.sender_type === 'student').length;
+          updateBadge('badge-inbox', unreadCount);
+
+          if (filteredMessages.length === 0) {
+            list.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">No messages found.</td></tr>';
+            return;
+          }
+
+          list.innerHTML = '';
+          filteredMessages.forEach(msg => {
+            const dateStr = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const isUnread = !msg.is_read && msg.sender_type === 'student';
+            const statusBadge = isUnread 
+              ? `<span style="background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: bold;">New</span>`
+              : `<span style="background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: bold;">Read</span>`;
+            
+            const tr = document.createElement('tr');
+            tr.style.cursor = 'pointer';
+            tr.style.borderBottom = '1px solid #f1f5f9';
+            tr.onmouseover = () => tr.style.backgroundColor = '#f8fafc';
+            tr.onmouseout = () => tr.style.backgroundColor = 'transparent';
+            
+            // Note: student_name is used here, but they are all technically "sender" or "target" based on type
+            const studentNameDisplay = msg.sender_type === 'student' ? msg.sender_name : msg.target_student_name;
+            const directionIcon = msg.sender_type === 'admin' 
+              ? '<i class="fas fa-reply" style="color: #64748b; margin-right: 5px;" title="Replied"></i>' 
+              : '';
+
+            tr.innerHTML = `
+              <td style="padding: 15px;">${statusBadge}</td>
+              <td style="padding: 15px; font-weight: ${isUnread ? 'bold' : 'normal'}; color: #334155;">${directionIcon}${studentNameDisplay}</td>
+              <td style="padding: 15px; font-weight: ${isUnread ? 'bold' : 'normal'}; color: #334155;">${msg.subject}</td>
+              <td style="padding: 15px; color: #64748b; font-size: 0.9em;">${dateStr}</td>
+              <td style="padding: 15px; text-align: center;">
+                <button class="btn btn-sm btn-secondary" onclick="openAdminReplyModal(${msg.id})">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            `;
+            list.appendChild(tr);
+          });
+        }
+      } catch (err) {
+        console.error('Error loading admin messages:', err);
+        list.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ef4444; padding: 20px;">Error loading messages</td></tr>';
+      }
+    }
+
+    function filterAdminMessages() {
+      loadAdminMessages();
+    }
+
+    function openAdminReplyModal(msgId) {
+      const msg = adminMessages.find(m => m.id === msgId);
+      if (!msg) return;
+
+      const studentName = msg.sender_type === 'student' ? msg.sender_name : msg.target_student_name;
+      
+      document.getElementById('admin-reply-subject').textContent = msg.subject;
+      document.getElementById('admin-reply-sender').textContent = studentName;
+      document.getElementById('admin-reply-avatar').textContent = studentName.charAt(0).toUpperCase();
+      document.getElementById('admin-reply-date').textContent = new Date(msg.created_at).toLocaleString();
+      document.getElementById('admin-reply-body').textContent = msg.body;
+      document.getElementById('admin-reply-student-id').value = msg.target_student_id;
+      
+      document.getElementById('admin-reply-msg').style.display = 'none';
+      document.getElementById('admin-reply-text').value = '';
+
+      document.getElementById('admin-reply-modal').style.display = 'flex';
+
+      // Mark as read if it is unread and from a student
+      if (!msg.is_read && msg.sender_type === 'student') {
+        fetch(`/api/messages/${msgId}/read/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          credentials: 'same-origin'
+        }).then(res => {
+          if (res.ok) {
+            msg.is_read = true; // Updates local state
+            loadAdminMessages(); // Reload inbox styles so badge disappears
+          }
+        }).catch(err => console.error(err));
+      }
+    }
+
+    function closeAdminReplyModal() {
+      document.getElementById('admin-reply-modal').style.display = 'none';
+    }
+
+    async function handleAdminReplySubmit(e) {
+      e.preventDefault();
+      
+      const msgAlert = document.getElementById('admin-reply-msg');
+      const submitBtn = document.getElementById('adminReplyBtn');
+      msgAlert.style.display = 'none';
+      
+      const studentId = document.getElementById('admin-reply-student-id').value;
+      const originalSubject = document.getElementById('admin-reply-subject').textContent;
+      const subject = originalSubject.startsWith('Re: ') ? originalSubject : 'Re: ' + originalSubject;
+      const body = document.getElementById('admin-reply-text').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Sending...';
+
+      try {
+        const res = await fetch('/api/messages/send/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ subject, body, student_id: studentId }),
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          msgAlert.textContent = 'Reply sent successfully!';
+          msgAlert.style.display = 'block';
+          msgAlert.style.backgroundColor = '#d1fae5';
+          msgAlert.style.color = '#065f46';
+          msgAlert.style.border = '1px solid #34d399';
+          
+          setTimeout(() => {
+            closeAdminReplyModal();
+            loadAdminMessages(); // Refresh inbox list
+          }, 1500);
+        } else {
+          msgAlert.textContent = data.error || 'Failed to send reply.';
+          msgAlert.style.display = 'block';
+          msgAlert.style.backgroundColor = '#fee2e2';
+          msgAlert.style.color = '#b91c1c';
+          msgAlert.style.border = '1px solid #f87171';
+        }
+      } catch (err) {
+        msgAlert.textContent = 'Network error during reply submission.';
+        msgAlert.style.display = 'block';
+        msgAlert.style.backgroundColor = '#fee2e2';
+        msgAlert.style.color = '#b91c1c';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Send Reply';
+      }
+    }
+
+    // Hook tab switches to also load inbox if needed
+    // Add initialization to existing DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup tabs
+      document.querySelectorAll('.nav-link, .nav-item').forEach(link => {
+        link.addEventListener('click', function(e) {
+          // Check if this is exactly the inbox tab getting clicked
+          if (this.dataset.tab === 'inbox') {
+             loadAdminMessages();
+          }
+        });
+      });
+      // Initial load
+      setTimeout(() => loadAdminMessages(), 1000); 
+    });
 
     function toggleStudentStatus(studentId, currentStatus) {
       const action = currentStatus === 'active' ? 'deactivate' : 'activate';
@@ -2045,7 +2379,10 @@
         });
     }
 
-    function openEditStudentModal(student) {
+    function openEditStudentModal(studentId) {
+      const student = currentStudents.find(s => s.id === studentId);
+      if (!student) return;
+
       document.getElementById('edit_student_id').value = student.id;
       document.getElementById('edit_student_first_name').value = student.first_name;
       document.getElementById('edit_student_last_name').value = student.last_name;

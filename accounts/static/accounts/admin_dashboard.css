@@ -5,7 +5,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Roboto', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Raleway', sans-serif;
 }
 
 body {
@@ -46,7 +50,7 @@ header p {
 }
 
 .welcome-text {
-  font-family: 'Lemon Milk', cursive !important;
+  font-family: 'Raleway', sans-serif !important;
   font-weight: 700 !important;
   font-size: 1.2rem !important;
   background: linear-gradient(135deg, #10B981, #F59E0B);

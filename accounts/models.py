@@ -102,3 +102,22 @@ class ApplicationDocument(models.Model):
 
     def __str__(self):
         return f"Doc for App {self.application.app_id}"
+
+
+class Message(models.Model):
+    SENDER_TYPES = [
+        ('admin', 'Admin'),
+        ('student', 'Student'),
+    ]
+
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='messages')
+    admin = models.ForeignKey(Admin, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_messages')
+    
+    sender_type = models.CharField(max_length=10, choices=SENDER_TYPES)
+    subject = models.CharField(max_length=200)
+    body = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender_type.capitalize()} Message: {self.subject} ({self.created_at.strftime('%Y-%m-%d')})"

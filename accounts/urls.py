@@ -39,10 +39,18 @@ urlpatterns = [
     path('api/student/applications/', views.get_my_applications, name='get_my_applications'),
     path('api/applications/<int:application_id>/mark-remarks-viewed/', views.mark_remarks_viewed, name='mark_remarks_viewed'),
     
+    # Student profile API
+    path('api/student/profile/update/', views.update_student_profile, name='update_student_profile'),
+    
     # Program application management endpoints
     path('api/admin/program-applications/', views.get_program_applications, name='get_program_applications'),
     path('api/admin/program-applications/<int:application_id>/approve/', views.approve_program_application, name='approve_program_application'),
     path('api/admin/program-applications/<int:application_id>/reject/', views.reject_program_application, name='reject_program_application'),
+    
+    # Messaging and Ticketing API
+    path('api/messages/', views.get_messages, name='get_messages'),
+    path('api/messages/<int:message_id>/read/', views.mark_message_read, name='mark_message_read'),
+    path('api/messages/send/', views.send_message, name='send_message'),
     
     # Chart data endpoints
     path('api/admin/charts/application-trends/', views.get_application_trends, name='get_application_trends'),

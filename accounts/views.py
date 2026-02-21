@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
-from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument
+from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument, Message
 from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
@@ -244,14 +244,19 @@ def admin_stats(request):
         pending_program_applications = Application.objects.filter(requirement_status='submitted').count()
         total_programs = Program.objects.count()
         
+        # New: Unread student messages for inbox badge
+        unread_messages = Message.objects.filter(is_read=False, sender_type='student').count()
+        
         return JsonResponse({
             'total_students': total_students,
             'active_popups': active_popups,
             'pending_applications': pending_student_registrations, # Keeping for backward compatibility
             'pending_student_registrations': pending_student_registrations,
             'pending_program_applications': pending_program_applications,
-            'total_programs': total_programs
+            'total_programs': total_programs,
+            'unread_messages': unread_messages
         })
+
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
@@ -657,6 +662,44 @@ def delete_student(request, student_id):
         return JsonResponse({
             'success': True,
             'message': f'Student {username} deleted successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def update_student_profile(request):
+    """Update student profile information"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+        else:
+            data = request.POST
+
+        student.first_name = data.get('first_name', student.first_name)
+        student.last_name = data.get('last_name', student.last_name)
+        
+        bday_str = data.get('bday')
+        if bday_str:
+            student.bday = bday_str
+            
+        student.email = data.get('email', student.email)
+        student.contact_num = data.get('contact_num', student.contact_num)
+        student.address = data.get('address', student.address)
+        student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
+        student.sex = data.get('sex', student.sex)
+        student.scholarship = data.get('scholarship', student.scholarship)
+
+        student.save()
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Profile updated successfully'
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -1262,3 +1305,117 @@ def generate_report(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+# -------------------------------------------------------------
+# Messaging and Ticketing System Views
+# -------------------------------------------------------------
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_messages(request):
+    """Fetch messages for the current user (admin or student)."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        if user_role == 'admin':
+            messages_qs = Message.objects.all().order_by('-created_at')
+        else:
+            student = get_object_or_404(Student, pk=user_id)
+            messages_qs = Message.objects.filter(student=student).order_by('-created_at')
+
+        messages_data = []
+        for msg in messages_qs:
+            admin_name = msg.admin.admin_name if msg.admin else 'System/Unknown'
+            student_name = f"{msg.student.first_name} {msg.student.last_name} ({msg.student.username})"
+            
+            messages_data.append({
+                'id': msg.id,
+                'sender_type': msg.sender_type,
+                'sender_name': admin_name if msg.sender_type == 'admin' else student_name,
+                'target_student_id': msg.student.student_id,
+                'target_student_name': student_name,
+                'subject': msg.subject,
+                'body': msg.body,
+                'is_read': msg.is_read,
+                'created_at': msg.created_at.isoformat()
+            })
+
+        return JsonResponse({'success': True, 'messages': messages_data})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def send_message(request):
+    """Send a new message or ticket."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        data = json.loads(request.body)
+        subject = data.get('subject')
+        body = data.get('body')
+        
+        if not subject or not body:
+            return JsonResponse({'success': False, 'error': 'Subject and body are required.'}, status=400)
+
+        if user_role == 'admin':
+            admin = get_object_or_404(Admin, pk=user_id)
+            student_id = data.get('student_id')
+            if not student_id:
+                return JsonResponse({'success': False, 'error': 'Student ID is required for admins to send a message.'}, status=400)
+            
+            student = get_object_or_404(Student, pk=student_id)
+            Message.objects.create(
+                student=student,
+                admin=admin,
+                sender_type='admin',
+                subject=subject,
+                body=body
+            )
+        else:
+            # Student is submitting a ticket
+            student = get_object_or_404(Student, pk=user_id)
+            Message.objects.create(
+                student=student,
+                admin=None, # TBD: Might assign to generic admin or specific admin if requested
+                sender_type='student',
+                subject=subject,
+                body=body
+            )
+
+        return JsonResponse({'success': True, 'message': 'Message sent successfully.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def mark_message_read(request, message_id):
+    """Mark a message as read."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+
+    try:
+        msg = get_object_or_404(Message, id=message_id)
+        
+        # Security: ensure only the intended recipient or an admin can mark it read
+        if user_role == 'student' and msg.student.student_id != user_id:
+            return JsonResponse({'success': False, 'error': 'Unauthorized'}, status=403)
+            
+        msg.is_read = True
+        msg.save()
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

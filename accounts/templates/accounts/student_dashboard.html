@@ -9,7 +9,43 @@
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
-  <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        fontFamily: {
+          sans: ['Roboto', 'sans-serif'],
+          heading: ['Raleway', 'sans-serif'],
+        },
+        extend: {
+          colors: {
+            brand: {
+              primary: '#10B981',
+              secondary: '#F59E0B',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     /* Indicator for unread remarks */
     .remarks-btn {
@@ -31,118 +67,344 @@
 </head>
 
 <body>
-  <header class="sd-header">
-    <div class="sd-brand">
-      <img src="{% static 'accounts/favicon.png' %}" alt="ScholarSync Logo">
-      ScholarSync Subic
-    </div>
-    <!-- DEBUG BUTTON -->
-
-    <div class="sd-actions">
-      <div class="notification-bell" onclick="toggleNotifications(event)">
-        <i class="fas fa-bell"></i>
-        <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
-
-        <!-- Notification Dropdown -->
-        <div class="notification-dropdown" id="notification-dropdown">
-          <div class="notification-header">
-            <h4>Notifications</h4>
-            <span class="close-notifications" onclick="toggleNotifications(event)">&times;</span>
-          </div>
-          <div class="notification-list" id="notification-list">
-            <!-- Notifications loaded via JS -->
-          </div>
-        </div>
+  <div class="sd-app-layout">
+    <!-- Sidebar -->
+    <aside class="sd-sidebar">
+      <div class="sd-sidebar-header">
+        <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
+        <span>ScholarSync</span>
       </div>
-      <span class="sd-username">Signed in as <strong>{{ student.username }}</strong></span>
-      <form method="post" action="{% url 'accounts:logout' %}" class="logout-form">
-        {% csrf_token %}
-        <button type="submit" class="btn logout-btn">Logout</button>
-      </form>
-    </div>
-  </header>
-
-  <main class="sd-main">
-    <section class="sd-welcome card">
-      <h1>Welcome, {{ student.first_name|default:student.username }}!</h1>
-      <p class="muted">Access your profile, submitted documents, and announcements from the admin here.</p>
-
-      <div class="quick-links">
-        <a class="link-card" href="#">
-          <div class="link-title">Profile</div>
-          <div class="link-desc">View and update personal details</div>
+      <nav class="sd-sidebar-nav">
+        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('dashboard')">
+          <i class="fas fa-home"></i> Dashboard
         </a>
-        <a class="link-card" href="#">
-          <div class="link-title">Documents</div>
-          <div class="link-desc">Uploaded documents & status</div>
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('applications')">
+          <i class="fas fa-folder-open"></i> My Applications
         </a>
-      </div>
-    </section>
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('apply')">
+          <i class="fas fa-plus-circle"></i> Apply
+        </a>
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('profile')">
+          <i class="fas fa-user-edit"></i> Profile
+        </a>
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('inbox')">
+          <i class="fas fa-inbox"></i> Inbox / Tickets
+          <span class="nav-badge" id="badge-inbox" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+        </a>
 
-    <section class="sd-info card">
-      <h2>Account Status</h2>
-      <p>Status: <span class="status-pill">{{ student.status|default:"pending" }}</span></p>
-      <p>Registered on: <strong>{{ student.created_at|date:"F j, Y" }}</strong></p>
-    </section>
-
-    <!-- My Applications Section -->
-    <section id="my-applications" class="card">
-      <div class="card-header-flex">
-        <h2>My Applications</h2>
-        <button class="btn btn-sm btn-outline" onclick="loadMyApplications()">
-          <i class="fas fa-sync-alt"></i> Refresh
-        </button>
-      </div>
-      <p class="muted">Track the status of your program applications.</p>
-
-      <div id="application-list" class="application-list">
-        <!-- Applications loaded here -->
-        <p class="loading-text">Loading applications...</p>
-      </div>
-    </section>
-
-    <!-- Program Application Section -->
-    <section id="program-application" class="card">
-      <h2>Apply for a Program</h2>
-      <p class="muted">Select a program and attach multiple supporting documents (PNG, JPG, PDF, DOCX).</p>
-
-      <div id="app-msg" class="app-message" style="display:none;"></div>
-
-      <!-- JS prevents actual POST so frontend can be tested without backend -->
-      <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form"
-        onsubmit="handleProgramSubmit(event)">
-        {% csrf_token %}
-        <label for="program">Program</label>
-        <select id="program" name="program" required onchange="showProgramDescription()">
-          <option value="">Select a program</option>
-        </select>
-
-        <!-- Program Description Area -->
-        <div id="program-description" class="program-description" style="display: none;">
-          <h4>Program Requirements</h4>
-          <div id="program-requirements" class="requirements-content"></div>
+      </nav>
+      <div class="sd-sidebar-footer relative">
+        <div class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden" onclick="toggleProfileDropdown(event)">
+          <!-- Hover Gradient Background -->
+          <div class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></div>
+          
+          <div class="relative z-10 flex items-center justify-between">
+            <div class="flex items-center gap-3 overflow-hidden">
+              <div class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="profile-info flex-1 overflow-hidden">
+                <div class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">{{ student.first_name|default:student.username }}</div>
+                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">Student Account</div>
+              </div>
+            </div>
+            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300" id="profile-chevron"></i>
+          </div>
         </div>
 
-        <label for="motivation">Why do you want to apply?</label>
-        <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation"
-          required></textarea>
-
-        <label for="supporting_docs">Supporting documents (you can select multiple)</label>
-        <input id="supporting_docs" name="supporting_docs" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-          multiple>
-
-        <div id="file-list" class="file-list" aria-live="polite"></div>
-
-        <div class="form-actions">
-          <button type="submit" class="btn">Submit Application</button>
+        <!-- Logout Dropdown -->
+        <div class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50" id="profile-dropdown">
+          <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+              <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
+            </button>
+          </form>
         </div>
-      </form>
-    </section>
-  </main>
+      </div>
+    </aside>
 
-  <footer class="sd-footer">
-    <small>&copy; {{ now.year }} Lander Barrera</small>
-  </footer>
+    <!-- Main Wrapper -->
+    <div class="sd-main-wrapper">
+      <!-- Topbar -->
+      <header class="sd-topbar">
+        <div class="topbar-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search application... (⌘F)">
+        </div>
+        <div class="topbar-actions">
+          <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
+            <i class="fas fa-moon"></i>
+          </button>
+          <div class="notification-bell" onclick="toggleNotifications(event)">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notification-dropdown">
+              <div class="notification-header">
+                <h4>Notifications</h4>
+                <span class="close-notifications" onclick="toggleNotifications(event)">&times;</span>
+              </div>
+              <div class="notification-list" id="notification-list">
+                <!-- Notifications loaded via JS -->
+              </div>
+            </div>
+          </div>
+          <div class="user-profile">
+            <div class="avatar-circle">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ student.first_name|default:student.username }}</span>
+              <span class="user-role">Student Account</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <main class="sd-content">
+        <!-- Dashboard Tab -->
+        <div id="tab-dashboard" class="tab-pane active">
+          <div class="welcome-header animate-slide-up">
+            <div>
+              <h1>Welcome back, {{ student.first_name|default:student.username }}!</h1>
+              <p class="muted">Here's a quick overview of your applications.</p>
+            </div>
+            <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="switchTab('apply')">
+              <i class="fas fa-plus"></i> New Application
+            </button>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 100ms;">
+              <div class="kpi-title">Total Applications</div>
+              <div class="kpi-value" id="kpi-total">0</div>
+            </div>
+            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 200ms;">
+              <div class="kpi-title">Approved</div>
+              <div class="kpi-value kpi-success" id="kpi-approved">0</div>
+            </div>
+            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 300ms;">
+              <div class="kpi-title">Under Review</div>
+              <div class="kpi-value kpi-warning" id="kpi-pending">0</div>
+            </div>
+            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 400ms;">
+              <div class="kpi-title">Rejected</div>
+              <div class="kpi-value kpi-danger" id="kpi-rejected">0</div>
+            </div>
+          </div>
+          
+          <div class="dashboard-info-row">
+            <section class="sd-info card">
+              <h2>Account Status</h2>
+              <div class="status-row">
+                <span class="status-label">Status:</span>
+                <span class="status-pill">{{ student.status|default:"pending" }}</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label">Registered on:</span>
+                <strong>{{ student.created_at|date:"F j, Y" }}</strong>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- My Applications Tab -->
+        <div id="tab-applications" class="tab-pane">
+          <section id="my-applications" class="card tab-card animate-slide-up">
+            <div class="card-header-flex">
+              <h2>My Applications</h2>
+              <button class="btn btn-sm btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="loadMyApplications()">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+            </div>
+            <p class="muted">Track the status of your program applications.</p>
+
+            <div id="application-list" class="application-list">
+              <p class="loading-text">Loading applications...</p>
+            </div>
+          </section>
+        </div>
+
+        <!-- Apply Tab -->
+        <div id="tab-apply" class="tab-pane">
+          <section id="program-application" class="card tab-card animate-slide-up">
+            <h2>Apply for a Program</h2>
+            <p class="muted">Select a program and attach multiple supporting documents (PNG, JPG, PDF, DOCX).</p>
+
+            <div id="app-msg" class="app-message" style="display:none;"></div>
+
+            <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
+              {% csrf_token %}
+              <div class="form-group">
+                  <label for="program">Program</label>
+                  <div class="select-wrapper">
+                    <select id="program" name="program" required onchange="showProgramDescription()">
+                      <option value="">Select a program</option>
+                    </select>
+                  </div>
+              </div>
+
+              <div id="program-description" class="program-description" style="display: none;">
+                <h4><i class="fas fa-info-circle"></i> Program Requirements</h4>
+                <div id="program-requirements" class="requirements-content"></div>
+              </div>
+
+              <div class="form-group">
+                  <label for="motivation">Why do you want to apply?</label>
+                  <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label>Supporting documents</label>
+                <div class="file-upload-block">
+                    <label class="file-upload-label" for="supporting_docs">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Click to browse supporting documents</span>
+                        <small>PNG, JPG, PDF, DOCX (You can select multiple)</small>
+                    </label>
+                    <input id="supporting_docs" name="supporting_docs" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple style="display: none;">
+                </div>
+                <div id="file-list" class="file-list" aria-live="polite"></div>
+              </div>
+
+              <div class="form-actions mt-4">
+                <button type="submit" class="btn btn-primary btn-block transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">Submit Application</button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-pane">
+          <div class="flex items-center justify-between mb-6 animate-slide-up">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">My Profile</h2>
+              <p class="muted">View and update your personal and academic information.</p>
+            </div>
+            <button type="button" id="editProfileBtn" class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="toggleProfileEditMode(true)">
+              <i class="fas fa-user-edit"></i> Edit Profile
+            </button>
+          </div>
+          
+          <div id="profile-msg" class="app-message" style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
+          
+          <form id="profileForm" onsubmit="handleProfileSubmit(event)">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              <!-- Personal Info Card -->
+              <section class="card tab-card animate-slide-up relative h-full">
+                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                  Personal Information
+                </h4>
+                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; align-items: start;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_first_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">First Name</label>
+                    <input type="text" id="prof_first_name" name="first_name" value="{{ student.first_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_last_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Last Name</label>
+                    <input type="text" id="prof_last_name" name="last_name" value="{{ student.last_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_sex" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sex</label>
+                    <select id="prof_sex" name="sex" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent disabled:appearance-none dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <option value="Male" {% if student.sex == 'Male' %}selected{% endif %}>Male</option>
+                      <option value="Female" {% if student.sex == 'Female' %}selected{% endif %}>Female</option>
+                    </select>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_bday" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Birthday</label>
+                    <input type="date" id="prof_bday" name="bday" value="{{ student.bday|date:'Y-m-d' }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                </div>
+                
+                <div style="margin-top: 20px; display: grid; gap: 15px;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_email" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Email Address</label>
+                    <input type="email" id="prof_email" name="email" value="{{ student.email }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_contact" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact Number</label>
+                    <input type="text" id="prof_contact" name="contact_num" value="{{ student.contact_num }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                </div>
+              </section>
+              
+              <!-- Academic Info Card -->
+              <section class="card tab-card animate-slide-up relative h-full" style="animation-delay: 100ms;">
+                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                  Academic & Contact Info
+                </h4>
+                <div style="display: grid; gap: 15px;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_address" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Home Address</label>
+                    <textarea id="prof_address" name="address" rows="3" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">{{ student.address }}</textarea>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_program_and_yr" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Program and Year</label>
+                    <input type="text" id="prof_program_and_yr" name="program_and_yr" value="{{ student.program_and_yr }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_scholarship" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current Scholarship (If any)</label>
+                    <input type="text" id="prof_scholarship" name="scholarship" value="{{ student.scholarship|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                </div>
+              </section>
+
+            </div>
+
+            <!-- Action Buttons -->
+            <div id="profile-actions" class="hidden mt-6 justify-end gap-3 animate-fade-in">
+              <button type="button" class="btn btn-outline" onclick="toggleProfileEditMode(false)">Cancel</button>
+              <button type="submit" class="btn btn-primary transform transition-all active:scale-95" id="profileSubmitBtn">Save Changes</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Inbox / Tickets Tab -->
+        <div id="tab-inbox" class="tab-pane">
+          <div class="card tab-card animate-slide-up">
+            <div class="card-header-flex">
+              <h2>My Messages & Support Tickets</h2>
+              <div class="flex gap-2">
+                <button class="btn btn-sm btn-outline" onclick="loadMessages()">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button class="btn btn-sm btn-primary" onclick="openSubmitTicketModal()">
+                  <i class="fas fa-plus"></i> New Ticket
+                </button>
+              </div>
+            </div>
+            <p class="muted">Check your messages from administrators or submit a support ticket.</p>
+
+            <div class="overflow-x-auto mt-4 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-bold">
+                    <th class="py-4 px-6 border-b dark:border-gray-700">Status</th>
+                    <th class="py-4 px-6 border-b dark:border-gray-700">Subject</th>
+                    <th class="py-4 px-6 border-b dark:border-gray-700 hidden md:table-cell">From</th>
+                    <th class="py-4 px-6 border-b dark:border-gray-700">Date</th>
+                    <th class="py-4 px-6 border-b dark:border-gray-700 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="inbox-tbody">
+                  <tr>
+                    <td colspan="5" class="py-8 text-center text-gray-500 italic">
+                      <div class="animate-pulse">Loading messages...</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
 
   <!-- Application Confirmation Modal -->
   <div id="confirmation-modal" class="confirmation-modal" style="display: none;">
@@ -235,7 +497,7 @@
     // Show application confirmation popup
     function showApplicationConfirmation() {
       const modal = document.getElementById('confirmation-modal');
-      modal.style.display = 'block';
+      modal.style.display = 'flex';
     }
 
     // Close confirmation modal
@@ -330,14 +592,44 @@
       dropdown.classList.toggle('show');
     }
 
-    // Close notifications when clicking outside
+    // Toggle profile logout dropdown
+    function toggleProfileDropdown(e) {
+      if (e) e.stopPropagation();
+      const dropdown = document.getElementById('profile-dropdown');
+      const chevron = document.getElementById('profile-chevron');
+      
+      const isHidden = dropdown.classList.contains('hidden');
+      if (isHidden) {
+        dropdown.classList.remove('hidden');
+        dropdown.classList.add('flex');
+        if(chevron) chevron.style.transform = 'rotate(180deg)';
+      } else {
+        dropdown.classList.add('hidden');
+        dropdown.classList.remove('flex');
+        if(chevron) chevron.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    // Close notifications and dropdowns when clicking outside
     document.addEventListener('click', function (e) {
-      const dropdown = document.getElementById('notification-dropdown');
+      const notifDropdown = document.getElementById('notification-dropdown');
       const bell = document.querySelector('.notification-bell');
 
-      if (dropdown && dropdown.classList.contains('show')) {
-        if (!dropdown.contains(e.target) && !bell.contains(e.target)) {
-          dropdown.classList.remove('show');
+      if (notifDropdown && notifDropdown.classList.contains('show')) {
+        if (!notifDropdown.contains(e.target) && !bell.contains(e.target)) {
+          notifDropdown.classList.remove('show');
+        }
+      }
+
+      const profileDropdown = document.getElementById('profile-dropdown');
+      const profileCard = document.querySelector('.profile-card');
+
+      if (profileDropdown && !profileDropdown.classList.contains('hidden')) {
+        if (!profileDropdown.contains(e.target) && profileCard && !profileCard.contains(e.target)) {
+          profileDropdown.classList.add('hidden');
+          profileDropdown.classList.remove('flex');
+          const chevron = document.getElementById('profile-chevron');
+          if (chevron) chevron.style.transform = 'rotate(0deg)';
         }
       }
     });
@@ -487,31 +779,38 @@
         if (data.applications && data.applications.length > 0) {
           container.innerHTML = '';
           studentApplications = {}; // Reset global store
+          
+          let total = 0, approved = 0, pending = 0, rejected = 0;
 
           data.applications.forEach(app => {
+            total++;
+            if (app.requirement_status === 'approved') approved++;
+            else if (app.requirement_status === 'rejected') rejected++;
+            else pending++;
+
             studentApplications[app.app_id] = app; // Store app data
 
             const el = document.createElement('div');
-            el.className = 'application-card';
+            el.className = 'application-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in';
 
             // Determine Active Steps
             let step1Class = 'completed'; // Submitted is always done if it exists
             let step2Class = 'active'; // Under Review default
             let step3Class = '';
-            let progressWidth = '50%'; // Halfway
+            let progressWidth = '33.33%'; // Halfway
 
             if (app.requirement_status === 'approved') {
               step2Class = 'completed';
               step3Class = 'completed'; // Result OK
-              progressWidth = '100%';
+              progressWidth = '66.66%';
             } else if (app.requirement_status === 'rejected') {
               step2Class = 'completed';
               step3Class = 'rejected'; // Result Failed
-              progressWidth = '100%';
+              progressWidth = '66.66%';
             } else {
               // Pending/Submitted
               step2Class = 'active'; // Current step
-              progressWidth = '50%';
+              progressWidth = '33.33%';
             }
 
             const dateStr = new Date(app.created_at).toLocaleDateString();
@@ -563,7 +862,7 @@
                            ` : ''}
 
                            ${app.remarks ? `
-                             <button class="btn btn-sm btn-outline remarks-btn" id="remarks-btn-${app.app_id}" 
+                             <button class="btn btn-sm btn-outline remarks-btn text-gray-700 dark:text-gray-200 hover:text-gray-900 border-gray-300 dark:border-gray-500" id="remarks-btn-${app.app_id}" 
                                      onclick="openStudentRemarksModal(${app.app_id}, ${!app.is_remarks_viewed})">
                                View Remarks
                                ${!app.is_remarks_viewed ? '<span class="remarks-indicator"></span>' : ''}
@@ -573,7 +872,18 @@
                     `;
             container.appendChild(el);
           });
+          
+          document.getElementById('kpi-total').textContent = total;
+          document.getElementById('kpi-approved').textContent = approved;
+          document.getElementById('kpi-pending').textContent = pending;
+          document.getElementById('kpi-rejected').textContent = rejected;
+
         } else {
+          document.getElementById('kpi-total').textContent = '0';
+          document.getElementById('kpi-approved').textContent = '0';
+          document.getElementById('kpi-pending').textContent = '0';
+          document.getElementById('kpi-rejected').textContent = '0';
+          
           container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-folder-open"></i>
@@ -603,7 +913,7 @@
 
       document.getElementById('student-remarks-content').innerHTML = app.remarks; // Use innerHTML for rich text
       document.getElementById('student-remarks-title').textContent = 'Remarks for ' + app.program_name;
-      document.getElementById('student-remarks-modal').style.display = 'block';
+      document.getElementById('student-remarks-modal').style.display = 'flex';
 
       if (isUnread) {
         // Remove indicator locally
@@ -643,7 +953,350 @@
       }
     }
 
+    function toggleProfileEditMode(isEditing) {
+      const inputs = document.querySelectorAll('.profile-input');
+      const actions = document.getElementById('profile-actions');
+      const editBtn = document.getElementById('editProfileBtn');
+      const msg = document.getElementById('profile-msg');
+      
+      if(msg) msg.style.display = 'none';
+
+      inputs.forEach(input => {
+        input.disabled = !isEditing;
+      });
+
+      if (isEditing) {
+        actions.classList.remove('hidden');
+        actions.classList.add('flex');
+        editBtn.style.display = 'none';
+      } else {
+        actions.classList.add('hidden');
+        actions.classList.remove('flex');
+        editBtn.style.display = 'inline-flex';
+        document.getElementById('profileForm').reset();
+      }
+    }
+
+    async function handleProfileSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('profileForm');
+      const msg = document.getElementById('profile-msg');
+      const submitBtn = document.getElementById('profileSubmitBtn');
+      msg.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/student/profile/update/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
+        });
+        const result = await res.json();
+
+        if (res.ok && result.success) {
+          msg.textContent = 'Profile updated successfully!';
+          msg.className = 'app-message success';
+          msg.style.display = 'block';
+          msg.style.color = '#10b981'; // Green
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          msg.textContent = result.error || 'Failed to update profile';
+          msg.className = 'app-message error';
+          msg.style.display = 'block';
+          msg.style.color = '#ef4444'; // Red
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Save Changes';
+        }
+      } catch (err) {
+        msg.textContent = 'Network error updating profile';
+        msg.className = 'app-message error';
+        msg.style.display = 'block';
+        msg.style.color = '#ef4444'; // Red
+        console.error(err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save Changes';
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      
+      const tab = document.getElementById('tab-' + tabId);
+      if (tab) tab.classList.add('active');
+      
+      const navItem = document.querySelector(`.nav-item[onclick="switchTab('${tabId}')"]`);
+      if (navItem) navItem.classList.add('active');
+
+      // Add special handling for inbox to refresh messages
+      if (tabId === 'inbox') {
+        loadMessages();
+      }
+      
+      // Also refresh applications if switching back
+      if (tabId === 'applications' || tabId === 'dashboard') {
+        loadMyApplications();
+      }
+    }
+
+
+    // Theme toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          document.body.classList.toggle('dark-mode');
+          document.documentElement.classList.toggle('dark');
+          const icon = themeToggleBtn.querySelector('i');
+          if (document.body.classList.contains('dark-mode')) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+          }
+        });
+        // Check initial theme
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.documentElement.classList.add('dark');
+          const icon = themeToggleBtn.querySelector('i');
+          if (icon) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+          }
+        }
+      }
+    });
+
+    // Inbox & Ticketing Logic
+    let studentMessages = [];
+
+    async function loadMessages() {
+      try {
+        const res = await fetch('/api/messages/');
+        const data = await res.json();
+        const tbody = document.getElementById('inbox-tbody');
+        
+        if (res.ok && data.success) {
+          studentMessages = data.messages;
+          if (studentMessages.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500 italic"><i class="fas fa-inbox text-4xl mb-3 block text-gray-300"></i>No messages or tickets found.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = '';
+          studentMessages.forEach(msg => {
+            const dateStr = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const isUnread = !msg.is_read && msg.sender_type === 'admin';
+            const statusBadge = isUnread 
+              ? `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200 w-full text-center block" style="width: 50px;">New</span>`
+              : `<span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 w-full text-center block" style="width: 50px;">Read</span>`;
+            
+            // Highlight text if unread
+            const textClass = isUnread ? 'font-bold text-gray-900 dark:text-white' : 'font-medium text-gray-600 dark:text-gray-300';
+            
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer border-b border-gray-100 dark:border-gray-700';
+            tr.onclick = () => openViewMessageModal(msg.id);
+            tr.innerHTML = `
+              <td class="py-4 px-6">${statusBadge}</td>
+              <td class="py-4 px-6 ${textClass} truncate max-w-[200px]">${msg.subject}</td>
+              <td class="py-4 px-6 ${textClass} hidden md:table-cell capitalize">${msg.sender_type}</td>
+              <td class="py-4 px-6 text-sm text-gray-500">${dateStr}</td>
+              <td class="py-4 px-6 text-center whitespace-nowrap">
+                <button class="text-brand-primary hover:text-brand-secondary transition-colors" title="View Message">
+                  <i class="fas fa-eye"></i> View
+                </button>
+              </td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          // Update Sidebar Badge
+          const unreadCount = studentMessages.filter(m => !m.is_read && m.sender_type === 'admin').length;
+          const badge = document.getElementById('badge-inbox');
+          if (badge) {
+            if (unreadCount > 0) {
+              badge.textContent = unreadCount;
+              badge.style.display = 'inline-block';
+            } else {
+              badge.style.display = 'none';
+            }
+          }
+        }
+
+      } catch (err) {
+        console.error('Failed to load messages:', err);
+        document.getElementById('inbox-tbody').innerHTML = '<tr><td colspan="5" class="text-center py-8 text-red-500">Error loading messages.</td></tr>';
+      }
+    }
+
+    function openSubmitTicketModal() {
+      document.getElementById('ticket-msg').style.display = 'none';
+      document.getElementById('submitTicketForm').reset();
+      document.getElementById('submit-ticket-modal').style.display = 'flex';
+    }
+
+    function closeSubmitTicketModal() {
+      document.getElementById('submit-ticket-modal').style.display = 'none';
+    }
+
+    async function handleTicketSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('submitTicketForm');
+      const msgAlert = document.getElementById('ticket-msg');
+      const submitBtn = document.getElementById('ticketSubmitBtn');
+      msgAlert.style.display = 'none';
+      
+      const subject = document.getElementById('ticket-subject').value;
+      const body = document.getElementById('ticket-body').value;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending...';
+
+      try {
+        const res = await fetch('/api/messages/send/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify({ subject, body }),
+          credentials: 'same-origin'
+        });
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+          msgAlert.textContent = 'Ticket submitted successfully!';
+          msgAlert.className = 'app-message success mb-3';
+          msgAlert.style.display = 'block';
+          msgAlert.style.color = '#10b981';
+          
+          setTimeout(() => {
+            closeSubmitTicketModal();
+            loadMessages(); // Refresh inbox list
+          }, 1500);
+        } else {
+          msgAlert.textContent = data.error || 'Failed to send ticket.';
+          msgAlert.className = 'app-message error mb-3';
+          msgAlert.style.display = 'block';
+          msgAlert.style.color = '#ef4444';
+        }
+      } catch (err) {
+        msgAlert.textContent = 'Network error during ticket submission.';
+        msgAlert.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Send Ticket <i class="fas fa-paper-plane"></i>';
+      }
+    }
+
+    async function openViewMessageModal(msgId) {
+      const msg = studentMessages.find(m => m.id === msgId);
+      if (!msg) return;
+
+      document.getElementById('view-message-subject').textContent = msg.subject;
+      document.getElementById('view-message-sender').textContent = msg.sender_type === 'admin' ? 'Administrator' : 'You (Ticket)';
+      document.getElementById('view-message-avatar').textContent = msg.sender_type.charAt(0).toUpperCase();
+      document.getElementById('view-message-avatar').className = msg.sender_type === 'admin' 
+        ? 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shadow-sm' 
+        : 'w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold shadow-sm';
+      document.getElementById('view-message-date').textContent = new Date(msg.created_at).toLocaleString();
+      document.getElementById('view-message-body').textContent = msg.body;
+      
+      document.getElementById('view-message-modal').style.display = 'flex';
+
+      // Mark as read if it is unread and from an admin
+      if (!msg.is_read && msg.sender_type === 'admin') {
+        fetch(`/api/messages/${msgId}/read/`, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value },
+          credentials: 'same-origin'
+        }).then(res => {
+          if (res.ok) {
+            msg.is_read = true; // Updates local state
+            loadMessages(); // Reload inbox styles so badge disappears
+          }
+        }).catch(err => console.error(err));
+      }
+    }
+
+    function closeViewMessageModal() {
+      document.getElementById('view-message-modal').style.display = 'none';
+    }
+
+    // Load Messages on Dashboard initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMessages();
+    });
+
   </script>
+
+  <!-- Submit Ticket Modal -->
+  <div id="submit-ticket-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-lg">
+      <div class="modal-header">
+        <h3>Submit Support Ticket</h3>
+        <span class="close" onclick="closeSubmitTicketModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="submitTicketForm" onsubmit="handleTicketSubmit(event)">
+          <div class="input-group mb-4">
+            <label for="ticket-subject" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</label>
+            <input type="text" id="ticket-subject" name="subject" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1">
+          </div>
+          <div class="input-group mb-4">
+            <label for="ticket-body" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Message Details</label>
+            <textarea id="ticket-body" name="body" rows="5" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1"></textarea>
+          </div>
+          <div id="ticket-msg" style="display: none;" class="mb-3"></div>
+          <div class="flex justify-end gap-3 mt-6">
+            <button type="button" class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition duration-300" onclick="closeSubmitTicketModal()">Cancel</button>
+            <button type="submit" id="ticketSubmitBtn" class="btn-primary flex items-center gap-2">Send Ticket <i class="fas fa-paper-plane"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Message Modal -->
+  <div id="view-message-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-xl">
+      <div class="modal-header">
+        <h3 id="view-message-subject">Message Subject</h3>
+        <span class="close" onclick="closeViewMessageModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
+          <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold" id="view-message-avatar">
+            A
+          </div>
+          <div>
+            <div class="font-semibold text-gray-800 dark:text-gray-200" id="view-message-sender">Administrator</div>
+            <div class="text-xs text-gray-500" id="view-message-date">Jan 1, 2024</div>
+          </div>
+        </div>
+        <p id="view-message-body" style="white-space: pre-wrap; font-size: 1.05em; color: #4a5568; line-height: 1.6;" class="dark:text-gray-300"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeViewMessageModal()">Close</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Student Remarks Modal -->
   <div id="student-remarks-modal" class="modal" style="display: none;">
@@ -661,6 +1314,8 @@
       </div>
     </div>
   </div>
+
+
 
   <!-- System Announcement Modal -->
   <div id="announcement-modal" class="modal" style="display: none;">

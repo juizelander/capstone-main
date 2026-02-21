@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
     min-height: 100vh;
     display: flex;
@@ -15,6 +15,10 @@ body {
     /* Changed from center to allow scrolling */
     padding: 40px 20px;
     /* Increased padding */
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Raleway', sans-serif;
 }
 
 /* Container */
