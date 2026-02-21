@@ -245,6 +245,44 @@
             </div>
           </div>
         </div>
+        
+        <!-- Admin Logs Card -->
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full mb-8">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Admin Logs</h3>
+            <div class="admin-log-filters">
+              <select id="admin-logs-sort" onchange="sortAdminLogs()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                <option value="newest" selected>Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="admin_asc">Admin Name (A-Z)</option>
+                <option value="action_asc">Action (A-Z)</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-hidden relative max-h-[300px] rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-y-auto w-full">
+            <table class="data-table w-full text-left border-collapse" id="adminLogsTable">
+              <thead class="sticky top-0 bg-gray-100 dark:bg-gray-700 z-10 w-full shadow-sm">
+                <tr class="border-b border-gray-200 dark:border-gray-600">
+                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Time</th>
+                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Admin</th>
+                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 bg-white dark:bg-gray-800 w-full">
+                {% for log in admin_logs %}
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full">
+                  <td class="p-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ log.timestamp|date:"M d, Y" }} <br> {{ log.timestamp|date:"H:i" }}</td>
+                  <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium">{% if log.admin.full_name %}{{ log.admin.full_name }}{% else %}{{ log.admin.admin_name }}{% endif %}</td>
+                  <td class="p-3 text-sm text-gray-600 dark:text-gray-300">{{ log.action }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="p-4 text-center text-gray-500">No admin logs available.</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       <!-- Student Account Registration Tab -->
@@ -449,33 +487,6 @@
                   </tr>
                   {% empty %}
                   <tr><td colspan="2" class="p-4 text-center text-gray-500">No admins found.</td></tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-          
-          <!-- Admin Logs Card -->
-          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin Logs</h3>
-            <div class="overflow-hidden relative max-h-[300px] rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-y-auto w-full">
-              <table class="data-table w-full text-left border-collapse">
-                <thead class="sticky top-0 bg-gray-100 dark:bg-gray-700 z-10 w-full">
-                  <tr class="border-b border-gray-200 dark:border-gray-600">
-                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Time</th>
-                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Admin</th>
-                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Action</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 bg-white dark:bg-gray-800 w-full">
-                  {% for log in admin_logs %}
-                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full">
-                    <td class="p-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ log.timestamp|date:"M d, Y" }} <br> {{ log.timestamp|date:"H:i" }}</td>
-                    <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium">{% if log.admin.full_name %}{{ log.admin.full_name }}{% else %}{{ log.admin.admin_name }}{% endif %}</td>
-                    <td class="p-3 text-sm text-gray-600 dark:text-gray-300">{{ log.action }}</td>
-                  </tr>
-                  {% empty %}
-                  <tr><td colspan="3" class="p-4 text-center text-gray-500">No admin logs available.</td></tr>
                   {% endfor %}
                 </tbody>
               </table>
@@ -1577,6 +1588,44 @@
           item.style.display = item.classList.contains(`application-${filter}`) ? 'block' : 'none';
         }
       });
+    }
+
+    // Admin Logs Sorting
+    function sortAdminLogs() {
+      const select = document.getElementById('admin-logs-sort');
+      const table = document.getElementById('adminLogsTable');
+      if (!select || !table) return;
+      
+      const tbody = table.querySelector('tbody');
+      // Get all valid rows (skip the empty placeholder row if it has the "No admin logs" text)
+      const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.cells.length === 3 && row.cells[0].colSpan !== 3);
+      
+      if (rows.length === 0) return;
+      
+      const sortValue = select.value;
+      
+      rows.sort((a, b) => {
+        if (sortValue === 'newest' || sortValue === 'oldest') {
+          // Parse dates from the first cell
+          // Cell content looks like: "Feb 21, 2026 \n 15:25"
+          const dateA = new Date(a.cells[0].innerText.replace('\n', ' '));
+          const dateB = new Date(b.cells[0].innerText.replace('\n', ' '));
+          
+          if (sortValue === 'newest') return dateB - dateA;
+          if (sortValue === 'oldest') return dateA - dateB;
+        } else if (sortValue === 'admin_asc') {
+          const textA = a.cells[1].innerText.toLowerCase();
+          const textB = b.cells[1].innerText.toLowerCase();
+          return textA.localeCompare(textB);
+        } else if (sortValue === 'action_asc') {
+          const textA = a.cells[2].innerText.toLowerCase();
+          const textB = b.cells[2].innerText.toLowerCase();
+          return textA.localeCompare(textB);
+        }
+      });
+      
+      // Re-append rows in sorted order
+      rows.forEach(row => tbody.appendChild(row));
     }
 
     // Program Application Management Functions

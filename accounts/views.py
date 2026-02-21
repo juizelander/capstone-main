@@ -190,6 +190,7 @@ def logout_view(request):
 def create_program(request):
     print("🟢 create_program reached:", request.method)
     if request.method == 'POST':
+        admin_id = request.session.get('user_id')
         program_name = request.POST.get('program_name')
         requirements = request.POST.get('requirements')
         print("📦 POST DATA:", request.POST)
@@ -201,6 +202,11 @@ def create_program(request):
             return redirect('accounts:admin_dashboard')
 
         Program.objects.create(program_name=program_name, requirements=requirements, program_type=program_type)
+        
+        if admin_id:
+            current_admin = Admin.objects.get(admin_id=admin_id)
+            AdminLog.objects.create(admin=current_admin, action=f"Created program '{program_name}'")
+
         messages.success(request, f"Program '{program_name}' created successfully!")
         print("✅ Program created:", program_name)
         return redirect('accounts:admin_dashboard')
@@ -475,6 +481,9 @@ def create_popup(request):
             expires_at=expires_at
         )
         
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Created popup '{popup.title}'")
+        
         return JsonResponse({
             'success': True,
             'popup_id': popup.id,
@@ -508,6 +517,9 @@ def edit_popup(request, popup_id):
         popup.expires_at = expires_at
         popup.save()
         
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Edited popup '{popup.title}'")
+        
         return JsonResponse({
             'success': True,
             'message': 'Popup updated successfully'
@@ -529,6 +541,10 @@ def toggle_popup(request, popup_id):
         popup.is_active = not popup.is_active
         popup.save()
         
+        action_word = "Activated" if popup.is_active else "Deactivated"
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"{action_word} popup '{popup.title}'")
+        
         return JsonResponse({
             'success': True,
             'is_active': popup.is_active,
@@ -548,7 +564,11 @@ def delete_popup(request, popup_id):
     
     try:
         popup = get_object_or_404(Popup, id=popup_id)
+        popup_title = popup.title
         popup.delete()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Deleted popup '{popup_title}'")
         
         return JsonResponse({
             'success': True,
@@ -605,6 +625,9 @@ def approve_student(request, student_id):
         student.status = 'active'
         student.save()
         
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Approved student {student.username}")
+        
         return JsonResponse({
             'success': True,
             'message': 'Student application approved successfully'
@@ -625,6 +648,9 @@ def reject_student(request, student_id):
         student = get_object_or_404(Student, pk=student_id)
         student.status = 'rejected'
         student.save()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Rejected student {student.username}")
         
         return JsonResponse({
             'success': True,
@@ -650,12 +676,17 @@ def toggle_student_status(request, student_id):
         if student.status == 'active':
             student.status = 'inactive'
             action = 'deactivated'
+            log_action = "Deactivated"
         else:
             # If rejected, pending, or inactive, set to active
             student.status = 'active'
             action = 'activated'
+            log_action = "Activated"
             
         student.save()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"{log_action} student {student.username}")
         
         return JsonResponse({
             'success': True,
@@ -703,6 +734,9 @@ def edit_student(request, student_id):
 
         student.save()
 
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Edited student details for {student.username}")
+
         return JsonResponse({
             'success': True,
             'message': 'Student details updated successfully'
@@ -723,6 +757,9 @@ def delete_student(request, student_id):
         student = get_object_or_404(Student, pk=student_id)
         username = student.username
         student.delete()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Deleted student {username}")
         
         return JsonResponse({
             'success': True,
@@ -862,6 +899,9 @@ def approve_program_application(request, application_id):
         application.remarks = remarks
         application.save()
         
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Approved program application {application.app_id}")
+        
         return JsonResponse({
             'success': True,
             'message': 'Program application approved successfully'
@@ -886,6 +926,9 @@ def reject_program_application(request, application_id):
         application.requirement_status = 'rejected'
         application.remarks = remarks
         application.save()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Rejected program application {application.app_id}")
         
         return JsonResponse({
             'success': True,
@@ -1111,6 +1154,12 @@ def generate_report(request):
 
         data = []
         filename = f"report_{report_type}_{datetime.now().strftime('%Y%m%d')}"
+        
+        # Log generation event if exporting
+        if request.GET.get('export'):
+            export_format = "Word" if request.GET.get('export') == 'word' else "CSV"
+            current_admin = Admin.objects.get(admin_id=admin_id)
+            AdminLog.objects.create(admin=current_admin, action=f"Generated {report_type} report in {export_format} format")
 
         if report_type == 'students':
             # Base query
@@ -1454,6 +1503,8 @@ def send_message(request):
                 subject=subject,
                 body=body
             )
+            
+            AdminLog.objects.create(admin=admin, action=f"Sent message to student {student.username}")
         else:
             # Student is submitting a ticket
             student = get_object_or_404(Student, pk=user_id)
