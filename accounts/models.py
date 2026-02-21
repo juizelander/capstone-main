@@ -5,10 +5,20 @@ from django.utils import timezone
 class Admin(models.Model):
     admin_id = models.AutoField(primary_key=True)
     admin_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=200, blank=True, null=True)
     password = models.CharField(max_length=100)
 
     def __str__(self):
         return self.admin_name
+
+
+class AdminLog(models.Model):
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE, related_name='logs')
+    action = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.admin.admin_name} - {self.action} at {self.timestamp.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
 class Student(models.Model):

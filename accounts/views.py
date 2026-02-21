@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
-from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument, Message
+from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument, Message, AdminLog
 from django.db import models
 from home.models import Program, Application
 from django.http import HttpResponse
@@ -45,6 +45,9 @@ def login_view(request):
         if admin_user:
             request.session['user_role'] = 'admin'
             request.session['user_id'] = admin_user.admin_id
+            
+            # Log the login action
+            AdminLog.objects.create(admin=admin_user, action="Signed in")
 
             return redirect('accounts:admin_dashboard')
         # Check if user is Student
@@ -98,23 +101,18 @@ def register_view(request):
             messages.error(request, "Username is already taken.")
             return render(request, 'accounts/register.html')
 
-        bday = request.POST.get('bday')  # <-- capture birthday
+        bday = request.POST.get('bday')
         address = request.POST.get('address')
         barangay = request.POST.get('barangay')
         student_type = request.POST.get('student_type')
         contact_num = request.POST.get('contact_num')
         program_and_yr = request.POST.get('program_and_yr')
         sex = request.POST.get('sex')
-        documents = request.FILES.getlist('document') # Capture multiple files
+        documents = request.FILES.getlist('document')
         
-        # Clear program_and_yr if student is not Undergraduate
         if student_type != 'Undergraduate':
             program_and_yr = None
 
-        # Determine initial status
-        status='pending'  
-
-        # Create student (save first document to doc_submitted for backward compatibility if needed)
         first_doc = documents[0] if documents else None
 
         student = Student.objects.create(
@@ -134,12 +132,12 @@ def register_view(request):
             status='pending' 
         )
         
-        # Save all documents
         for doc in documents:
             StudentDocument.objects.create(student=student, file=doc)
 
         student.save()
-        student.save()
+        
+        # Clear google data from session
         messages.success(request, "Registration successful! Your account is pending admin approval. You will be notified once approved.")
         return redirect('accounts:login')
 
@@ -165,8 +163,16 @@ def admin_dashboard(request):
         return redirect('login')
     admin = Admin.objects.get(admin_id=admin_id)    
     programs = Program.objects.all()
+    
+    admins_list = Admin.objects.all()
+    admin_logs = AdminLog.objects.select_related('admin').order_by('-timestamp')[:50]
 
-    return render(request, 'accounts/admin_dashboard.html', {'admin': admin, 'programs': programs})
+    return render(request, 'accounts/admin_dashboard.html', {
+        'admin': admin, 
+        'programs': programs,
+        'admins_list': admins_list,
+        'admin_logs': admin_logs
+    })
 
 
 def student_dashboard(request):
@@ -295,8 +301,50 @@ def admin_change_password(request):
         admin.password = new_password
         admin.save()
         
+        # Log the password change action
+        AdminLog.objects.create(admin=admin, action="Changed password")
+        
         return JsonResponse({'success': True, 'message': 'Password changed successfully.'})
         
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def create_admin(request):
+    """Create a new admin"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        new_username = data.get('username')
+        new_full_name = data.get('full_name', '')
+        new_password = data.get('password')
+        confirm_password = data.get('confirm_password')
+
+        if not new_username or not new_password or not confirm_password:
+            return JsonResponse({'success': False, 'error': 'Username and password fields are required.'})
+
+        if new_password != confirm_password:
+            return JsonResponse({'success': False, 'error': 'Passwords do not match.'})
+
+        if Admin.objects.filter(admin_name=new_username).exists():
+            return JsonResponse({'success': False, 'error': 'An admin with this username already exists.'})
+
+        new_admin = Admin.objects.create(
+            admin_name=new_username,
+            full_name=new_full_name,
+            password=new_password
+        )
+
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Created new admin: {new_admin.admin_name}")
+
+        return JsonResponse({'success': True, 'message': 'Admin created successfully.'})
+
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 

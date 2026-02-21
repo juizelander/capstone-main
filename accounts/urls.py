@@ -14,6 +14,7 @@ urlpatterns = [
     # Admin API endpoints
     path('api/admin/stats/', views.admin_stats, name='admin_stats'),
     path('api/admin/change-password/', views.admin_change_password, name='admin_change_password'),
+    path('api/admin/create-admin/', views.create_admin, name='create_admin'),
     
     # Popup management endpoints
     path('api/student/popups/', views.get_student_popups, name='get_student_popups'),

@@ -101,8 +101,8 @@
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="students">
           <i class="fas fa-users-cog"></i> Student Management
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="settings">
-          <i class="fas fa-cog"></i> Settings
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="admins">
+          <i class="fas fa-user-shield"></i> Admins
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="reports">
           <i class="fas fa-chart-bar"></i> Reports
@@ -376,24 +376,112 @@
         </div>
       </div>
 
-      <!-- Settings Tab -->
-      <div id="settings" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Settings</h3>
-          <div class="settings-section max-w-lg">
-            <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">Change Password</h4>
-            <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
-              <div class="form-group">
-                <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-                <input type="password" id="new_password" name="new_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-              </div>
-              <div class="form-group">
-                <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-              </div>
-              <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200 w-full sm:w-auto">Update Password</button>
-            </form>
+      <!-- Admins Tab -->
+      <div id="admins" class="tab-content animate-fade-in">
+        <div class="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
+          
+          <!-- Create Admin Card -->
+          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Create New Admin</h3>
+            <div class="settings-section">
+              <form id="create-admin-form" onsubmit="createAdmin(event)" class="space-y-4">
+                <div class="form-group flex flex-col md:flex-row gap-4">
+                  <div class="flex-1">
+                    <label for="new_admin_username" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                    <input type="text" id="new_admin_username" name="new_admin_username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                  </div>
+                  <div class="flex-1">
+                    <label for="new_admin_fullname" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                    <input type="text" id="new_admin_fullname" name="new_admin_fullname" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                  </div>
+                </div>
+                <div class="form-group flex flex-col md:flex-row gap-4">
+                   <div class="flex-1">
+                     <label for="new_admin_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                     <input type="password" id="new_admin_password" name="new_admin_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                   </div>
+                   <div class="flex-1">
+                     <label for="new_admin_confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+                     <input type="password" id="new_admin_confirm_password" name="new_admin_confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                   </div>
+                </div>
+                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create Admin</button>
+              </form>
+            </div>
           </div>
+          
+          <!-- Change Password Card -->
+          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Change Password</h3>
+            <div class="settings-section">
+              <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
+                <div class="form-group flex flex-col md:flex-row gap-4">
+                  <div class="flex-1">
+                    <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                    <input type="password" id="new_password" name="new_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                  </div>
+                  <div class="flex-1">
+                    <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Update Password</button>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Admin List Card -->
+          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin List</h3>
+            <div class="overflow-x-auto overflow-y-auto max-h-[300px] relative rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+              <table class="data-table w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-gray-50 dark:bg-gray-700/50 z-10 shadow-sm">
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">Username</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">Full Name</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                  {% for a in admins_list %}
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300 font-medium">{{ a.admin_name }}</td>
+                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300">{% if a.full_name %}{{ a.full_name }}{% else %}<span class="text-gray-400 italic">No name set</span>{% endif %}</td>
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="2" class="p-4 text-center text-gray-500">No admins found.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Admin Logs Card -->
+          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin Logs</h3>
+            <div class="overflow-hidden relative max-h-[300px] rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-y-auto w-full">
+              <table class="data-table w-full text-left border-collapse">
+                <thead class="sticky top-0 bg-gray-100 dark:bg-gray-700 z-10 w-full">
+                  <tr class="border-b border-gray-200 dark:border-gray-600">
+                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Time</th>
+                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Admin</th>
+                    <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 bg-white dark:bg-gray-800 w-full">
+                  {% for log in admin_logs %}
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full">
+                    <td class="p-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ log.timestamp|date:"M d, Y" }} <br> {{ log.timestamp|date:"H:i" }}</td>
+                    <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium">{% if log.admin.full_name %}{{ log.admin.full_name }}{% else %}{{ log.admin.admin_name }}{% endif %}</td>
+                    <td class="p-3 text-sm text-gray-600 dark:text-gray-300">{{ log.action }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="3" class="p-4 text-center text-gray-500">No admin logs available.</td></tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
         </div>
       </div>
 
@@ -982,7 +1070,7 @@
       fetch(`/api/admin/popups/${popupId}/toggle/`, {
         method: 'POST',
         headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
           'Content-Type': 'application/json',
         },
       })
@@ -994,6 +1082,56 @@
             alert('Error toggling popup: ' + data.error);
           }
         });
+    }
+
+    function createAdmin(event) {
+      event.preventDefault();
+      
+      const new_admin_username = document.getElementById('new_admin_username').value;
+      const new_admin_fullname = document.getElementById('new_admin_fullname').value;
+      const new_admin_password = document.getElementById('new_admin_password').value;
+      const new_admin_confirm_password = document.getElementById('new_admin_confirm_password').value;
+
+      if (new_admin_password !== new_admin_confirm_password) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      const btn = event.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+      btn.disabled = true;
+
+      fetch('/api/admin/create-admin/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+        },
+        body: JSON.stringify({
+          username: new_admin_username,
+          full_name: new_admin_fullname,
+          password: new_admin_password,
+          confirm_password: new_admin_confirm_password
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('Admin created successfully!');
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred during admin creation.');
+      })
+      .finally(() => {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      });
     }
 
     function changeAdminPassword(event) {
@@ -1011,7 +1149,7 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': getCookie('csrftoken')
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
         },
         body: JSON.stringify({
           new_password: newPassword,
