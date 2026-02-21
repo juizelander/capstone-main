@@ -339,12 +339,52 @@
                 </h4>
                 <div style="display: grid; gap: 15px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_address" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Home Address</label>
-                    <textarea id="prof_address" name="address" rows="3" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">{{ student.address }}</textarea>
+                    <label for="prof_student_type" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Type of Student</label>
+                    <select id="prof_student_type" name="student_type" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" onchange="handleStudentTypeChange()">
+                      <option value="" {% if not student.student_type %}selected{% endif %} disabled>Select student type</option>
+                      <optgroup label="High School">
+                        <option value="Junior High School" {% if student.student_type == 'Junior High School' %}selected{% endif %}>Junior High School</option>
+                        <option value="Senior High School" {% if student.student_type == 'Senior High School' %}selected{% endif %}>Senior High School</option>
+                      </optgroup>
+                      <optgroup label="College">
+                        <option value="Undergraduate" {% if student.student_type == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
+                        <option value="Master's" {% if student.student_type == "Master's" %}selected{% endif %}>Master's</option>
+                        <option value="Doctoral" {% if student.student_type == 'Doctoral' %}selected{% endif %}>Doctoral</option>
+                      </optgroup>
+                      <optgroup label="Other">
+                        <option value="Board Exam" {% if student.student_type == 'Board Exam' %}selected{% endif %}>Board Exam</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;" id="prof_program_yr_container" {% if student.student_type != 'Undergraduate' %}style="display: none;"{% endif %}>
+                    <label for="prof_program_and_yr" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Program and Year</label>
+                    <input type="text" id="prof_program_and_yr" name="program_and_yr" value="{{ student.program_and_yr|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" {% if student.student_type == 'Undergraduate' %}required{% endif %}>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_program_and_yr" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Program and Year</label>
-                    <input type="text" id="prof_program_and_yr" name="program_and_yr" value="{{ student.program_and_yr }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_barangay" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Barangay</label>
+                    <select id="prof_barangay" name="barangay" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <option value="" {% if not student.barangay %}selected{% endif %} disabled>Select your barangay</option>
+                      <option value="Aningway-Sacatihan" {% if student.barangay == 'Aningway-Sacatihan' %}selected{% endif %}>Aningway-Sacatihan</option>
+                      <option value="Asinan (Poblacion)" {% if student.barangay == 'Asinan (Poblacion)' %}selected{% endif %}>Asinan (Poblacion)</option>
+                      <option value="Asinan Proper" {% if student.barangay == 'Asinan Proper' %}selected{% endif %}>Asinan Proper</option>
+                      <option value="Baraca-Camachile (Poblacion)" {% if student.barangay == 'Baraca-Camachile (Poblacion)' %}selected{% endif %}>Baraca-Camachile (Poblacion)</option>
+                      <option value="Batiawan" {% if student.barangay == 'Batiawan' %}selected{% endif %}>Batiawan</option>
+                      <option value="Calapacuan" {% if student.barangay == 'Calapacuan' %}selected{% endif %}>Calapacuan</option>
+                      <option value="Calapandayan (Poblacion)" {% if student.barangay == 'Calapandayan (Poblacion)' %}selected{% endif %}>Calapandayan (Poblacion)</option>
+                      <option value="Cawag" {% if student.barangay == 'Cawag' %}selected{% endif %}>Cawag</option>
+                      <option value="Ilwas (Poblacion)" {% if student.barangay == 'Ilwas (Poblacion)' %}selected{% endif %}>Ilwas (Poblacion)</option>
+                      <option value="Mangan-Vaca" {% if student.barangay == 'Mangan-Vaca' %}selected{% endif %}>Mangan-Vaca</option>
+                      <option value="Matain" {% if student.barangay == 'Matain' %}selected{% endif %}>Matain</option>
+                      <option value="Naugsol" {% if student.barangay == 'Naugsol' %}selected{% endif %}>Naugsol</option>
+                      <option value="Pamatawan" {% if student.barangay == 'Pamatawan' %}selected{% endif %}>Pamatawan</option>
+                      <option value="San Isidro" {% if student.barangay == 'San Isidro' %}selected{% endif %}>San Isidro</option>
+                      <option value="Santo Tomas" {% if student.barangay == 'Santo Tomas' %}selected{% endif %}>Santo Tomas</option>
+                      <option value="Wawandue (Poblacion)" {% if student.barangay == 'Wawandue (Poblacion)' %}selected{% endif %}>Wawandue (Poblacion)</option>
+                    </select>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_address" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Home Address</label>
+                    <textarea id="prof_address" name="address" rows="3" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">{{ student.address }}</textarea>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="prof_scholarship" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current Scholarship (If any)</label>
@@ -974,6 +1014,26 @@
         actions.classList.remove('flex');
         editBtn.style.display = 'inline-flex';
         document.getElementById('profileForm').reset();
+      }
+      
+      handleStudentTypeChange();
+    }
+
+    function handleStudentTypeChange() {
+      const typeSelect = document.getElementById('prof_student_type');
+      const container = document.getElementById('prof_program_yr_container');
+      const input = document.getElementById('prof_program_and_yr');
+      
+      if (typeSelect.value === 'Undergraduate') {
+        container.style.display = 'flex';
+        // Only make it required if we're in edit mode. Overriding attribute if disabled doesn't matter too much, but let's be safe.
+        if (!typeSelect.disabled) {
+           input.setAttribute('required', 'required');
+        }
+      } else {
+        container.style.display = 'none';
+        input.removeAttribute('required');
+        input.value = '';
       }
     }
 

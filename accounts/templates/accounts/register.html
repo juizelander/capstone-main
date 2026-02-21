@@ -11,6 +11,122 @@
   <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link rel="stylesheet" href="{% static 'accounts/style.css' %}?v=3">
+  <style>
+    /* Custom Select Wrapper for Barangay */
+    .custom-select-wrapper {
+      position: relative;
+      user-select: none;
+      width: 100%;
+    }
+    .custom-select {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .custom-select__trigger {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem;
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      font-weight: 400;
+      color: #333;
+      background: #ffffff;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      cursor: pointer;
+      box-sizing: border-box;
+      min-height: 48px;
+    }
+    .custom-select__trigger:hover {
+      border-color: #CBD5E1;
+    }
+    .custom-select__trigger span {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 15px;
+    }
+    .custom-arrow {
+      position: absolute;
+      right: 15px;
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid #718096;
+      border-bottom: 2px solid #718096;
+      transform: translateY(-5px) rotate(45deg);
+      transition: transform 0.3s ease;
+    }
+    .custom-select.open .custom-arrow {
+      transform: translateY(2px) rotate(-135deg);
+    }
+    .custom-options {
+      position: absolute;
+      display: block;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      background: #fff;
+      border: 1px solid #E2E8F0;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 999;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+    .custom-select.open .custom-options {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+    .custom-option {
+      position: relative;
+      display: block;
+      padding: 0.8rem 1rem;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #1e293b;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .custom-option:last-child {
+      border-bottom: none;
+    }
+    .custom-option:hover {
+      background: #f8fafc;
+      color: #10b981;
+    }
+    .custom-option.selected {
+      background: #e2e8f0;
+      font-weight: 500;
+    }
+    /* Scrollbar styles for custom options */
+    .custom-options::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-options::-webkit-scrollbar-track {
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+    .custom-options::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 12px;
+    }
+    .custom-options::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
 </head>
 
 <body>
@@ -166,8 +282,98 @@
       </div>
 
       <div class="input-group">
+        <label for="student_type">Type of Student</label>
+        <div class="custom-select-wrapper">
+          <select id="student_type" name="student_type" required style="opacity: 0; position: absolute; height: 1px; width: 1px; bottom: 0; left: 50%; pointer-events: none;">
+            <option value="" disabled selected>Select student type</option>
+            <optgroup label="High School">
+              <option value="Junior High School">Junior High School</option>
+              <option value="Senior High School">Senior High School</option>
+            </optgroup>
+            <optgroup label="College">
+              <option value="Undergraduate">Undergraduate</option>
+              <option value="Master's">Master's</option>
+              <option value="Doctoral">Doctoral</option>
+            </optgroup>
+            <optgroup label="Other">
+              <option value="Board Exam">Board Exam</option>
+            </optgroup>
+          </select>
+
+          <div class="custom-select" id="custom-student-type">
+            <div class="custom-select__trigger">
+              <span>Select student type</span>
+              <div class="custom-arrow"></div>
+            </div>
+            <div class="custom-options">
+              <div style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: bold; color: #94a3b8; text-transform: uppercase;">High School</div>
+              <span class="custom-option" data-value="Junior High School">Junior High School</span>
+              <span class="custom-option" data-value="Senior High School">Senior High School</span>
+              <div style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: bold; color: #94a3b8; text-transform: uppercase; margin-top: 5px;">College</div>
+              <span class="custom-option" data-value="Undergraduate">Undergraduate</span>
+              <span class="custom-option" data-value="Master's">Master's</span>
+              <span class="custom-option" data-value="Doctoral">Doctoral</span>
+              <div style="padding: 0.4rem 1rem; font-size: 0.8rem; font-weight: bold; color: #94a3b8; text-transform: uppercase; margin-top: 5px;">Other</div>
+              <span class="custom-option" data-value="Board Exam">Board Exam</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group" id="program_yr_container" style="display: none;">
         <label for="program_and_yr">Program & Year</label>
-        <input type="text" id="program_and_yr" name="program_and_yr" placeholder="e.g., BSIT 3rd Year" required>
+        <input type="text" id="program_and_yr" name="program_and_yr" placeholder="e.g., BSIT 3rd Year">
+      </div>
+
+      <div class="input-group">
+        <label for="barangay">Barangay</label>
+        <div class="custom-select-wrapper">
+          <!-- Hidden select for form submission and HTML5 validation -->
+          <select id="barangay" name="barangay" required style="opacity: 0; position: absolute; height: 1px; width: 1px; bottom: 0; left: 50%; pointer-events: none;">
+            <option value="" disabled selected>Select your barangay</option>
+            <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
+            <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
+            <option value="Asinan Proper">Asinan Proper</option>
+            <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
+            <option value="Batiawan">Batiawan</option>
+            <option value="Calapacuan">Calapacuan</option>
+            <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
+            <option value="Cawag">Cawag</option>
+            <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
+            <option value="Mangan-Vaca">Mangan-Vaca</option>
+            <option value="Matain">Matain</option>
+            <option value="Naugsol">Naugsol</option>
+            <option value="Pamatawan">Pamatawan</option>
+            <option value="San Isidro">San Isidro</option>
+            <option value="Santo Tomas">Santo Tomas</option>
+            <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
+          </select>
+          
+          <div class="custom-select" id="custom-barangay">
+              <div class="custom-select__trigger">
+                  <span>Select your barangay</span>
+                  <div class="custom-arrow"></div>
+              </div>
+              <div class="custom-options">
+                  <span class="custom-option" data-value="Aningway-Sacatihan">Aningway-Sacatihan</span>
+                  <span class="custom-option" data-value="Asinan (Poblacion)">Asinan (Poblacion)</span>
+                  <span class="custom-option" data-value="Asinan Proper">Asinan Proper</span>
+                  <span class="custom-option" data-value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</span>
+                  <span class="custom-option" data-value="Batiawan">Batiawan</span>
+                  <span class="custom-option" data-value="Calapacuan">Calapacuan</span>
+                  <span class="custom-option" data-value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</span>
+                  <span class="custom-option" data-value="Cawag">Cawag</span>
+                  <span class="custom-option" data-value="Ilwas (Poblacion)">Ilwas (Poblacion)</span>
+                  <span class="custom-option" data-value="Mangan-Vaca">Mangan-Vaca</span>
+                  <span class="custom-option" data-value="Matain">Matain</span>
+                  <span class="custom-option" data-value="Naugsol">Naugsol</span>
+                  <span class="custom-option" data-value="Pamatawan">Pamatawan</span>
+                  <span class="custom-option" data-value="San Isidro">San Isidro</span>
+                  <span class="custom-option" data-value="Santo Tomas">Santo Tomas</span>
+                  <span class="custom-option" data-value="Wawandue (Poblacion)">Wawandue (Poblacion)</span>
+              </div>
+          </div>
+        </div>
       </div>
 
       <div class="input-group">
@@ -212,6 +418,56 @@
         fileLabel.textContent = '📄 Choose documents to upload (multiple allowed)';
         fileLabelElement.classList.remove('has-file');
       }
+    });
+
+    // Custom Select Initializer
+    function setupCustomSelect(containerId, hiddenSelectId, onChangeCallback = null) {
+        const customSelect = document.getElementById(containerId);
+        if (!customSelect) return;
+        const trigger = customSelect.querySelector('.custom-select__trigger');
+        const options = customSelect.querySelectorAll('.custom-option');
+        const hiddenSelect = document.getElementById(hiddenSelectId);
+
+        trigger.addEventListener('click', function() {
+            customSelect.classList.toggle('open');
+        });
+
+        options.forEach(option => {
+            option.addEventListener('click', function() {
+                options.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                trigger.querySelector('span').textContent = this.textContent;
+                trigger.querySelector('span').style.color = '#1e293b'; // Darker text on select
+                hiddenSelect.value = this.dataset.value;
+                customSelect.classList.remove('open');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(e) {
+            if (!customSelect.contains(e.target)) {
+                customSelect.classList.remove('open');
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setupCustomSelect('custom-barangay', 'barangay');
+
+        const studentTypeHidden = document.getElementById('student_type');
+        const progYrContainer = document.getElementById('program_yr_container');
+        const progYrInput = document.getElementById('program_and_yr');
+
+        setupCustomSelect('custom-student-type', 'student_type', function(value) {
+            if (value === 'Undergraduate') {
+                progYrContainer.style.display = 'block';
+                progYrInput.setAttribute('required', 'required');
+            } else {
+                progYrContainer.style.display = 'none';
+                progYrInput.removeAttribute('required');
+                progYrInput.value = ''; // Clear value if hidden
+            }
+        });
     });
   </script>
 </body>

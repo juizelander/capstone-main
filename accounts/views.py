@@ -100,11 +100,17 @@ def register_view(request):
 
         bday = request.POST.get('bday')  # <-- capture birthday
         address = request.POST.get('address')
+        barangay = request.POST.get('barangay')
+        student_type = request.POST.get('student_type')
         contact_num = request.POST.get('contact_num')
         program_and_yr = request.POST.get('program_and_yr')
         sex = request.POST.get('sex')
         documents = request.FILES.getlist('document') # Capture multiple files
         
+        # Clear program_and_yr if student is not Undergraduate
+        if student_type != 'Undergraduate':
+            program_and_yr = None
+
         # Determine initial status
         status='pending'  
 
@@ -119,6 +125,8 @@ def register_view(request):
             email=email,
             bday=bday,  
             address=address,
+            barangay=barangay,
+            student_type=student_type,
             contact_num=contact_num,
             program_and_yr=program_and_yr,
             sex=sex,
@@ -522,6 +530,8 @@ def get_student_applications(request):
                 'email': student.email,
                 'bday': student.bday.isoformat(),
                 'address': student.address,
+                'barangay': student.barangay,
+                'student_type': student.student_type,
                 'contact_num': student.contact_num,
                 'program_and_yr': student.program_and_yr,
                 'status': student.status,
@@ -630,7 +640,14 @@ def edit_student(request, student_id):
         student.email = data.get('email', student.email)
         student.contact_num = data.get('contact_num', student.contact_num)
         student.address = data.get('address', student.address)
-        student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
+        student.barangay = data.get('barangay', student.barangay)
+        student.student_type = data.get('student_type', student.student_type)
+        
+        # If explicitly updating to non-Undergraduate, clear program_and_yr
+        if 'student_type' in data and data['student_type'] != 'Undergraduate':
+            student.program_and_yr = None
+        else:
+            student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
         
         # Only allow changing status if provided
         if 'status' in data:
@@ -691,7 +708,15 @@ def update_student_profile(request):
         student.email = data.get('email', student.email)
         student.contact_num = data.get('contact_num', student.contact_num)
         student.address = data.get('address', student.address)
-        student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
+        student.barangay = data.get('barangay', student.barangay)
+        student.student_type = data.get('student_type', student.student_type)
+        
+        # If explicitly updating to non-Undergraduate, clear program_and_yr
+        if 'student_type' in data and data['student_type'] != 'Undergraduate':
+            student.program_and_yr = None
+        else:
+            student.program_and_yr = data.get('program_and_yr', student.program_and_yr)
+            
         student.sex = data.get('sex', student.sex)
         student.scholarship = data.get('scholarship', student.scholarship)
 

@@ -12,15 +12,45 @@ class Admin(models.Model):
 
 
 class Student(models.Model):
+    BARANGAY_CHOICES = [
+        ('Aningway-Sacatihan', 'Aningway-Sacatihan'),
+        ('Asinan (Poblacion)', 'Asinan (Poblacion)'),
+        ('Asinan Proper', 'Asinan Proper'),
+        ('Baraca-Camachile (Poblacion)', 'Baraca-Camachile (Poblacion)'),
+        ('Batiawan', 'Batiawan'),
+        ('Calapacuan', 'Calapacuan'),
+        ('Calapandayan (Poblacion)', 'Calapandayan (Poblacion)'),
+        ('Cawag', 'Cawag'),
+        ('Ilwas (Poblacion)', 'Ilwas (Poblacion)'),
+        ('Mangan-Vaca', 'Mangan-Vaca'),
+        ('Matain', 'Matain'),
+        ('Naugsol', 'Naugsol'),
+        ('Pamatawan', 'Pamatawan'),
+        ('San Isidro', 'San Isidro'),
+        ('Santo Tomas', 'Santo Tomas'),
+        ('Wawandue (Poblacion)', 'Wawandue (Poblacion)'),
+    ]
+
+    STUDENT_TYPE_CHOICES = [
+        ('Junior High School', 'Junior High School'),
+        ('Senior High School', 'Senior High School'),
+        ('Undergraduate', 'Undergraduate'),
+        ("Master's", "Master's"),
+        ('Doctoral', 'Doctoral'),
+        ('Board Exam', 'Board Exam'),
+    ]
+
     student_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     bday = models.DateField()
     address = models.TextField()
+    barangay = models.CharField(max_length=50, choices=BARANGAY_CHOICES, blank=True, null=True)
+    student_type = models.CharField(max_length=50, choices=STUDENT_TYPE_CHOICES, blank=True, null=True)
     contact_num = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
-    program_and_yr = models.CharField(max_length=100)
+    program_and_yr = models.CharField(max_length=100, blank=True, null=True)
     scholarship = models.CharField(max_length=100, blank=True, null=True)
     sex = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')], default='Male')
     password = models.CharField(max_length=100)

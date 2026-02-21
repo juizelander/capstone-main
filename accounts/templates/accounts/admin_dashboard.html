@@ -13,6 +13,43 @@
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        fontFamily: {
+          sans: ['Roboto', 'sans-serif'],
+          heading: ['Raleway', 'sans-serif'],
+        },
+        extend: {
+          colors: {
+            brand: {
+              primary: '#10B981',
+              secondary: '#F59E0B',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-out',
+            'slide-up': 'slideUp 0.4s ease-out',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(10px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     .ql-editor {
       min-height: 150px;
@@ -31,167 +68,192 @@
       margin-left: 8px;
       vertical-align: middle;
     }
-
-    .nav-badge {
-      display: none;
-      position: absolute;
-      top: 10px;
-      left: 30px;
-      background-color: #EF4444;
-      color: white;
-      border-radius: 9999px;
-      padding: 1px 6px;
-      font-size: 0.7rem;
-      min-width: 18px;
-      text-align: center;
-      font-weight: bold;
-      z-index: 5;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
   </style>
 </head>
+<link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
 <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
 
 <body>
-  <header>
-    <h1>ScholarSync Subic</h1>
-    <p class="welcome-text">Welcome, {{ admin.admin_name }}!</p>
-  </header>
-
-  <div class="container">
+  <div class="sd-app-layout">
     <!-- Sidebar -->
-    <div class="sidebar">
-      <nav>
-        <a href="#" class="nav-link active" data-tab="dashboard">
+    <aside class="sd-sidebar">
+      <div class="sd-sidebar-header">
+        <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
+        <span>ScholarSync</span>
+      </div>
+      <nav class="sd-sidebar-nav">
+
+        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="dashboard">
           <i class="fas fa-chart-line"></i> Dashboard
         </a>
-        <a href="#" class="nav-link" data-tab="student-registrations">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="student-registrations">
           <i class="fas fa-user-plus"></i> Student Registration
-          <span class="nav-badge" id="badge-registrations">0</span>
+          <span class="nav-badge" id="badge-registrations" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-link" data-tab="student-applications">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="student-applications">
           <i class="fas fa-file-alt"></i> Program Applications
-          <span class="nav-badge" id="badge-applications">0</span>
+          <span class="nav-badge" id="badge-applications" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-link" data-tab="notifications">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="notifications">
           <i class="fas fa-bell"></i> Notifications
-          <span class="nav-badge" id="badge-notifications">0</span>
+          <span class="nav-badge" id="badge-notifications" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-link" data-tab="students">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="students">
           <i class="fas fa-users-cog"></i> Student Management
         </a>
-        <a href="#" class="nav-link" data-tab="settings">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="settings">
           <i class="fas fa-cog"></i> Settings
         </a>
-        <a href="#" class="nav-link" data-tab="reports">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="reports">
           <i class="fas fa-chart-bar"></i> Reports
         </a>
-        <a href="#" class="nav-item" data-tab="programs">
-          <i class="fas fa-graduation-cap"></i>
-          Programs
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="programs">
+          <i class="fas fa-graduation-cap"></i> Programs
         </a>
-        <a href="#" class="nav-link" data-tab="inbox">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="inbox">
           <i class="fas fa-inbox"></i> Inbox / Support
-          <span class="nav-badge" id="badge-inbox">0</span>
+          <span class="nav-badge" id="badge-inbox" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
       </nav>
-      <a href="{% url 'accounts:logout' %}" class="logout-btn">Logout</a>
-    </div>
+      
+      <div class="sd-sidebar-footer relative">
+        <div class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden" onclick="toggleProfileDropdown(event)">
+          <div class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></div>
+          
+          <div class="relative z-10 flex items-center justify-between">
+            <div class="flex items-center gap-3 overflow-hidden">
+              <div class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
+                <i class="fas fa-user-shield"></i>
+              </div>
+              <div class="profile-info flex-1 overflow-hidden">
+                <div class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">{{ admin.admin_name }}</div>
+                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">Admin Account</div>
+              </div>
+            </div>
+            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300" id="profile-chevron"></i>
+          </div>
+        </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
+        <!-- Logout Dropdown -->
+        <div class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50" id="profile-dropdown">
+          <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
+            {% csrf_token %}
+            <button type="submit" class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+              <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
+            </button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="sd-main-wrapper">
+      <!-- Topbar -->
+      <header class="sd-topbar">
+        <div class="topbar-search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search... (⌘F)">
+        </div>
+        <div class="topbar-actions">
+          <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
+            <i class="fas fa-moon"></i>
+          </button>
+        </div>
+      </header>
+      
+      <!-- Main Content Area -->
+      <main class="sd-content">
       <!-- Dashboard Tab -->
-      <div id="dashboard" class="tab-content active">
-        <div class="card">
-          <h3>Dashboard Overview</h3>
-          <p>Welcome to your admin dashboard. Use the sidebar to navigate between different sections.</p>
+      <div id="dashboard" class="tab-content active animate-fade-in">
+        <div class="welcome-header animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Dashboard Overview</h1>
+            <p class="text-gray-500 dark:text-gray-400">Welcome to your admin dashboard. Use the sidebar to navigate between different sections.</p>
+          </div>
+          <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95 bg-brand-primary text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2" onclick="switchTab('programs')">
+            <i class="fas fa-plus"></i> New Program
+          </button>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-users"></i>
+        <div class="kpi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-gradient-to-br from-brand-primary to-green-600 text-white p-6 rounded-xl" style="animation-delay: 100ms;">
+            <div class="flex justify-between items-start mb-4">
+              <div class="kpi-title font-medium text-white/90">Total Students</div>
+              <i class="fas fa-users text-2xl text-white/80"></i>
             </div>
-            <div class="stat-content">
-              <h4>Total Students</h4>
-              <span class="stat-number" id="total-students">Loading...</span>
-            </div>
+            <div class="kpi-value text-4xl font-bold" id="total-students">Loading...</div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-bell"></i>
+          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 200ms;">
+            <div class="flex justify-between items-start mb-4">
+              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Active Popups</div>
+              <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-bell"></i></div>
             </div>
-            <div class="stat-content">
-              <h4>Active Popups</h4>
-              <span class="stat-number" id="active-popups">Loading...</span>
-            </div>
+            <div class="kpi-value kpi-primary text-3xl font-bold text-gray-800 dark:text-white" id="active-popups">Loading...</div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-clock"></i>
+          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 300ms;">
+            <div class="flex justify-between items-start mb-4">
+              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Pending Applications</div>
+              <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center"><i class="fas fa-clock"></i></div>
             </div>
-            <div class="stat-content">
-              <h4>Pending Applications</h4>
-              <span class="stat-number" id="pending-applications">Loading...</span>
-            </div>
+            <div class="kpi-value kpi-warning text-3xl font-bold text-gray-800 dark:text-white" id="pending-applications">Loading...</div>
           </div>
 
-          <div class="stat-card">
-            <div class="stat-icon">
-              <i class="fas fa-graduation-cap"></i>
+          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 400ms;">
+            <div class="flex justify-between items-start mb-4">
+              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Total Programs</div>
+              <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-graduation-cap"></i></div>
             </div>
-            <div class="stat-content">
-              <h4>Total Programs</h4>
-              <span class="stat-number" id="total-programs">Loading...</span>
-            </div>
+            <div class="kpi-value kpi-success text-3xl font-bold text-gray-800 dark:text-white" id="total-programs">Loading...</div>
           </div>
         </div>
 
-        <!-- Chart Section -->
-        <div class="card chart-card">
-          <div class="card-header">
-            <h3>Application Trends</h3>
-            <div class="chart-controls">
-              <select id="chart-period" onchange="updateChart()">
-                <option value="7">Last 7 Days</option>
-                <option value="30" selected>Last 30 Days</option>
-                <option value="90">Last 90 Days</option>
-              </select>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Chart Section -->
+          <div class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white">Application Trends</h3>
+              <div class="chart-controls">
+                <select id="chart-period" onchange="updateChart()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="7">Last 7 Days</option>
+                  <option value="30" selected>Last 30 Days</option>
+                  <option value="90">Last 90 Days</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-container relative h-64 w-full">
+              <canvas id="applicationsChart"></canvas>
             </div>
           </div>
-          <div class="chart-container">
-            <canvas id="applicationsChart" width="400" height="200"></canvas>
-          </div>
-        </div>
 
-        <!-- Student Statistics Bar Chart -->
-        <div class="card chart-card">
-          <div class="card-header">
-            <h3>Student Statistics</h3>
-            <div class="chart-controls">
-              <select id="student-chart-type" onchange="updateStudentChart()">
-                <option value="status" selected>By Status</option>
-                <option value="program">By Program</option>
-                <option value="monthly">Monthly Registrations</option>
-              </select>
+          <!-- Student Statistics Bar Chart -->
+          <div class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-4">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white">Student Statistics</h3>
+              <div class="chart-controls">
+                <select id="student-chart-type" onchange="updateStudentChart()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="status" selected>By Status</option>
+                  <option value="program">By Program</option>
+                  <option value="monthly">Monthly Registrations</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="chart-container">
-            <canvas id="studentChart" width="400" height="200"></canvas>
+            <div class="chart-container relative h-64 w-full">
+              <canvas id="studentChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Student Account Registration Tab -->
-      <div id="student-registrations" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <h3>Student Account Registration</h3>
+      <div id="student-registrations" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Account Registration</h3>
             <div class="application-filters">
-              <select id="registration-filter" onchange="filterRegistrations()">
+              <select id="registration-filter" onchange="filterRegistrations()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
                 <option value="all">All Registrations</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
@@ -200,19 +262,19 @@
             </div>
           </div>
 
-          <div class="application-list" id="registration-list">
+          <div class="application-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="registration-list">
             <!-- Student registrations will be loaded here via JavaScript -->
           </div>
         </div>
       </div>
 
       <!-- Student Applications Tab -->
-      <div id="student-applications" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <h3>Student Program Applications</h3>
+      <div id="student-applications" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Program Applications</h3>
             <div class="application-filters">
-              <select id="program-application-filter" onchange="filterProgramApplications()">
+              <select id="program-application-filter" onchange="filterProgramApplications()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
                 <option value="all">All Applications</option>
                 <option value="submitted">Submitted</option>
                 <option value="approved">Approved</option>
@@ -221,22 +283,24 @@
             </div>
           </div>
 
-          <div class="application-list" id="program-application-list">
+          <div class="application-list grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="program-application-list">
             <!-- Program applications will be loaded here via JavaScript -->
           </div>
         </div>
       </div>
 
       <!-- Notification Center Tab -->
-      <div id="notifications" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <h3>Notification Center</h3>
-            <button class="btn btn-primary" onclick="openPopupModal()">Create New Popup</button>
+      <div id="notifications" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Notification Center</h3>
+            <button class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white font-medium px-4 py-2 rounded-lg shadow-sm flex items-center gap-2" onclick="openPopupModal()">
+              <i class="fas fa-plus"></i> Create New Popup
+            </button>
           </div>
 
-          <div class="popup-filters">
-            <select id="popup-filter" onchange="filterPopups()">
+          <div class="popup-filters mb-6">
+            <select id="popup-filter" onchange="filterPopups()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:max-w-xs p-2.5">
               <option value="all">All Popups</option>
               <option value="active">Active Only</option>
               <option value="inactive">Inactive Only</option>
@@ -247,68 +311,64 @@
             </select>
           </div>
 
-          <div class="popup-list" id="popup-list">
+          <div class="popup-list grid gap-4 lg:grid-cols-2" id="popup-list">
             <!-- Popups will be loaded here via JavaScript -->
           </div>
         </div>
       </div>
 
       <!-- Students Tab -->
-      <div id="students" class="tab-content">
-        <div class="card">
-          <div class="card">
-            <div class="card-header">
-              <h3>Student Management</h3>
-              <div class="application-filters">
-                <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
-                  class="search-input">
-                <select id="student-status-filter" onchange="filterStudents()">
-                  <option value="all">All Students</option>
-                  <option value="active">Active</option>
-                  <option value="inactive">Inactive</option>
-                  <option value="pending">Pending</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
+      <div id="students" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Management</h3>
+            <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
+                class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+              <select id="student-status-filter" onchange="filterStudents()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
+                <option value="all">All Students</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+              </select>
             </div>
+          </div>
 
-            <div class="student-list" id="student-list">
-              <!-- Students will be loaded here via JavaScript -->
-            </div>
+          <div class="student-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="student-list">
+            <!-- Students will be loaded here via JavaScript -->
           </div>
         </div>
       </div>
 
       <!-- Inbox / Support Tab -->
-      <div id="inbox" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <h3>Inbox / Support Tickets</h3>
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <button class="btn btn-sm btn-outline" onclick="loadAdminMessages()">
+      <div id="inbox" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Inbox / Support Tickets</h3>
+            <div class="application-filters flex gap-3 items-center w-full md:w-auto mt-4 md:mt-0" style="margin: 0;">
+              <button class="btn btn-sm btn-outline px-3 py-2 text-sm text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2" onclick="loadAdminMessages()">
                 <i class="fas fa-sync-alt"></i> Refresh
               </button>
-              <div class="application-filters" style="margin: 0;">
-                <select id="inbox-filter" onchange="filterAdminMessages()" style="padding: 8px; border-radius: 4px; border: 1px solid #ccc;">
-                  <option value="all">All Messages</option>
-                  <option value="unread">Unread Only</option>
-                </select>
-              </div>
+              <select id="inbox-filter" onchange="filterAdminMessages()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
+                <option value="all">All Messages</option>
+                <option value="unread">Unread Only</option>
+              </select>
             </div>
           </div>
           
-          <div class="overflow-x-auto" style="margin-top: 15px;">
-            <table class="data-table" style="width: 100%; border-collapse: collapse;">
+          <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
+            <table class="data-table w-full text-left border-collapse">
               <thead>
-                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
-                  <th style="padding: 12px; text-align: left;">Status</th>
-                  <th style="padding: 12px; text-align: left;">Student</th>
-                  <th style="padding: 12px; text-align: left;">Subject</th>
-                  <th style="padding: 12px; text-align: left;">Date</th>
-                  <th style="padding: 12px; text-align: center;">Action</th>
+                <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Student</th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Date</th>
+                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Action</th>
                 </tr>
               </thead>
-              <tbody id="admin-inbox-list">
+              <tbody id="admin-inbox-list" class="divide-y divide-gray-100 dark:divide-gray-700">
                 <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>
               </tbody>
             </table>
@@ -317,79 +377,86 @@
       </div>
 
       <!-- Settings Tab -->
-      <div id="settings" class="tab-content">
-        <div class="card">
-          <h3>Settings</h3>
-          <div class="settings-section">
-            <h4>Change Password</h4>
-            <form id="change-password-form" onsubmit="changeAdminPassword(event)">
+      <div id="settings" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Settings</h3>
+          <div class="settings-section max-w-lg">
+            <h4 class="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">Change Password</h4>
+            <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
               <div class="form-group">
-                <label for="new_password">New Password</label>
-                <input type="password" id="new_password" name="new_password" class="form-control" required>
+                <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                <input type="password" id="new_password" name="new_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
               </div>
               <div class="form-group">
-                <label for="confirm_password">Retype New Password</label>
-                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
               </div>
-              <button type="submit" class="btn btn-primary">Update Password</button>
+              <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200 w-full sm:w-auto">Update Password</button>
             </form>
           </div>
         </div>
       </div>
 
       <!-- Programs Tab Content -->
-      <div id="programs" class="tab-content">
-        <div class="card">
-          <h3>Program Management</h3>
-
-          <div class="program-actions">
-            <button class="btn btn-primary" onclick="showCreateProgram()">
-              Create New Program
+      <div id="programs" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Program Management</h3>
+            <button class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200" onclick="showCreateProgram()">
+              <i class="fas fa-plus"></i> Create New Program
             </button>
           </div>
 
-          <div id="createProgramForm" class="program-form-wrapper">
-            <form class="program-form" method="POST">
+          <div id="createProgramForm" class="program-form-wrapper bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 mb-8 max-w-3xl" style="display: none;">
+            <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+              <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">New Program Details</h4>
+              <button type="button" class="text-gray-500 hover:text-gray-800 dark:hover:text-white" onclick="hideCreateProgram()"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <form class="program-form space-y-4" method="POST" enctype="multipart/form-data">
               {% csrf_token %}
-              <label for="p_name">Program Name</label>
-              <input id="p_name" name="program_name" type="text" required>
+              <div class="form-group">
+                <label for="p_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Name</label>
+                <input id="p_name" name="program_name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+              </div>
 
-              <label for="p_type">Program Type</label>
-              <select id="p_type" name="program_type" required>
-                <option value="Financial Assistance">Financial Assistance</option>
-                <option value="Scholarship">Scholarship</option>
-                <option value="Other">Other</option>
-              </select>
+              <div class="form-group">
+                <label for="p_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Type</label>
+                <select id="p_type" name="program_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700" required>
+                  <option value="Financial Assistance">Financial Assistance</option>
+                  <option value="Scholarship">Scholarship</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-              <label for="p_req">Requirements</label>
-              <textarea id="p_req" name="requirements" rows="3"></textarea>
+              <div class="form-group">
+                <label for="p_req" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+                <textarea id="p_req" name="requirements" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+              </div>
 
-              <div class="form-group" style="margin-top: 15px;">
-                <label>Application Period</label>
-                <div style="display: flex; gap: 10px;">
-                  <div style="flex: 1;">
-                    <label for="p_start" style="font-size: 0.9em;">Start Date</label>
-                    <input id="p_start" name="application_start_date" type="date">
-                  </div>
-                  <div style="flex: 1;">
-                    <label for="p_end" style="font-size: 0.9em;">End Date</label>
-                    <input id="p_end" name="application_end_date" type="date">
-                  </div>
+              <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="p_start" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
+                  <input id="p_start" name="application_start_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+                </div>
+                <div>
+                  <label for="p_end" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
+                  <input id="p_end" name="application_end_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
                 </div>
               </div>
 
-              <label for="p_img" style="margin-top: 15px;">Background Image</label>
-              <input id="p_img" name="program_image" type="file" accept="image/*">
+              <div class="form-group">
+                <label for="p_img" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image</label>
+                <input id="p_img" name="program_image" type="file" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
+              </div>
 
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Create Program</button>
+              <div class="form-actions pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                <button type="button" class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="hideCreateProgram()">Cancel</button>
+                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create Program</button>
               </div>
             </form>
-
-
           </div>
 
-          <div class="programs-list">
+          <div class="programs-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <!-- Programs will load here -->
           </div>
         </div>
@@ -397,41 +464,34 @@
 
 
       <!-- Reports Tab -->
-      <div id="reports" class="tab-content">
-        <div class="card">
-          <div class="card-header">
-            <h3>Generate Reports</h3>
+      <div id="reports" class="tab-content animate-fade-in">
+        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+          <div class="card-header flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
           </div>
 
-          <div class="report-filters"
-            style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="report-type" style="display: block; margin-bottom: 5px; font-weight: 600;">Report Type</label>
-              <select id="report-type" class="form-control" onchange="toggleReportFilters()"
-                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+          <div class="report-filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
+            <div class="form-group w-full mb-0">
+              <label for="report-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Report Type</label>
+              <select id="report-type" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" onchange="toggleReportFilters()">
                 <option value="students">Students</option>
                 <option value="applications">Program Applications</option>
               </select>
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="report-start-date" style="display: block; margin-bottom: 5px; font-weight: 600;">Start
-                Date</label>
-              <input type="date" id="report-start-date" class="form-control"
-                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            <div class="form-group w-full mb-0">
+              <label for="report-start-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
+              <input type="date" id="report-start-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="report-end-date" style="display: block; margin-bottom: 5px; font-weight: 600;">End
-                Date</label>
-              <input type="date" id="report-end-date" class="form-control"
-                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            <div class="form-group w-full mb-0">
+              <label for="report-end-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
+              <input type="date" id="report-end-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             </div>
 
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="report-status" style="display: block; margin-bottom: 5px; font-weight: 600;">Status</label>
-              <select id="report-status" class="form-control"
-                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            <div class="form-group w-full mb-0">
+              <label for="report-status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
+              <select id="report-status" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                 <option value="all">All Statuses</option>
                 <option value="active">Active</option>
                 <option value="pending">Pending</option>
@@ -441,10 +501,9 @@
               </select>
             </div>
 
-            <div class="form-group" id="report-program-filter" style="margin-bottom: 0; display: none;">
-              <label for="report-program" style="display: block; margin-bottom: 5px; font-weight: 600;">Program</label>
-              <select id="report-program" class="form-control"
-                style="padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
+              <label for="report-program" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program</label>
+              <select id="report-program" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                 <option value="all">All Programs</option>
                 {% for program in programs %}
                 <option value="{{ program.program_id }}">{{ program.program_name }}</option>
@@ -452,27 +511,25 @@
               </select>
             </div>
 
-            <div class="form-actions" style="margin-bottom: 0;">
-              <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
-              <button class="btn btn-success" onclick="exportReport('csv')">Export CSV</button>
-              <button class="btn btn-info" onclick="exportReport('word')">Export Word</button>
+            <div class="form-actions w-full flex flex-wrap gap-2 lg:col-span-auto" style="margin-bottom: 0;">
+              <button class="btn btn-primary bg-brand-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto" onclick="generateReport()">Generate</button>
+              <button class="btn btn-success bg-green-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('csv')">CSV</button>
+              <button class="btn btn-info bg-cyan-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('word')">Word</button>
             </div>
           </div>
 
-          <div class="report-results" style="overflow-x: auto;">
-            <table class="data-table" id="report-table"
-              style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+          <div class="report-results overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700 mt-6">
+            <table class="data-table w-full text-left border-collapse" id="report-table" style="display: none;">
               <thead>
-                <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6;">
+                <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                   <!-- Headers will be populated by JS -->
                 </tr>
               </thead>
-              <tbody>
+              <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
                 <!-- Data will be populated by JS -->
               </tbody>
             </table>
-            <p id="no-data-message" style="display: none; text-align: center; margin-top: 20px; color: #6c757d;">No data
-              found for the selected criteria.</p>
+            <p id="no-data-message" class="text-center text-gray-500 dark:text-gray-400 py-8" style="display: none;">No data found for the selected criteria.</p>
           </div>
         </div>
       </div>
@@ -481,63 +538,65 @@
 
   <!-- Admin Reply Modal -->
   <div id="admin-reply-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-    <div class="modal-content" style="background-color: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
-      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 20px;">
-        <h3 style="margin: 0; color: #1e293b; font-size: 1.25rem;">Reply to Ticket</h3>
-        <span class="close" onclick="closeAdminReplyModal()" style="cursor: pointer; font-size: 24px; color: #64748b;">&times;</span>
+    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto relative">
+      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white m-0">Reply to Ticket</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer transition-colors" onclick="closeAdminReplyModal()">&times;</span>
       </div>
       
-      <div style="background-color: #f8fafc; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-        <div style="display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start;">
-          <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;" id="admin-reply-avatar">S</div>
-          <div style="flex: 1;">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
-              <strong style="color: #1e293b; font-size: 1.1rem;" id="admin-reply-sender">Student Name</strong>
-              <small style="color: #64748b;" id="admin-reply-date">Date Time</small>
+      <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg mb-6 border border-gray-100 dark:border-gray-700">
+        <div class="flex gap-4 items-start">
+          <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg flex-shrink-0" id="admin-reply-avatar">S</div>
+          <div class="flex-1 min-w-0">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
+              <strong class="text-gray-900 dark:text-white font-semibold truncate" id="admin-reply-sender">Student Name</strong>
+              <small class="text-gray-500 dark:text-gray-400 text-xs" id="admin-reply-date">Date Time</small>
             </div>
-            <strong style="color: #334155; display: block; margin-bottom: 8px;" id="admin-reply-subject">Subject</strong>
-            <p style="margin: 0; color: #475569; line-height: 1.5; white-space: pre-wrap;" id="admin-reply-body">Message body...</p>
+            <strong class="text-gray-700 dark:text-gray-200 block mb-2 text-sm" id="admin-reply-subject">Subject</strong>
+            <p class="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap leading-relaxed m-0" id="admin-reply-body">Message body...</p>
           </div>
         </div>
       </div>
       
       <form id="admin-reply-form" onsubmit="handleAdminReplySubmit(event)">
         <input type="hidden" id="admin-reply-student-id">
-        <div id="admin-reply-msg" style="display: none; padding: 10px; border-radius: 6px; margin-bottom: 15px;"></div>
+        <div id="admin-reply-msg" style="display: none;" class="mb-4 p-3 rounded-lg text-sm font-medium"></div>
         
-        <div class="form-group" style="margin-bottom: 20px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #475569;">Your Reply</label>
-          <textarea id="admin-reply-text" rows="5" style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; resize: vertical;" required placeholder="Type your reply here..."></textarea>
+        <div class="form-group mb-6">
+          <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Reply</label>
+          <textarea id="admin-reply-text" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm resize-y" required placeholder="Type your reply here..."></textarea>
         </div>
         
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" class="btn btn-secondary" onclick="closeAdminReplyModal()" style="padding: 8px 16px; background-color: #e2e8f0; color: #475569; border: none; border-radius: 4px; cursor: pointer;">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="adminReplyBtn" style="padding: 8px 16px; background-color: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer;">Send Reply</button>
+        <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
+          <button type="button" class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closeAdminReplyModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200 flex items-center gap-2" id="adminReplyBtn">
+             <i class="fas fa-paper-plane"></i> Send Reply
+          </button>
         </div>
       </form>
     </div>
   </div>
 
   <!-- Popup Modal -->
-  <div id="popup-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-title">Create New Popup</h3>
-        <span class="close" onclick="closePopupModal()">&times;</span>
+  <div id="popup-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
+      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="modal-title">Create New Popup</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closePopupModal()">&times;</span>
       </div>
-      <form id="popup-form">
+      <form id="popup-form" class="space-y-4">
         <input type="hidden" id="popup-id" name="popup_id">
         <div class="form-group">
-          <label for="popup-title">Title:</label>
-          <input type="text" id="popup-title" name="title" required>
+          <label for="popup-title" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title:</label>
+          <input type="text" id="popup-title" name="title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
         </div>
         <div class="form-group">
-          <label for="popup-message">Message:</label>
-          <textarea id="popup-message" name="message" rows="4" required></textarea>
+          <label for="popup-message" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Message:</label>
+          <textarea id="popup-message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required></textarea>
         </div>
         <div class="form-group">
-          <label for="popup-type">Type:</label>
-          <select id="popup-type" name="popup_type">
+          <label for="popup-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Type:</label>
+          <select id="popup-type" name="popup_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             <option value="info">Information</option>
             <option value="warning">Warning</option>
             <option value="success">Success</option>
@@ -545,24 +604,76 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="popup-expires">Expires At (optional):</label>
-          <input type="datetime-local" id="popup-expires" name="expires_at">
+          <label for="popup-expires" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Expires At (optional):</label>
+          <input type="datetime-local" id="popup-expires" name="expires_at" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm block">
         </div>
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="popup-active" name="is_active" checked>
-            Active
-          </label>
+        <div class="form-group flex items-center gap-2 mt-2">
+          <input type="checkbox" id="popup-active" name="is_active" class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:focus:ring-brand-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
+          <label for="popup-active" class="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" onclick="closePopupModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Save Popup</button>
+        <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button" class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closePopupModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save Popup</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
+    function toggleProfileDropdown(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('profile-dropdown');
+      const chevron = document.getElementById('profile-chevron');
+      if(dropdown && chevron) {
+        dropdown.classList.toggle('hidden');
+        dropdown.classList.toggle('flex');
+        chevron.classList.toggle('rotate-180');
+      }
+    }
+
+    // Close Dropdown when clicking outside
+    document.addEventListener('click', (event) => {
+      const dropdown = document.getElementById('profile-dropdown');
+      const chevron = document.getElementById('profile-chevron');
+      const profileCard = document.querySelector('.profile-card');
+      if (dropdown && profileCard && !profileCard.contains(event.target)) {
+        dropdown.classList.add('hidden');
+        dropdown.classList.remove('flex');
+        chevron.classList.remove('rotate-180');
+      }
+    });
+
+    // Theme toggle
+    document.addEventListener('DOMContentLoaded', () => {
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          document.body.classList.toggle('dark-mode');
+          document.documentElement.classList.toggle('dark');
+          const icon = themeToggleBtn.querySelector('i');
+          if (document.body.classList.contains('dark-mode')) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+            localStorage.setItem('theme', 'light');
+          }
+        });
+        // Check initial theme
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.documentElement.classList.add('dark');
+          const icon = themeToggleBtn.querySelector('i');
+          if (icon) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+          }
+        }
+      }
+    });
+
     // Tab switching functionality
     document.addEventListener('DOMContentLoaded', function () {
       const tabs = document.querySelectorAll('.nav-link, .nav-item');
@@ -1205,60 +1316,63 @@
 
     function createApplicationElement(application) {
       const div = document.createElement('div');
-      div.className = `application-item application-${application.status}`;
+      div.className = `application-item application-${application.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
+      
+      const statusColors = {
+        'approved': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
+        'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
+        'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
+      };
+      
+      const statusClass = statusColors[application.status.toLowerCase()] || statusColors['pending'];
+
       div.innerHTML = `
-        <div class="application-header">
-          <h4>${application.first_name} ${application.last_name}</h4>
-          <div class="application-status">
-            <span class="status-badge status-${application.status}">${application.status}</span>
-          </div>
+        <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="flex-1 min-w-0 pr-2">
+                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${application.first_name} ${application.last_name}">${application.first_name} ${application.last_name}</h4> 
+                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${application.username}</span>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${application.status}</span>
         </div>
-        <div class="application-content">
-          <div class="application-details">
-            <div class="detail-row">
-              <span class="detail-label">Username:</span>
-              <span class="detail-value">${application.username}</span>
+        
+        <div class="flex flex-col gap-2 flex-1 text-sm text-gray-700 dark:text-gray-300">
+            <div class="grid grid-cols-[100px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Email:</span>
+              <span class="truncate" title="${application.email}">${application.email}</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Email:</span>
-              <span class="detail-value">${application.email}</span>
+            <div class="grid grid-cols-[100px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Program:</span>
+              <span class="truncate" title="${application.program_and_yr}">${application.program_and_yr}</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Program & Year:</span>
-              <span class="detail-value">${application.program_and_yr}</span>
+            <div class="grid grid-cols-[100px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Contact:</span>
+              <span>${application.contact_num}</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Contact:</span>
-              <span class="detail-value">${application.contact_num}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Address:</span>
-              <span class="detail-value">${application.address}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Birthday:</span>
-              <span class="detail-value">${new Date(application.bday).toLocaleDateString()}</span>
+            <div class="grid grid-cols-[100px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Applied:</span>
+              <span>${new Date(application.created_at || Date.now()).toLocaleDateString()}</span>
             </div>
             ${application.doc_submitted ? `
-            <div class="detail-row">
-              <span class="detail-label">Document:</span>
-              <span class="detail-value">
-                <a href="/media/${application.doc_submitted}" target="_blank" class="document-link">View Document</a>
-              </span>
+            <div class="grid grid-cols-[100px_1fr] gap-2 mt-1">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Document:</span>
+              <a href="/media/${application.doc_submitted}" target="_blank" class="text-brand-primary hover:underline flex items-center gap-1"><i class="fas fa-file-alt"></i> View</a>
             </div>
             ` : ''}
-          </div>
-          <div class="application-meta">
-            <span class="application-date">Applied: ${new Date(application.created_at || Date.now()).toLocaleDateString()}</span>
-          </div>
-          <div class="application-actions">
+        </div>
+        
+        <div class="flex gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
             ${application.status === 'pending' ? `
-              <button class="btn btn-success btn-sm" onclick="approveStudent(${application.id})">Approve</button>
-              <button class="btn btn-danger btn-sm" onclick="rejectStudent(${application.id})">Reject</button>
+              <button class="flex-1 text-center py-2 px-3 bg-green-50 text-green-600 hover:bg-green-100 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800 rounded-lg text-sm font-medium transition-colors" onclick="approveStudent(${application.id})">
+                  <i class="fas fa-check mr-1"></i> Approve
+              </button>
+              <button class="flex-1 text-center py-2 px-3 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 rounded-lg text-sm font-medium transition-colors" onclick="rejectStudent(${application.id})">
+                  <i class="fas fa-times mr-1"></i> Reject
+              </button>
             ` : `
-              <span class="action-completed">Action completed</span>
+              <div class="w-full text-center py-2 px-3 bg-gray-50 text-gray-500 border border-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 rounded-lg text-sm font-medium">
+                  <i class="fas fa-check-circle mr-1 text-green-500"></i> Action Completed
+              </div>
             `}
-          </div>
         </div>
       `;
       return div;
@@ -1366,36 +1480,52 @@
 
     function createProgramApplicationElement(application) {
       const div = document.createElement('div');
-      div.className = `application-item application-${application.requirement_status}`;
+      div.className = `application-item application-${application.requirement_status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
+      
+      const statusColors = {
+        'approved': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
+        'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
+        'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200',
+        'submitted': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200',
+      };
+      
+      const statusClass = statusColors[application.requirement_status.toLowerCase()] || statusColors['pending'];
+
       div.innerHTML = `
-        <div class="application-header">
-          <h4>${application.student.first_name} ${application.student.last_name}</h4>
-          <div class="application-status">
-            <span class="status-badge status-${application.requirement_status}">${application.requirement_status}</span>
-          </div>
+        <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="flex-1 min-w-0 pr-2">
+                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${application.student.first_name} ${application.student.last_name}">${application.student.first_name} ${application.student.last_name}</h4> 
+                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${application.student.username}</span>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${application.requirement_status}</span>
         </div>
-        <div class="application-content">
-          <div class="application-details">
-            <div class="detail-row">
-              <span class="detail-label">Student:</span>
-              <span class="detail-value">${application.student.username}</span>
+        
+        <div class="flex flex-col gap-2 flex-1 text-sm text-gray-700 dark:text-gray-300">
+            <div class="grid grid-cols-[80px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Program:</span>
+              <span class="flex items-center gap-1 font-medium text-brand-primary truncate" title="${application.program.program_name}"><i class="fas fa-graduation-cap"></i> ${application.program.program_name}</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Program:</span>
-              <span class="detail-value">${application.program.program_name}</span>
+            <div class="grid grid-cols-[80px_1fr] gap-2">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Applied:</span>
+              <span>${application.created_at ? new Date(application.created_at).toLocaleDateString() : 'N/A'}</span>
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Applied:</span>
-              <span class="detail-value">${application.created_at ? new Date(application.created_at).toLocaleDateString() : 'Date not available'}</span>
-            </div>
-          </div>
-          <div class="application-actions">
-            <button class="btn btn-primary btn-sm" onclick="viewApplication(${application.app_id})">View</button>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
+            <button class="flex-1 text-center py-2 px-3 bg-brand-primary/10 text-brand-primary hover:bg-brand-primary/20 dark:bg-brand-primary/20 dark:text-brand-primary border border-brand-primary/20 rounded-lg text-sm font-medium transition-colors" onclick="viewApplication(${application.app_id})">
+                <i class="fas fa-eye mr-1"></i> View Details
+            </button>
+            
             ${application.requirement_status === 'submitted' ? `
-              <button class="btn btn-success btn-sm" onclick="approveProgramApplication(${application.app_id})">Approve</button>
-              <button class="btn btn-danger btn-sm" onclick="rejectProgramApplication(${application.app_id})">Reject</button>
+              <div class="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                  <button class="flex-1 sm:px-4 py-2 bg-green-500 text-white hover:bg-green-600 rounded-lg text-sm font-medium transition-colors shadow-sm" onclick="approveProgramApplication(${application.app_id})">
+                      <i class="fas fa-check"></i>
+                  </button>
+                  <button class="flex-1 sm:px-4 py-2 bg-red-500 text-white hover:bg-red-600 rounded-lg text-sm font-medium transition-colors shadow-sm" onclick="rejectProgramApplication(${application.app_id})">
+                      <i class="fas fa-times"></i>
+                  </button>
+              </div>
             ` : ''}
-          </div>
         </div>
       `;
       return div;
@@ -1775,32 +1905,31 @@
       }
       data.programs.forEach(p => {
         const el = document.createElement('div');
-        el.className = 'program-item';
-        // Add background image style if available
-        const imageStyle = p.program_image ? `background-image: url('${p.program_image}');` : '';
-        const hasImageClass = p.program_image ? 'has-image' : '';
+        el.className = 'program-item bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 dark:border-gray-700 flex flex-col relative';
 
         el.innerHTML = `
-          ${p.program_image ? `<div class="program-img-header" style="background-image: url('${p.program_image}');"></div>` : ''}
-          <div class="program-content">
-            <div class="program-header">
-              <h4>${p.program_name}</h4>
-              <span class="program-type-badge">${p.program_type || 'Other'}</span>
+          ${p.program_image ? `<div class="w-full h-32 bg-cover bg-center" style="background-image: url('${p.program_image}');"></div>` : `<div class="w-full h-2 bg-brand-primary"></div>`}
+          <div class="p-5 flex flex-col flex-1">
+            <div class="flex justify-between flex-wrap gap-2 items-start mb-3">
+              <h4 class="text-lg font-bold text-gray-800 dark:text-white truncate" title="${p.program_name}">${p.program_name}</h4>
+              <span class="px-2" style="padding: 2px 8px; font-size: 0.75em; font-weight: 700; color: #fff; background-color: #4a5568; border-radius: 9999px;">${p.program_type || 'Other'}</span>
             </div>
-            <div class="program-actions-overlay" style="position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;">
-              <button class="btn btn-sm btn-secondary" onclick="openEditProgramModal(${p.program_id})"><i class="fas fa-edit"></i></button>
-              <button class="btn btn-sm btn-danger" onclick="deleteProgram(${p.program_id})"><i class="fas fa-trash"></i></button>
+            
+            <div class="absolute top-3 right-3 flex gap-2">
+              <button class="bg-gray-900/50 hover:bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors" onclick="openEditProgramModal(${p.program_id})" title="Edit Program"><i class="fas fa-edit text-xs"></i></button>
+              <button class="bg-red-600/60 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors" onclick="deleteProgram(${p.program_id})" title="Delete Program"><i class="fas fa-trash text-xs"></i></button>
             </div>
-            <div class="program-body">
-              <p>${p.requirements || ''}</p>
-              ${(p.application_start_date || p.application_end_date) ? `
-                  <div class="program-period">
-                      <i class="fas fa-calendar-alt"></i> 
-                      Application Period: 
-                      ${p.application_start_date || 'N/A'} to ${p.application_end_date || 'N/A'}
-                  </div>
-              ` : ''}
+            
+            <div class="flex-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
+              <p>${p.requirements || 'No specific requirements listed.'}</p>
             </div>
+            
+            ${(p.application_start_date || p.application_end_date) ? `
+                <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center text-xs text-gray-500 dark:text-gray-400">
+                    <i class="fas fa-calendar-alt text-brand-primary mr-2"></i> 
+                    ${p.application_start_date || 'N/A'} - ${p.application_end_date || 'N/A'}
+                </div>
+            ` : ''}
           </div>
         `;
         container.appendChild(el);
@@ -1844,95 +1973,7 @@
 </div>
 <!-- End of Main Content -->
 
-<!-- View/Reply Message Modal (Admin) -->
-<div id="admin-reply-modal" class="modal">
-  <div class="modal-content" style="max-width: 600px;">
-    <div class="modal-header">
-      <h3 id="admin-reply-subject">Message Subject</h3>
-      <span class="close" onclick="closeAdminReplyModal()">&times;</span>
-    </div>
-    <div class="modal-body">
-      <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #e2e8f0;">
-        <div style="width: 48px; height: 48px; border-radius: 50%; background-color: #ebf4ff; color: #3182ce; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;" id="admin-reply-avatar">
-          S
-        </div>
-        <div>
-          <div style="font-weight: bold; color: #2d3748; font-size: 1.1rem;" id="admin-reply-sender">Student Name</div>
-          <div style="font-size: 0.85rem; color: #718096;" id="admin-reply-date">Jan 1, 2024</div>
-        </div>
-      </div>
-      <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-        <p id="admin-reply-body" style="white-space: pre-wrap; margin: 0; color: #4a5568; line-height: 1.6;"></p>
-      </div>
-      
-      <form id="adminReplyForm" onsubmit="handleAdminReplySubmit(event)">
-        <input type="hidden" id="admin-reply-student-id">
-        <div class="form-group" style="margin-bottom: 15px;">
-          <label for="admin-reply-text" style="font-weight: 600; margin-bottom: 8px; display: block; color: #4a5568;">Your Reply</label>
-          <textarea id="admin-reply-text" name="body" required rows="4" style="width: 100%; padding: 12px; border: 1px solid #cbd5e0; border-radius: 8px; font-family: 'Roboto', sans-serif;" placeholder="Type your response here..."></textarea>
-        </div>
-        <div id="admin-reply-msg" style="display: none; padding: 10px; border-radius: 6px; margin-bottom: 15px; text-align: center;"></div>
-        <div class="modal-actions" style="display: flex; justify-content: flex-end; gap: 10px;">
-          <button type="button" class="btn" style="background-color: #e2e8f0; color: #4a5568;" onclick="closeAdminReplyModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" id="adminReplyBtn">Send Reply</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-  <!-- Popup Modal -->
-  <div id="popup-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-title">Create New Popup</h3>
-        <span class="close" onclick="closePopupModal()">&times;</span>
-      </div>
-      <div class="modal-body">
-        <form id="popup-form">
-          <input type="hidden" name="popup_id" id="popup_id">
-
-          <div class="form-group">
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" required>
-          </div>
-
-          <div class="form-group">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" required></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="popup_type">Type</label>
-            <select id="popup_type" name="popup_type">
-              <option value="info">Information</option>
-              <option value="warning">Warning</option>
-              <option value="success">Success</option>
-              <option value="error">Error</option>
-            </select>
-          </div>
-
-          <div class="form-group checkbox-group">
-            <label>
-              <input type="checkbox" id="is_active" name="is_active" checked>
-              Active
-            </label>
-          </div>
-
-          <div class="form-group">
-            <label for="expires_at">Expires At (Optional)</label>
-            <input type="datetime-local" id="expires_at" name="expires_at">
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closePopupModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Popup</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
+<!-- Removed duplicate admin-reply-modal and popup-modal -->
   <script>
     // Popup Management Functions
     function loadPopups() {
@@ -2092,50 +2133,57 @@
 
     function createStudentElement(student) {
       const div = document.createElement('div');
-      div.className = `student-item student-${student.status}`;
+      div.className = `student-item student-${student.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
       // Add data attributes for filtering
       div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
       div.dataset.status = student.status;
 
       const isActive = student.status === 'active';
       const isInactive = student.status === 'inactive';
+      
+      const statusColors = {
+        'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
+        'inactive': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200',
+        'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
+        'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
+      };
+      
+      const statusClass = statusColors[student.status.toLowerCase()] || statusColors['pending'];
 
       div.innerHTML = `
-        <div class="student-header">
-            <div class="student-info">
-                <h4>${student.first_name} ${student.last_name}</h4> 
-                <span class="student-username">(@${student.username})</span>
+        <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="flex-1 min-w-0 pr-2">
+                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${student.first_name} ${student.last_name}">${student.first_name} ${student.last_name}</h4> 
+                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${student.username}</span>
             </div>
-            <span class="status-badge status-${student.status}">${student.status}</span>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${student.status}</span>
         </div>
-        <div class="student-body">
-            <div class="student-details-grid">
-                <div class="detail-item">
-                    <span class="label">Program:</span>
-                    <span class="value">${student.program_and_yr}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Email:</span>
-                    <span class="value">${student.email}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="label">Contact:</span>
-                    <span class="value">${student.contact_num}</span>
-                </div>
+        <div class="flex flex-col gap-2 flex-1 text-sm">
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Program</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.program_and_yr}">${student.program_and_yr || 'N/A'}</span>
             </div>
-            
-            <div class="student-actions">
-                <button class="btn btn-sm btn-info" onclick='openEditStudentModal(${student.id})'>
-                    <i class="fas fa-edit"></i> Edit
-                </button>
-                <button class="btn btn-sm ${isActive ? 'btn-warning' : 'btn-success'}" 
-                        onclick="toggleStudentStatus(${student.id}, '${student.status}')">
-                    ${isActive ? 'Deactivate' : 'Activate'}
-                </button>
-                <button class="btn btn-sm btn-danger" onclick="deleteStudent(${student.id})">
-                    <i class="fas fa-trash"></i> Delete
-                </button>
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.email}">${student.email || 'N/A'}</span>
             </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate">${student.contact_num || 'N/A'}</span>
+            </div>
+        </div>
+        
+        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
+            <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='openEditStudentModal(${student.id})'>
+                <i class="fas fa-edit mr-1"></i> Edit
+            </button>
+            <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
+                    onclick="toggleStudentStatus(${student.id}, '${student.status}')">
+                ${isActive ? 'Deactivate' : 'Activate'}
+            </button>
+            <button class="flex-1 text-center py-1.5 px-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 rounded text-xs font-medium transition-colors" onclick="deleteStudent(${student.id})">
+                <i class="fas fa-trash mr-1"></i> Del
+            </button>
         </div>
       `;
       return div;
@@ -2389,8 +2437,11 @@
       document.getElementById('edit_student_username').value = student.username;
       document.getElementById('edit_student_email').value = student.email;
       document.getElementById('edit_student_contact').value = student.contact_num;
+      document.getElementById('edit_student_barangay').value = student.barangay || '';
+      document.getElementById('edit_student_type').value = student.student_type || '';
       document.getElementById('edit_student_address').value = student.address;
-      document.getElementById('edit_student_program').value = student.program_and_yr;
+      document.getElementById('edit_student_program').value = student.program_and_yr || '';
+      handleAdminStudentTypeChange();
 
       // Handle status select if you want to allow status changes via edit:
       const statusSelect = document.getElementById('edit_student_status');
@@ -2401,6 +2452,21 @@
 
     function closeEditStudentModal() {
       document.getElementById('edit-student-modal').style.display = 'none';
+    }
+
+    function handleAdminStudentTypeChange() {
+      const typeSelect = document.getElementById('edit_student_type');
+      const container = document.getElementById('edit_program_yr_container');
+      const input = document.getElementById('edit_student_program');
+      
+      if (typeSelect.value === 'Undergraduate') {
+        container.style.display = 'block';
+        input.setAttribute('required', 'required');
+      } else {
+        container.style.display = 'none';
+        input.removeAttribute('required');
+        input.value = '';
+      }
     }
 
     // Edit Student Form Handler
@@ -2461,78 +2527,80 @@
       });
     }
   </script>
-  <footer
-    style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
+      </main>
+    </div>
+  </div>
+
+  <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
     © 2024 Lander. All rights reserved.
   </footer>
 
 
 
   <!-- Application Details Modal -->
-  <div id="application-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="app-modal-title">Application Details</h3>
-        <span class="close" onclick="closeApplicationModal()">&times;</span>
+  <div id="application-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-3xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 my-8 relative">
+      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="app-modal-title">Application Details</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeApplicationModal()">&times;</span>
       </div>
-      <div class="modal-body">
-        <div class="app-detail-grid">
-          <div class="detail-row">
-            <span class="detail-label">Student</span>
-            <span class="detail-value" id="app-modal-student"></span>
+      <div class="modal-body space-y-6">
+        <div class="app-detail-grid grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-100 dark:border-gray-700">
+          <div class="detail-row flex flex-col gap-1">
+            <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Student</span>
+            <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-student"></span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Program</span>
-            <span class="detail-value" id="app-modal-program"></span>
+          <div class="detail-row flex flex-col gap-1">
+            <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Program</span>
+            <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-program"></span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Status</span>
-            <span class="detail-value" id="app-modal-status"></span>
+          <div class="detail-row flex flex-col gap-1">
+            <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</span>
+            <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-status"></span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Email</span>
-            <span class="detail-value" id="app-modal-email"></span>
+          <div class="detail-row flex flex-col gap-1">
+            <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</span>
+            <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-email"></span>
           </div>
-          <div class="detail-row">
-            <span class="detail-label">Applied On</span>
-            <span class="detail-value" id="app-modal-date"></span>
+          <div class="detail-row flex flex-col gap-1">
+            <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Applied On</span>
+            <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-date"></span>
           </div>
-        </div>
-
-        <div style="margin-bottom: 25px;">
-          <h4 class="modal-section-title">Documents</h4>
-          <div id="app-modal-document"></div>
         </div>
 
         <div>
-          <h4 class="modal-section-title">Motivation / Remarks</h4>
-          <div class="motivation-box" id="app-modal-motivation"></div>
+          <h4 class="modal-section-title text-base font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2"><i class="fas fa-file-alt text-brand-primary"></i> Documents</h4>
+          <div id="app-modal-document" class="space-y-4"></div>
+        </div>
+
+        <div>
+          <h4 class="modal-section-title text-base font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2"><i class="fas fa-comment-alt text-brand-secondary"></i> Motivation / Remarks</h4>
+          <div class="motivation-box bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-4 rounded-lg border border-blue-100 dark:border-blue-800/50 leading-relaxed text-sm" id="app-modal-motivation"></div>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeApplicationModal()">Close</button>
+      <div class="modal-footer mt-8 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end">
+        <button class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closeApplicationModal()">Close</button>
       </div>
     </div>
   </div>
 
   <!-- Remarks Modal -->
-  <div id="remarks-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="remarks-modal-title">Application Remarks</h3>
-        <span class="close" onclick="closeRemarksModal()">&times;</span>
+  <div id="remarks-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
+      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="remarks-modal-title">Application Remarks</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeRemarksModal()">&times;</span>
       </div>
       <div class="modal-body">
         <form id="remarks-form">
-          <div class="form-group">
-            <label for="remarks-editor" style="font-weight: bold; margin-bottom: 8px; display: block;">Remarks /
-              Comments</label>
-            <div id="remarks-editor-container" style="background: white;"></div>
+          <div class="form-group mb-6">
+            <label for="remarks-editor" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Remarks / Comments</label>
+            <div id="remarks-editor-container" class="bg-white dark:bg-gray-900 text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg pb-[3rem]"></div>
             <input type="hidden" name="remarks" id="remarks-hidden-input">
           </div>
-          <div class="modal-footer" style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="button" class="btn btn-secondary" onclick="closeRemarksModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="remarks-submit-btn">Submit</button>
+          <div class="modal-footer flex justify-end gap-3 pt-6 mt-[2rem] border-t border-gray-100 dark:border-gray-700">
+            <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="closeRemarksModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-lg font-medium shadow transition-colors duration-200 bg-brand-primary text-white hover:bg-brand-secondary" id="remarks-submit-btn">Submit</button>
           </div>
         </form>
       </div>
@@ -2616,24 +2684,24 @@
     }
   </script>
   <!-- Edit Program Modal -->
-  <div id="edit-program-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="edit-program-title">Edit Program</h3>
-        <span class="close" onclick="closeEditProgramModal()">&times;</span>
+  <div id="edit-program-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="edit-program-title">Edit Program</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeEditProgramModal()">&times;</span>
       </div>
       <div class="modal-body">
-        <form id="edit-program-form">
+        <form id="edit-program-form" class="space-y-4">
           <input type="hidden" name="program_id" id="edit_program_id">
 
           <div class="form-group">
-            <label for="edit_program_name">Program Name</label>
-            <input type="text" id="edit_program_name" name="program_name" required>
+            <label for="edit_program_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Name</label>
+            <input type="text" id="edit_program_name" name="program_name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
           </div>
 
           <div class="form-group">
-            <label for="edit_program_type">Program Type</label>
-            <select id="edit_program_type" name="program_type" required>
+            <label for="edit_program_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Type</label>
+            <select id="edit_program_type" name="program_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700" required>
               <option value="Financial Assistance">Financial Assistance</option>
               <option value="Scholarship">Scholarship</option>
               <option value="Other">Other</option>
@@ -2641,32 +2709,29 @@
           </div>
 
           <div class="form-group">
-            <label for="edit_requirements">Requirements</label>
-            <textarea id="edit_requirements" name="requirements" rows="4"></textarea>
+            <label for="edit_requirements" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+            <textarea id="edit_requirements" name="requirements" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
           </div>
 
-          <div class="form-group">
-            <label>Application Period</label>
-            <div style="display: flex; gap: 10px;">
-              <div style="flex: 1;">
-                <label for="edit_application_start_date" style="font-size: 0.9em;">Start Date</label>
-                <input id="edit_application_start_date" name="application_start_date" type="date">
-              </div>
-              <div style="flex: 1;">
-                <label for="edit_application_end_date" style="font-size: 0.9em;">End Date</label>
-                <input id="edit_application_end_date" name="application_end_date" type="date">
-              </div>
+          <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="edit_application_start_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
+              <input id="edit_application_start_date" name="application_start_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+            </div>
+            <div>
+              <label for="edit_application_end_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
+              <input id="edit_application_end_date" name="application_end_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="edit_program_image">Background Image (Leave empty to keep current)</label>
-            <input type="file" id="edit_program_image" name="program_image" accept="image/*">
+            <label for="edit_program_image" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image (Leave empty to keep current)</label>
+            <input type="file" id="edit_program_image" name="program_image" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
           </div>
 
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" onclick="closeEditProgramModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
+          <div class="modal-footer flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
+            <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="closeEditProgramModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save Changes</button>
           </div>
         </form>
       </div>
@@ -2783,8 +2848,27 @@
           </div>
 
           <div class="form-group">
+            <label for="edit_student_type">Type of Student</label>
+            <select id="edit_student_type" name="student_type" required onchange="handleAdminStudentTypeChange()">
+              <option value="" disabled selected>Select student type</option>
+              <optgroup label="High School">
+                <option value="Junior High School">Junior High School</option>
+                <option value="Senior High School">Senior High School</option>
+              </optgroup>
+              <optgroup label="College">
+                <option value="Undergraduate">Undergraduate</option>
+                <option value="Master's">Master's</option>
+                <option value="Doctoral">Doctoral</option>
+              </optgroup>
+              <optgroup label="Other">
+                <option value="Board Exam">Board Exam</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-group" id="edit_program_yr_container" style="display: none;">
             <label for="edit_student_program">Program & Year</label>
-            <input type="text" id="edit_student_program" name="program_and_yr" required>
+            <input type="text" id="edit_student_program" name="program_and_yr">
           </div>
 
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
@@ -2801,6 +2885,29 @@
                 <option value="rejected">Rejected</option>
               </select>
             </div>
+          </div>
+
+          <div class="form-group">
+            <label for="edit_student_barangay">Barangay</label>
+            <select id="edit_student_barangay" name="barangay" required>
+              <option value="" disabled selected>Select your barangay</option>
+              <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
+              <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
+              <option value="Asinan Proper">Asinan Proper</option>
+              <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
+              <option value="Batiawan">Batiawan</option>
+              <option value="Calapacuan">Calapacuan</option>
+              <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
+              <option value="Cawag">Cawag</option>
+              <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
+              <option value="Mangan-Vaca">Mangan-Vaca</option>
+              <option value="Matain">Matain</option>
+              <option value="Naugsol">Naugsol</option>
+              <option value="Pamatawan">Pamatawan</option>
+              <option value="San Isidro">San Isidro</option>
+              <option value="Santo Tomas">Santo Tomas</option>
+              <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
+            </select>
           </div>
 
           <div class="form-group">
