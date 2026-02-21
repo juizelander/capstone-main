@@ -2,6 +2,7 @@
 # exit on error
 set -o errexit
 
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 
 # Use a dummy SQLite database during collectstatic to prevent Render build failures, 
