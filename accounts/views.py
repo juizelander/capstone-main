@@ -1,4 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
+import threading
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -145,6 +148,12 @@ def register_view(request):
 
     return render(request, 'accounts/register.html')
 
+def _send_email_async(subject, message, recipient_list):
+    """Helper to send email in a separate thread."""
+    def _send():
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
+    threading.Thread(target=_send).start()
+
 def approve_student(request, student_id):
     if request.method == 'POST':
         student = get_object_or_404(Student, pk=student_id)
@@ -152,10 +161,20 @@ def approve_student(request, student_id):
         
         if action == 'approve':
             student.status = 'active'
+            student.save()
+            # Send approval email
+            subject = 'Your application has been approved'
+            message = f'Dear {student.first_name},\n\nYour application has been approved. You can now log in to your account.'
+            _send_email_async(subject, message, [student.email])
         elif action == 'reject':
             student.status = 'rejected'
-            
-        student.save()
+            student.save()
+            # Send rejection email
+            subject = 'Your application has been rejected'
+            message = f'Dear {student.first_name},\n\nWe regret to inform you that your application was rejected. Please contact the administration for more details.'
+            _send_email_async(subject, message, [student.email])
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Invalid action'})
         return JsonResponse({'status': 'success'})
 
 
