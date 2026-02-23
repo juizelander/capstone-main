@@ -1083,6 +1083,7 @@ def get_my_applications(request):
             app_list.append({
                 'app_id': app.app_id,
                 'program_name': app.program.program_name,
+                'program_image': app.program.program_image.url if app.program.program_image else None,
                 'requirement_status': app.requirement_status,
                 'remarks': app.remarks,
                 'is_remarks_viewed': app.is_remarks_viewed,

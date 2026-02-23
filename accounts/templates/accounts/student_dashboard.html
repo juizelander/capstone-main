@@ -831,7 +831,7 @@
             studentApplications[app.app_id] = app; // Store app data
 
             const el = document.createElement('div');
-            el.className = 'application-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in';
+            el.className = 'application-card relative overflow-hidden flex flex-col transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in';
 
             // Determine Active Steps
             let step1Class = 'completed'; // Submitted is always done if it exists
@@ -856,58 +856,64 @@
             const dateStr = new Date(app.created_at).toLocaleDateString();
 
             el.innerHTML = `
-                        <div class="app-card-header">
-                            <h4>${app.program_name}</h4>
-                            <span class="status-text ${getStatusColor(app.requirement_status)}">
-                                ${app.requirement_status}
-                            </span>
-                        </div>
-
-                        <div class="stepper-container">
-                            <div class="step-line"></div>
-                            <div class="step-line-progress" style="width: ${progressWidth}"></div>
-
-                            <!-- Step 1 -->
-                            <div class="step-item ${step1Class}">
-                                <div class="step-circle">
-                                    <i class="fas fa-file-alt"></i>
-                                </div>
-                                <div class="step-label">Application Submitted</div>
-                                <div class="step-date">${dateStr}</div>
-                            </div>
-
-                            <!-- Step 2 -->
-                            <div class="step-item ${step2Class}">
-                                <div class="step-circle">
-                                    <i class="fas fa-search"></i>
-                                </div>
-                                <div class="step-label">Under Review</div>
-                            </div>
-
-                            <!-- Step 3 -->
-                            <div class="step-item ${step3Class}">
-                                <div class="step-circle">
-                                    <i class="fas ${app.requirement_status === 'rejected' ? 'fa-times' : 'fa-check'}"></i>
-                                </div>
-                                <div class="step-label">Result</div>
-                            </div>
-                        </div>
+                        ${app.program_image ? `
+                        <div class="absolute inset-0 z-0 bg-gray-50 dark:bg-gray-800 rounded-xl"></div>
+                        <div class="absolute inset-0 z-0 bg-center bg-no-repeat rounded-xl" style="background-image: url('${app.program_image}'); background-size: 85%; filter: brightness(0.6);"></div>
+                        ` : ''}
                         
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="app-card-header">
+                                <h4 class="${app.program_image ? 'text-white drop-shadow-md' : ''}">${app.program_name}</h4>
+                                <span class="status-text ${getStatusColor(app.requirement_status)} ${app.program_image ? 'bg-opacity-90' : ''}">
+                                    ${app.requirement_status}
+                                </span>
+                            </div>
 
-                        <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-                           ${app.requirement_status === 'approved' ? `
-                             <a href="/student/voucher/${app.app_id}/" target="_blank" class="btn btn-sm btn-primary" style="background-color: #2563eb; color: white; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; padding: 5px 10px; border-radius: 4px;">
-                               <i class="fas fa-ticket-alt"></i> Print Voucher
-                             </a>
-                           ` : ''}
+                            <div class="stepper-container ${app.program_image ? 'text-white' : ''}">
+                                <div class="step-line ${app.program_image ? 'bg-white/30' : ''}"></div>
+                                <div class="step-line-progress" style="width: ${progressWidth}; ${app.program_image ? 'background-color: #10B981;' : ''}"></div>
 
-                           ${app.remarks ? `
-                             <button class="btn btn-sm btn-outline remarks-btn text-gray-700 dark:text-gray-200 hover:text-gray-900 border-gray-300 dark:border-gray-500" id="remarks-btn-${app.app_id}" 
-                                     onclick="openStudentRemarksModal(${app.app_id}, ${!app.is_remarks_viewed})">
-                               View Remarks
-                               ${!app.is_remarks_viewed ? '<span class="remarks-indicator"></span>' : ''}
-                             </button>
-                           ` : ''}
+                                <!-- Step 1 -->
+                                <div class="step-item ${step1Class}">
+                                    <div class="step-circle ${app.program_image && step1Class !== 'active' && step1Class !== 'completed' ? 'bg-white/20 text-white' : ''}">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="step-label ${app.program_image ? 'text-white drop-shadow-md' : ''}">Application Submitted</div>
+                                    <div class="step-date ${app.program_image ? 'text-white/80' : ''}">${dateStr}</div>
+                                </div>
+
+                                <!-- Step 2 -->
+                                <div class="step-item ${step2Class}">
+                                    <div class="step-circle ${app.program_image && step2Class !== 'active' && step2Class !== 'completed' ? 'bg-white/20 text-white' : ''}">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <div class="step-label ${app.program_image ? 'text-white drop-shadow-md' : ''}">Under Review</div>
+                                </div>
+
+                                <!-- Step 3 -->
+                                <div class="step-item ${step3Class}">
+                                    <div class="step-circle ${app.program_image && step3Class !== 'active' && step3Class !== 'completed' && step3Class !== 'rejected' ? 'bg-white/20 text-white' : ''}">
+                                        <i class="fas ${app.requirement_status === 'rejected' ? 'fa-times' : 'fa-check'}"></i>
+                                    </div>
+                                    <div class="step-label ${app.program_image ? 'text-white drop-shadow-md' : ''}">Result</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: auto; padding-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
+                               ${app.requirement_status === 'approved' ? `
+                                 <a href="/student/voucher/${app.app_id}/" target="_blank" class="btn btn-sm btn-primary" style="background-color: #2563eb; color: white; display: inline-flex; align-items: center; gap: 5px; text-decoration: none; padding: 5px 10px; border-radius: 4px;">
+                                   <i class="fas fa-ticket-alt"></i> Print Voucher
+                                 </a>
+                               ` : ''}
+
+                               ${app.remarks ? `
+                                 <button class="btn btn-sm btn-outline remarks-btn ${app.program_image ? 'text-white border-white/50 hover:bg-white/20' : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 border-gray-300 dark:border-gray-500'}" id="remarks-btn-${app.app_id}" 
+                                         onclick="openStudentRemarksModal(${app.app_id}, ${!app.is_remarks_viewed})">
+                                   View Remarks
+                                   ${!app.is_remarks_viewed ? '<span class="remarks-indicator"></span>' : ''}
+                                 </button>
+                               ` : ''}
+                            </div>
                         </div>
                     `;
             container.appendChild(el);
