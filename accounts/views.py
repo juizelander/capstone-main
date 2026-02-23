@@ -17,6 +17,8 @@ from django.http import HttpResponse
 import csv
 import os
 from django.conf import settings
+from django.core.mail import send_mail
+from django.utils.html import strip_tags
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -902,6 +904,33 @@ def approve_program_application(request, application_id):
         current_admin = Admin.objects.get(admin_id=admin_id)
         AdminLog.objects.create(admin=current_admin, action=f"Approved program application {application.app_id}")
         
+        # Send email notification
+        try:
+            student_email = application.student.email
+            program_name = application.program.program_name
+            subject = f"Application Approved: {program_name}"
+            
+            html_message = f"""
+            <p>Dear {application.student.first_name},</p>
+            <p>Congratulations! Your application for <strong>{program_name}</strong> has been approved.</p>
+            <p><strong>Remarks from Admin:</strong></p>
+            {remarks if remarks else '<p>No additional remarks.</p>'}
+            <p>Thank you,</p>
+            <p>ScholarSync Subic Team</p>
+            """
+            plain_message = strip_tags(html_message)
+            
+            send_mail(
+                subject,
+                plain_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [student_email],
+                html_message=html_message,
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
+        
         return JsonResponse({
             'success': True,
             'message': 'Program application approved successfully'
@@ -929,6 +958,33 @@ def reject_program_application(request, application_id):
         
         current_admin = Admin.objects.get(admin_id=admin_id)
         AdminLog.objects.create(admin=current_admin, action=f"Rejected program application {application.app_id}")
+        
+        # Send email notification
+        try:
+            student_email = application.student.email
+            program_name = application.program.program_name
+            subject = f"Application Rejected: {program_name}"
+            
+            html_message = f"""
+            <p>Dear {application.student.first_name},</p>
+            <p>We regret to inform you that your application for <strong>{program_name}</strong> has been rejected.</p>
+            <p><strong>Remarks from Admin:</strong></p>
+            {remarks if remarks else '<p>No additional remarks.</p>'}
+            <p>Thank you,</p>
+            <p>ScholarSync Subic Team</p>
+            """
+            plain_message = strip_tags(html_message)
+            
+            send_mail(
+                subject,
+                plain_message,
+                settings.DEFAULT_FROM_EMAIL,
+                [student_email],
+                html_message=html_message,
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Error sending email: {str(e)}")
         
         return JsonResponse({
             'success': True,
