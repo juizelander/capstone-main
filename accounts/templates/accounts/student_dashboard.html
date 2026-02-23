@@ -63,6 +63,20 @@
       border-radius: 50%;
       border: 2px solid white;
     }
+    
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 20px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #475569;
+    }
   </style>
 </head>
 
@@ -231,13 +245,31 @@
         <div id="tab-apply" class="tab-pane">
           <section id="program-application" class="card tab-card animate-slide-up">
             <h2>Apply for a Program</h2>
-            <p class="muted">Select a program and attach multiple supporting documents (PNG, JPG, PDF, DOCX).</p>
+            <p class="muted" id="apply-subtitle">Browse available programs and select one to start your application.</p>
 
             <div id="app-msg" class="app-message" style="display:none;"></div>
 
-            <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
+            <!-- Program Cards Grid View -->
+            <div id="program-grid-container" class="mt-6 border border-gray-100 dark:border-gray-800 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-800/20">
+              <div id="program-cards-grid" class="flex flex-col gap-6 max-h-[calc(3*240px)] min-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <!-- Program cards will be dynamically injected here -->
+                <p class="loading-text w-full text-center py-6 text-gray-500">Loading programs...</p>
+              </div>
+            </div>
+
+            <!-- Application Form View (Hidden initially) -->
+            <div id="application-form-container" style="display: none;" class="mt-4 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm max-h-[70vh] overflow-y-auto custom-scrollbar">
+              <div class="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-4">
+                <h3 id="selected-program-title" class="text-xl font-bold text-gray-800 dark:text-white m-0"></h3>
+                <button type="button" class="btn btn-sm btn-outline text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800" onclick="showProgramGrid()">
+                  <i class="fas fa-arrow-left"></i> Back to Programs
+                </button>
+              </div>
+
+              <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
               {% csrf_token %}
-              <div class="form-group">
+              <!-- Hidden Program Select -->
+              <div class="form-group" style="display: none;">
                   <label for="program">Program</label>
                   <div class="select-wrapper">
                     <select id="program" name="program" required onchange="showProgramDescription()">
@@ -251,10 +283,7 @@
                 <div id="program-requirements" class="requirements-content"></div>
               </div>
 
-              <div class="form-group">
-                  <label for="motivation">Why do you want to apply?</label>
-                  <textarea id="motivation" name="motivation" rows="4" placeholder="Briefly explain your motivation" required></textarea>
-              </div>
+
 
               <div class="form-group">
                 <label>Supporting documents</label>
@@ -269,10 +298,12 @@
                 <div id="file-list" class="file-list" aria-live="polite"></div>
               </div>
 
-              <div class="form-actions mt-4">
-                <button type="submit" class="btn btn-primary btn-block transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">Submit Application</button>
+              <div class="form-actions mt-4 flex gap-3">
+                <button type="button" class="btn border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition" onclick="showProgramGrid()">Cancel</button>
+                <button type="submit" class="btn btn-primary flex-1 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">Submit Application</button>
               </div>
             </form>
+            </div>
           </section>
         </div>
 
@@ -447,7 +478,7 @@
   </div>
 
   <!-- Application Confirmation Modal -->
-  <div id="confirmation-modal" class="confirmation-modal" style="display: none;">
+  <div id="confirmation-modal" class="modal confirmation-modal" style="display: none;">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Application Submitted Successfully!</h3>
@@ -464,6 +495,28 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="closeConfirmationModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Program Details Modal -->
+  <div id="program-details-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
+      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="details-modal-title">Program Details</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeProgramDetailsModal()">&times;</span>
+      </div>
+      <div class="modal-body overflow-y-auto max-h-[60vh] custom-scrollbar">
+        <div class="flex justify-between items-center mb-4">
+            <span id="details-modal-type" class="px-3 py-1 text-xs font-semibold text-white bg-gray-600 rounded-full"></span>
+            <span id="details-modal-dates" class="text-xs font-medium text-brand-primary flex items-center gap-1"></span>
+        </div>
+        <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Requirements:</h4>
+        <div id="details-modal-requirements" class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed"></div>
+      </div>
+      <div class="modal-footer flex gap-3 pt-6 mt-4 border-t border-gray-100 dark:border-gray-700 justify-end">
+        <button type="button" class="btn btn-outline" onclick="closeProgramDetailsModal()">Close</button>
+        <button type="button" class="btn btn-primary" id="details-modal-apply-btn">Apply Now</button>
       </div>
     </div>
   </div>
@@ -494,8 +547,13 @@
       const now = new Date();
       now.setHours(0, 0, 0, 0); // compare dates only
 
+      const grid = document.getElementById('program-cards-grid');
+      grid.innerHTML = ''; // Clear loading text
+
       data.programs.forEach(p => {
         programsData[p.program_id] = p;
+        
+        // Add to hidden select for form submission compatibility
         const opt = document.createElement('option');
         opt.value = p.program_id;
 
@@ -516,7 +574,135 @@
         }
 
         select.appendChild(opt);
+
+        // Render Card
+        const card = document.createElement('div');
+        card.className = 'program-item bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row w-full group overflow-hidden shrink-0 min-h-[200px]';
+
+        const bgImage = p.program_image ? `url('${p.program_image}')` : 'none';
+        const bgLayer = p.program_image ? `<div class="sm:w-1/3 md:w-1/4 w-full h-48 sm:h-auto bg-cover bg-center shrink-0 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-gray-700" style="background-image: ${bgImage};"></div>` : `<div class="sm:w-3 flex-shrink-0 w-full h-3 sm:h-auto bg-brand-primary transition-all duration-300 group-hover:bg-brand-secondary"></div>`;
+
+        let actionButtonHtml = '';
+        if (isExpired) {
+          actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled>Closed</button>`;
+        } else {
+          actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-brand-primary text-white hover:bg-brand-secondary transition-colors duration-300 font-medium rounded-lg shadow-sm text-sm whitespace-nowrap shrink-0" onclick="selectProgramForApplication(${p.program_id})">Apply Now</button>`;
+        }
+
+        card.innerHTML = `
+          ${bgLayer}
+          <div class="p-6 flex flex-col flex-1 shrink-0 overflow-hidden">
+            <div class="flex flex-col sm:flex-row sm:justify-between items-start gap-4 mb-4 shrink-0 w-full">
+              <h4 class="text-xl font-bold text-gray-900 dark:text-white truncate flex-1 min-w-0 pr-2" title="${p.program_name}">${p.program_name}</h4>
+              <span class="shrink-0" style="padding: 6px 14px; font-size: 0.8rem; font-weight: 600; color: #fff; background-color: #4b5563; border-radius: 9999px;">${p.program_type || 'Other'}</span>
+            </div>
+            
+            <div class="text-sm text-gray-600 dark:text-gray-300 mb-6 flex-1 min-h-[40px] overflow-hidden">
+              <p class="line-clamp-2 break-words whitespace-normal">${p.requirements || 'No specific requirements listed.'}</p>
+            </div>
+            
+            <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col xl:flex-row items-center justify-between gap-4 shrink-0 w-full">
+                ${(p.application_start_date || p.application_end_date) ? `
+                    <div class="text-xs font-medium text-gray-500 dark:text-gray-400 flex items-center shrink-0 w-full xl:w-auto self-start xl:self-auto mb-2 xl:mb-0">
+                        <i class="fas fa-calendar-alt text-brand-primary mr-2"></i> 
+                        <span class="truncate">${p.application_start_date || 'N/A'} - ${p.application_end_date || 'N/A'}</span>
+                    </div>
+                ` : '<div class="w-full xl:w-auto mb-2 xl:mb-0"></div>'}
+                
+                <div class="flex flex-row gap-2 w-full xl:w-auto shrink-0 justify-stretch xl:justify-end">
+                  <button class="py-2.5 px-4 xl:px-6 bg-white dark:bg-gray-800 text-brand-primary border border-brand-primary hover:bg-brand-primary/10 transition-colors font-medium rounded-lg shadow-sm text-sm whitespace-nowrap flex-1 xl:flex-none text-center shrink-0" onclick="viewProgramDetails(${p.program_id})">View Details</button>
+                  ${actionButtonHtml}
+                </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
       });
+      
+      if (data.programs.length === 0) {
+        grid.innerHTML = '<p class="no-programs w-full text-center text-gray-500 py-10 font-medium text-lg bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">No programs available at the moment.</p>';
+      }
+    }
+
+    // Handle Apply button click on a program card
+    function selectProgramForApplication(programId) {
+      const select = document.getElementById('program');
+      select.value = programId; // Set the hidden select
+      
+      const program = programsData[programId];
+      if (program) {
+        document.getElementById('selected-program-title').textContent = program.program_name;
+      }
+      
+      showProgramDescription(); // Update requirements display
+      
+      // Toggle Views
+      document.getElementById('program-grid-container').style.display = 'none';
+      document.getElementById('application-form-container').style.display = 'block';
+      document.getElementById('apply-subtitle').style.display = 'none';
+      
+      closeProgramDetailsModal(); // Close modal if open
+    }
+
+    // Handle View Details button click
+    function viewProgramDetails(programId) {
+      const program = programsData[programId];
+      if (!program) return;
+
+      document.getElementById('details-modal-title').textContent = program.program_name;
+      document.getElementById('details-modal-type').textContent = program.program_type || 'Other';
+      document.getElementById('details-modal-requirements').textContent = program.requirements || 'No specific requirements listed.';
+      
+      const datesEl = document.getElementById('details-modal-dates');
+      if (program.application_start_date || program.application_end_date) {
+        datesEl.innerHTML = `<i class="fas fa-calendar-alt"></i> ${program.application_start_date || 'N/A'} - ${program.application_end_date || 'N/A'}`;
+      } else {
+        datesEl.innerHTML = '';
+      }
+
+      const applyBtn = document.getElementById('details-modal-apply-btn');
+      
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      let isExpired = false;
+      if (program.application_end_date) {
+        const endDate = new Date(program.application_end_date);
+        if (now > endDate) {
+          isExpired = true;
+        }
+      }
+
+      if (isExpired) {
+        applyBtn.textContent = 'Closed';
+        applyBtn.className = 'btn py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed';
+        applyBtn.onclick = null;
+      } else {
+        applyBtn.textContent = 'Apply Now';
+        applyBtn.className = 'btn btn-primary py-2.5 px-6 shadow-sm';
+        applyBtn.onclick = function() {
+          selectProgramForApplication(programId);
+        };
+      }
+
+      document.getElementById('program-details-modal').style.display = 'flex';
+    }
+
+    function closeProgramDetailsModal() {
+      document.getElementById('program-details-modal').style.display = 'none';
+    }
+
+    // Go back to the grid view
+    function showProgramGrid() {
+      // Toggle Views
+      document.getElementById('program-grid-container').style.display = 'block';
+      document.getElementById('application-form-container').style.display = 'none';
+      document.getElementById('apply-subtitle').style.display = 'block';
+      
+      // Reset form
+      document.getElementById('programForm').reset();
+      document.getElementById('file-list').innerHTML = '';
+      document.getElementById('app-msg').style.display = 'none';
+      document.getElementById('program').value = '';
     }
 
     // Show program description when a program is selected
@@ -605,9 +791,7 @@
         if (res.ok && data.success) {
           // Show popup confirmation
           showApplicationConfirmation();
-          form.reset();
-          list.innerHTML = '';
-          msg.style.display = 'none';
+          showProgramGrid(); // Reset back to program cards
 
           // Refresh the application list
           loadMyApplications();

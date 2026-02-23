@@ -1782,7 +1782,7 @@
         docContainer.textContent = 'No document submitted';
       }
 
-      document.getElementById('app-modal-motivation').textContent = app.remarks || 'No motivation provided.';
+      // Motivation removed
 
       document.getElementById('application-modal').style.display = 'block';
     }
@@ -2760,10 +2760,7 @@
           <div id="app-modal-document" class="space-y-4"></div>
         </div>
 
-        <div>
-          <h4 class="modal-section-title text-base font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2"><i class="fas fa-comment-alt text-brand-secondary"></i> Motivation / Remarks</h4>
-          <div class="motivation-box bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-200 p-4 rounded-lg border border-blue-100 dark:border-blue-800/50 leading-relaxed text-sm" id="app-modal-motivation"></div>
-        </div>
+
       </div>
       <div class="modal-footer mt-8 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end">
         <button class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closeApplicationModal()">Close</button>
@@ -2864,8 +2861,7 @@
         docContainer.innerHTML = '<p class="text-muted" style="padding: 10px; font-style: italic;">No document submitted</p>';
       }
 
-      const motivationEl = document.getElementById('app-modal-motivation');
-      motivationEl.innerHTML = app.remarks || 'No motivation provided.';
+      // Motivation removed
 
       document.getElementById('application-modal').style.display = 'block';
     }
