@@ -122,13 +122,13 @@ p.muted {
 }
 
 .sd-sidebar-header img {
-  height: 32px;
+  height: 40px;
   width: auto;
 }
 
 .sd-sidebar-header span {
-  font-weight: 700;
-  font-size: 1.25rem;
+  font-weight: 900;
+  font-size: 1.65rem;
   background: var(--brand-gradient);
   -webkit-background-clip: text;
   background-clip: text;

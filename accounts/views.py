@@ -214,6 +214,7 @@ def create_program(request):
         admin_id = request.session.get('user_id')
         program_name = request.POST.get('program_name')
         requirements = request.POST.get('requirements')
+        document_requirements = request.POST.getlist('document_requirements')
         print("📦 POST DATA:", request.POST)
 
         program_type = request.POST.get('program_type')
@@ -222,7 +223,7 @@ def create_program(request):
             messages.error(request, "Program name is required.")
             return redirect('accounts:admin_dashboard')
 
-        Program.objects.create(program_name=program_name, requirements=requirements, program_type=program_type)
+        Program.objects.create(program_name=program_name, requirements=requirements, document_requirements=document_requirements, program_type=program_type)
         
         if admin_id:
             current_admin = Admin.objects.get(admin_id=admin_id)
@@ -263,10 +264,26 @@ def create_student_application(request):
             remarks=motivation,
         )
 
-        # Handle multiple supporting documents
+        # Handle multiple supporting documents (new uploads)
         documents = request.FILES.getlist('supporting_docs')
         for doc in documents:
             ApplicationDocument.objects.create(application=app, file=doc)
+
+        # Handle imported documents from Student's uploaded files
+        imported_doc_ids = request.POST.getlist('imported_docs')
+        if imported_doc_ids:
+            from .models import StudentDocument # ensure imported
+            for doc_id in imported_doc_ids:
+                try:
+                    student_doc = StudentDocument.objects.get(id=doc_id, student=student)
+                    if student_doc.file:
+                        # Create an ApplicationDocument referencing the same file
+                        ApplicationDocument.objects.create(
+                            application=app, 
+                            file=student_doc.file
+                        )
+                except StudentDocument.DoesNotExist:
+                    pass # Skip invalid or unauthorized document IDs
 
         return JsonResponse({'success': True, 'application_id': app.app_id})
     except Exception as e:
@@ -1655,6 +1672,11 @@ def upload_student_document(request):
         
     try:
         student = get_object_or_404(Student, pk=student_id)
+        
+        # Check if the student has reached the maximum document limit (15)
+        if student.documents.count() >= 15:
+            return JsonResponse({'success': False, 'error': 'Maximum limit of 15 documents reached. Please delete some documents to upload new ones.'}, status=400)
+            
         document_name = request.POST.get('document_name')
         file = request.FILES.get('file')
         

@@ -282,14 +282,40 @@
               </div>
 
               <div id="program-description" class="program-description" style="display: none;">
-                <h4><i class="fas fa-info-circle"></i> Program Requirements</h4>
-                <div id="program-requirements" class="requirements-content"></div>
+                <h4><i class="fas fa-info-circle"></i> Program Description</h4>
+                <div id="program-requirements" class="requirements-content mb-4 text-sm text-gray-700 dark:text-gray-300"></div>
+                
+                <h4 class="mt-4"><i class="fas fa-file-contract"></i> Required Documents</h4>
+                <div id="program-doc-requirements" class="flex flex-wrap gap-2 text-sm mt-2"></div>
               </div>
 
 
 
               <div class="form-group">
                 <label>Supporting documents</label>
+                
+                <!-- Import from Uploaded Documents -->
+                <div class="mb-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 m-0 flex items-center gap-2">
+                           <i class="fas fa-folder-open text-brand-primary"></i> Import from My Documents
+                        </h4>
+                        <button type="button" class="text-xs text-brand-primary hover:underline font-medium" onclick="loadMyDocumentsForImport()">
+                            <i class="fas fa-sync-alt"></i> Refresh List
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-3">Select documents you've already uploaded to attach them to this application.</p>
+                    <div id="import-documents-list" class="flex flex-col max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+                        <p class="text-xs text-gray-400 italic">No available documents. Upload in the Documents tab first.</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center my-3">
+                    <div class="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
+                    <span class="px-3 text-xs text-gray-400 font-medium uppercase tracking-wider text-center">Or upload new</span>
+                    <div class="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
+                </div>
+
                 <div class="file-upload-block">
                     <label class="file-upload-label" for="supporting_docs">
                         <i class="fas fa-cloud-upload-alt"></i>
@@ -619,8 +645,11 @@
             <span id="details-modal-type" class="px-3 py-1 text-xs font-semibold text-white bg-gray-600 rounded-full"></span>
             <span id="details-modal-dates" class="text-xs font-medium text-brand-primary flex items-center gap-1"></span>
         </div>
-        <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Requirements:</h4>
+        <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Description:</h4>
         <div id="details-modal-requirements" class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed"></div>
+        
+        <h4 class="font-semibold text-gray-700 dark:text-gray-300 mt-4 mb-2">Required Documents:</h4>
+        <div id="details-modal-doc-requirements" class="flex flex-wrap gap-2 text-sm mb-4"></div>
       </div>
       <div class="modal-footer flex gap-3 pt-6 mt-4 border-t border-gray-100 dark:border-gray-700 justify-end">
         <button type="button" class="btn btn-outline" onclick="closeProgramDetailsModal()">Close</button>
@@ -705,8 +734,8 @@
               <span class="shrink-0" style="padding: 6px 14px; font-size: 0.8rem; font-weight: 600; color: #fff; background-color: #4b5563; border-radius: 9999px;">${p.program_type || 'Other'}</span>
             </div>
             
-            <div class="text-sm text-gray-600 dark:text-gray-300 mb-6 flex-1 min-h-[40px] overflow-hidden">
-              <p class="line-clamp-2 break-words whitespace-normal">${p.requirements || 'No specific requirements listed.'}</p>
+            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+              <p class="line-clamp-2 break-words whitespace-normal">${p.requirements || 'No description listed.'}</p>
             </div>
             
             <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex flex-col xl:flex-row items-center justify-between gap-4 shrink-0 w-full">
@@ -759,7 +788,14 @@
 
       document.getElementById('details-modal-title').textContent = program.program_name;
       document.getElementById('details-modal-type').textContent = program.program_type || 'Other';
-      document.getElementById('details-modal-requirements').textContent = program.requirements || 'No specific requirements listed.';
+      document.getElementById('details-modal-requirements').textContent = program.requirements || 'No description listed.';
+      
+      const docReqContainer = document.getElementById('details-modal-doc-requirements');
+      if (program.document_requirements && program.document_requirements.length > 0) {
+        docReqContainer.innerHTML = program.document_requirements.map(doc => `<span class="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-xs font-bold whitespace-nowrap">${doc}</span>`).join('');
+      } else {
+        docReqContainer.innerHTML = '<span class="text-xs italic text-gray-400">No specific document requirements set.</span>';
+      }
       
       const datesEl = document.getElementById('details-modal-dates');
       if (program.application_start_date || program.application_end_date) {
@@ -811,6 +847,10 @@
       document.getElementById('file-list').innerHTML = '';
       document.getElementById('app-msg').style.display = 'none';
       document.getElementById('program').value = '';
+      document.getElementById('import-documents-list').innerHTML = '<p class="text-xs text-gray-400 italic">No available documents. Upload in the Documents tab first.</p>';
+      
+      // Clear out hidden imported document inputs
+      document.querySelectorAll('input[name="imported_docs"]').forEach(el => el.remove());
     }
 
     // Show program description when a program is selected
@@ -818,14 +858,98 @@
       const select = document.getElementById('program');
       const descriptionDiv = document.getElementById('program-description');
       const requirementsDiv = document.getElementById('program-requirements');
+      const docReqContainer = document.getElementById('program-doc-requirements');
 
       if (select.value && programsData[select.value]) {
         const program = programsData[select.value];
-        requirementsDiv.textContent = program.requirements || 'No specific requirements listed.';
+        requirementsDiv.textContent = program.requirements || 'No description listed.';
+        
+        if (program.document_requirements && program.document_requirements.length > 0) {
+            docReqContainer.innerHTML = program.document_requirements.map(doc => `<span class="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-xs font-bold whitespace-nowrap">${doc}</span>`).join('');
+        } else {
+            docReqContainer.innerHTML = '<span class="text-xs italic text-gray-400">No specific document requirements set.</span>';
+        }
+        
         descriptionDiv.style.display = 'block';
+        
+        // Auto-load available documents for import when viewing application form
+        loadMyDocumentsForImport();
       } else {
         descriptionDiv.style.display = 'none';
       }
+    }
+
+    // Load user's uploaded documents as list
+    async function loadMyDocumentsForImport() {
+        const listDiv = document.getElementById('import-documents-list');
+        listDiv.innerHTML = '<p class="text-xs text-gray-500">Loading your documents...</p>';
+        try {
+            const res = await fetch('/api/student/documents/', { credentials: 'same-origin' });
+            if (!res.ok) throw new Error('Failed to fetch documents');
+            const data = await res.json();
+            
+            if (data.documents && data.documents.length > 0) {
+                listDiv.innerHTML = '';
+                data.documents.forEach(doc => {
+                    const listItem = document.createElement('div');
+                    listItem.className = "flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 mb-2 shadow-sm transition-shadow hover:shadow-md";
+                    
+                    const filename = doc.name || 'Document';
+                    const dateStr = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    
+                    listItem.innerHTML = `
+                        <div class="flex items-center gap-3 overflow-hidden pr-2">
+                            <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                                <i class="fas fa-file-alt text-brand-primary text-lg"></i>
+                            </div>
+                            <div class="flex flex-col overflow-hidden">
+                                <span class="text-sm font-semibold text-gray-700 dark:text-gray-300 truncate" title="${filename}">${filename}</span>
+                                <span class="text-[11px] font-medium text-gray-500"><i class="far fa-calendar-alt mr-1"></i>${dateStr}</span>
+                            </div>
+                        </div>
+                        <button type="button" class="import-btn btn py-1.5 px-3 text-xs font-semibold rounded-lg shrink-0 transition-all duration-200 border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white" data-doc-id="${doc.id}">
+                            <i class="fas fa-plus mr-1"></i> Import
+                        </button>
+                    `;
+                    listDiv.appendChild(listItem);
+
+                    // Behavior to handle import action
+                    const btn = listItem.querySelector('.import-btn');
+                    btn.addEventListener('click', function() {
+                        const isImported = this.classList.contains('imported');
+                        
+                        if (isImported) {
+                            // UI Update to Normal
+                            this.classList.remove('imported', 'bg-brand-primary', 'text-white');
+                            this.classList.add('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
+                            this.innerHTML = '<i class="fas fa-plus mr-1"></i> Import';
+                            
+                            // Form Logic
+                            const hiddenInput = document.getElementById('imported_doc_' + doc.id);
+                            if (hiddenInput) hiddenInput.remove();
+                        } else {
+                            // UI Update to Imported
+                            this.classList.add('imported', 'bg-brand-primary', 'text-white');
+                            this.classList.remove('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
+                            this.innerHTML = '<i class="fas fa-check mr-1"></i> Imported';
+                            
+                            // Form Logic
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'imported_docs';
+                            hiddenInput.value = doc.id;
+                            hiddenInput.id = 'imported_doc_' + doc.id;
+                            document.getElementById('programForm').appendChild(hiddenInput);
+                        }
+                    });
+                });
+            } else {
+                listDiv.innerHTML = '<p class="text-xs text-gray-400 italic">No available documents found in your account.</p>';
+            }
+        } catch (err) {
+            console.error(err);
+            listDiv.innerHTML = '<p class="text-xs text-red-500 italic">Failed to load documents.</p>';
+        }
     }
 
     // Show application confirmation popup

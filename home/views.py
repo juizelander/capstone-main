@@ -7,6 +7,7 @@ def create_program(request):
         try:
             program_name = request.POST.get('program_name')
             requirements = request.POST.get('requirements')
+            document_requirements = request.POST.getlist('document_requirements')
             application_start_date = request.POST.get('application_start_date') or None
             application_end_date = request.POST.get('application_end_date') or None
             program_image = request.FILES.get('program_image')
@@ -18,6 +19,7 @@ def create_program(request):
                 Program.objects.create(
                     program_name=program_name,
                     requirements=requirements,
+                    document_requirements=document_requirements,
                     application_start_date=application_start_date,
                     application_end_date=application_end_date,
                     program_image=program_image,
@@ -40,6 +42,7 @@ def get_programs(request):
             'program_id': p.program_id,
             'program_name': p.program_name,
             'requirements': p.requirements or '',
+            'document_requirements': p.document_requirements or [],
             'application_start_date': p.application_start_date,
             'application_end_date': p.application_end_date,
             'program_image': p.program_image.url if p.program_image else None,
@@ -58,6 +61,9 @@ def edit_program(request, program_id):
             program.program_name = request.POST.get('program_name', program.program_name)
             program.requirements = request.POST.get('requirements', program.requirements)
             program.program_type = request.POST.get('program_type', program.program_type)
+            
+            if 'document_requirements' in request.POST:
+                program.document_requirements = request.POST.getlist('document_requirements')
             
             start_date = request.POST.get('application_start_date')
             if start_date: 

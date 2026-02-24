@@ -528,8 +528,21 @@
               </div>
 
               <div class="form-group">
-                <label for="p_req" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+                <label for="p_req" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</label>
                 <textarea id="p_req" name="requirements" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+              </div>
+
+              <div class="form-group mt-4">
+                <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Required Documents</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-300 dark:border-gray-600">
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="School ID (Current Semester)" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>School ID (Current Semester)</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Valid ID" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Valid ID</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="TOR" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>TOR</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Voter's Certificate" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Voter's Certificate</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Certificate of Indigency" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Certificate of Indigency</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Letter of Application" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Letter of Application</span></label>
+                    <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Other" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Other</span></label>
+                </div>
               </div>
 
               <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2107,21 +2120,34 @@
         el.className = 'program-item bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 dark:border-gray-700 flex flex-col relative';
 
         el.innerHTML = `
-          ${p.program_image ? `<div class="w-full h-32 bg-cover bg-center" style="background-image: url('${p.program_image}');"></div>` : `<div class="w-full h-2 bg-brand-primary"></div>`}
-          <div class="p-5 flex flex-col flex-1">
-            <div class="flex justify-between flex-wrap gap-2 items-start mb-3">
-              <h4 class="text-lg font-bold text-gray-800 dark:text-white truncate" title="${p.program_name}">${p.program_name}</h4>
-              <span class="px-2" style="padding: 2px 8px; font-size: 0.75em; font-weight: 700; color: #fff; background-color: #4a5568; border-radius: 9999px;">${p.program_type || 'Other'}</span>
-            </div>
-            
+          <div class="w-full h-32 bg-cover bg-center relative ${!p.program_image ? 'bg-gradient-to-tr from-brand-primary to-blue-400' : ''}" style="${p.program_image ? `background-image: url('${p.program_image}');` : ''}">
             <div class="absolute top-3 right-3 flex gap-2">
-              <button class="bg-gray-900/50 hover:bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors" onclick="openEditProgramModal(${p.program_id})" title="Edit Program"><i class="fas fa-edit text-xs"></i></button>
-              <button class="bg-red-600/60 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors" onclick="deleteProgram(${p.program_id})" title="Delete Program"><i class="fas fa-trash text-xs"></i></button>
+              <button class="bg-gray-900/60 hover:bg-gray-900 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors shadow-sm" onclick="openEditProgramModal(${p.program_id})" title="Edit Program"><i class="fas fa-edit text-xs"></i></button>
+              <button class="bg-red-600/70 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-colors shadow-sm" onclick="deleteProgram(${p.program_id})" title="Delete Program"><i class="fas fa-trash text-xs"></i></button>
+            </div>
+          </div>
+          <div class="p-5 flex flex-col flex-1">
+            <div class="flex justify-between flex-nowrap items-start mb-3 gap-2">
+              <h4 class="text-lg font-bold text-gray-800 dark:text-white truncate" title="${p.program_name}">${p.program_name}</h4>
+              <span class="px-2 py-0.5 whitespace-nowrap text-xs font-bold text-white bg-gray-600 dark:bg-gray-700 rounded-full">${p.program_type || 'Other'}</span>
             </div>
             
-            <div class="flex-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
-              <p>${p.requirements || 'No specific requirements listed.'}</p>
+            <div class="text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-3 flex-none">
+              <p>${p.requirements || 'No description listed.'}</p>
             </div>
+
+            ${(p.document_requirements && p.document_requirements.length > 0) ? `
+              <div class="mb-4 flex-1">
+                <span class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Req. Documents:</span>
+                <div class="flex flex-wrap gap-1">
+                  ${p.document_requirements.map(doc => `<span class="inline-block px-1.5 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-[10px] whitespace-nowrap">${doc}</span>`).join('')}
+                </div>
+              </div>
+            ` : `
+               <div class="mb-4 flex-1">
+                <span class="text-[11px] italic text-gray-400">No specific document requirements set.</span>
+               </div>
+            `}
             
             ${(p.application_start_date || p.application_end_date) ? `
                 <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -2904,8 +2930,21 @@
           </div>
 
           <div class="form-group">
-            <label for="edit_requirements" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+            <label for="edit_requirements" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Description</label>
             <textarea id="edit_requirements" name="requirements" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+          </div>
+
+          <div class="form-group mt-4">
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Required Documents</label>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 bg-white dark:bg-gray-700 p-3 rounded-lg border border-gray-300 dark:border-gray-600" id="edit_document_requirements_container">
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="School ID (Current Semester)" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>School ID (Current Semester)</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Valid ID" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Valid ID</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="TOR" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>TOR</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Voter's Certificate" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Voter's Certificate</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Certificate of Indigency" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Certificate of Indigency</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Letter of Application" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Letter of Application</span></label>
+                <label class="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300"><input type="checkbox" name="document_requirements" value="Other" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary"><span>Other</span></label>
+            </div>
           </div>
 
           <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2948,6 +2987,13 @@
       document.getElementById('edit_requirements').value = program.requirements;
       document.getElementById('edit_application_start_date').value = program.application_start_date || '';
       document.getElementById('edit_application_end_date').value = program.application_end_date || '';
+
+      // Check document requirements
+      const checkboxes = document.querySelectorAll('#edit_document_requirements_container input[type="checkbox"]');
+      const requiredDocs = program.document_requirements || [];
+      checkboxes.forEach(cb => {
+         cb.checked = requiredDocs.includes(cb.value);
+      });
 
       document.getElementById('edit-program-modal').style.display = 'flex';
     }

@@ -39,6 +39,7 @@ class Program(models.Model):
     program_id = models.AutoField(primary_key=True)
     program_name = models.CharField(max_length=100)
     requirements = models.TextField(blank=True, null=True)
+    document_requirements = models.JSONField(default=list, blank=True)
     application_start_date = models.DateField(null=True, blank=True)
     application_end_date = models.DateField(null=True, blank=True)
     program_image = models.ImageField(upload_to='program_images/', blank=True, null=True)
