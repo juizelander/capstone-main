@@ -411,7 +411,7 @@
         .program-icon {
             width: 60px;
             height: 60px;
-            background: rgba(16, 185, 129, 0.1);
+            background: rgba(16, 185, 11029, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -480,6 +480,167 @@
             color: white;
             font-size: 0.9rem;
         }
+        .programfeatures {
+            height: 80vh;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .headerfeatures {
+            width: 100%;
+            text-align:start;
+            margin-top: 30px;
+            margin-left: 50px;
+            margin-bottom: 10px;
+        }
+
+        .headerfeatures h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #10B981;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .program-cards-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+        .ui-card {
+    background: #f0f9f8;
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 400px;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    font-family: 'Inter', sans-serif;
+    aspect-ratio: 3/4;
+}
+
+.ui-card-image {
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+}
+
+.ui-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+.ui-card-body {
+  padding: 24px;
+}
+
+.ui-card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+/* Reuse the orange from the poster for the button */
+.ui-primary-btn {
+  background: #f27438; 
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ui-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+/* Container for the carousel and arrows */
+.carousel-container {
+    position: relative;
+    width: 95%;
+    display: flex;
+    align-items: center;
+}
+
+/* Updated Row: Allow scrolling but hide scrollbar */
+.program-cards-row {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    padding: 20px 0;
+}
+
+.program-cards-row::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+/* Navigation Buttons */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 1px solid #ddd;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.nav-btn:hover { background: #f0f0f0; }
+.prev { left: -20px; }
+.next { right: -20px; }
+
+/* Indicators (Dots) */
+.indicator-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 4px; /* Rectangular like your image */
+    background: #ddd;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.dot.active {
+    background: #10B981; /* Matches your header color */
+    width: 25px; /* Becomes longer when active */
+}
     </style>
 </head>
 
@@ -551,6 +712,95 @@
             {% endif %}
         </section> -->
 
+        <section class="programfeatures">
+            <div class="headerfeatures">
+                <h1>Featured Programs</h1>
+            </div>
+            <div class="carousel-container">
+        <button class="nav-btn prev" onclick="scrollCarousel(-1)">&#10094;</button>
+        <button class="nav-btn next" onclick="scrollCarousel(1)">&#10095;</button>
+
+            
+            <div class="program-cards-row" id="carouselRow">
+                <div class="ui-card">
+                    <div class="ui-card-image">
+                        <img src="/media/program_images/edukalinga.jpg" alt="EduKALINGA Scholarship Poster">
+                    </div>
+                    <div class="ui-card-body">
+                        <h2 class="ui-card-title">EduKALINGA Educational Assistance</h2>
+                        <div class="ui-data-grid">
+                            <div class="ui-data-point">
+                                <span class="ui-label">Application Date</span>
+                                <span class="ui-value">September 22, 2025</span>
+                            </div>
+                        </div>
+                        <div class="ui-card-footer">
+                            <button class="ui-primary-btn">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-card">
+                    <div class="ui-card-image">
+                        <img src="/media/program_images/smScholarship.jpg" alt="SMScholarship Poster">
+                    </div>
+                    <div class="ui-card-body">
+                        <h2 class="ui-card-title">SMScholarship Assistance</h2>
+                        <div class="ui-data-grid">
+                            <div class="ui-data-point">
+                                <span class="ui-label">Application Date</span>
+                                <span class="ui-value">September 22, 2025</span>
+                            </div>
+                        </div>
+                        <div class="ui-card-footer">
+                            <button class="ui-primary-btn">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-card">
+                    <div class="ui-card-image">
+                        <img src="/media/program_images/Zameco.jpg" alt="Zameco Scholarship Poster">
+                    </div>
+                    <div class="ui-card-body">
+                        <h2 class="ui-card-title">Zameco Educational Assistance</h2>
+                        <div class="ui-data-grid">
+                            <div class="ui-data-point">
+                                <span class="ui-label">Application Date</span>
+                                <span class="ui-value">September 22, 2025</span>
+                            </div>
+                        </div>
+                        <div class="ui-card-footer">
+                            <button class="ui-primary-btn">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui-card">
+                    <div class="ui-card-image">
+                        <img src="/media/program_images/DOST.jpg" alt="DOST Scholarship Poster">
+                    </div>
+                    <div class="ui-card-body">
+                        <h2 class="ui-card-title">DOST Educational Assistance</h2>
+                        <div class="ui-data-grid">
+                            <div class="ui-data-point">
+                                <span class="ui-label">Application Date</span>
+                                <span class="ui-value">September 22, 2025</span>
+                            </div>
+                        </div>
+                        <div class="ui-card-footer">
+                            <button class="ui-primary-btn">Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Add more cards here if needed -->
+            </div>
+            </div>
+            <div class="indicator-row" id="indicatorRow">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+        </section>
+
         <section id="features" class="features-section">
             <div class="section-title">
                 <h2>Why ScholarSync?</h2>
@@ -595,3 +845,23 @@
 </body>
 
 </html>
+
+<script>
+    const row = document.getElementById('carouselRow');
+const dots = document.querySelectorAll('.dot');
+
+function scrollCarousel(direction) {
+    const cardWidth = document.querySelector('.ui-card').offsetWidth + 20; // card + gap
+    row.scrollLeft += direction * cardWidth;
+}
+
+// Update dots on scroll
+row.addEventListener('scroll', () => {
+    const cardWidth = document.querySelector('.ui-card').offsetWidth + 20;
+    const index = Math.round(row.scrollLeft / cardWidth);
+    
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+    });
+});
+</script>
