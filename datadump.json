@@ -1,1 +1,1180 @@
-[{"model": "admin.logentry", "pk": 1, "fields": {"action_time": "2025-10-27T11:11:17.135Z", "user": 1, "content_type": 13, "object_id": "1", "object_repr": "mj", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}, {"model": "admin.logentry", "pk": 2, "fields": {"action_time": "2025-10-27T11:12:25.603Z", "user": 1, "content_type": 14, "object_id": "1", "object_repr": "lander", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}, {"model": "admin.logentry", "pk": 3, "fields": {"action_time": "2025-10-27T13:17:37.637Z", "user": 1, "content_type": 14, "object_id": "2", "object_repr": "shrek", "action_flag": 3, "change_message": ""}}, {"model": "admin.logentry", "pk": 4, "fields": {"action_time": "2025-10-29T06:10:40.820Z", "user": 1, "content_type": 13, "object_id": "2", "object_repr": "admin", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}, {"model": "admin.logentry", "pk": 5, "fields": {"action_time": "2025-10-29T06:11:11.891Z", "user": 1, "content_type": 14, "object_id": "4", "object_repr": "student1", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Username\", \"First name\", \"Last name\"]}}]"}}, {"model": "admin.logentry", "pk": 6, "fields": {"action_time": "2025-10-29T06:11:37.494Z", "user": 1, "content_type": 11, "object_id": "6", "object_repr": "scholarship local", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"}}, {"model": "admin.logentry", "pk": 7, "fields": {"action_time": "2025-10-29T06:15:36.681Z", "user": 1, "content_type": 11, "object_id": "9", "object_repr": "bbbb", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"}}, {"model": "admin.logentry", "pk": 8, "fields": {"action_time": "2025-10-29T06:15:43.577Z", "user": 1, "content_type": 11, "object_id": "1", "object_repr": "Edukalsss", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"}}, {"model": "admin.logentry", "pk": 9, "fields": {"action_time": "2025-10-29T06:15:51.222Z", "user": 1, "content_type": 11, "object_id": "2", "object_repr": "Edukalambingan", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"}}, {"model": "admin.logentry", "pk": 10, "fields": {"action_time": "2026-01-16T14:59:54.904Z", "user": 1, "content_type": 14, "object_id": "13", "object_repr": "user", "action_flag": 1, "change_message": "[{\"added\": {}}]"}}, {"model": "admin.logentry", "pk": 11, "fields": {"action_time": "2026-02-21T14:43:13.639Z", "user": 1, "content_type": 13, "object_id": "1", "object_repr": "mj", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"}}, {"model": "admin.logentry", "pk": 12, "fields": {"action_time": "2026-02-21T14:43:23.381Z", "user": 1, "content_type": 13, "object_id": "2", "object_repr": "admin", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"}}, {"model": "admin.logentry", "pk": 13, "fields": {"action_time": "2026-02-21T16:47:13.681Z", "user": 1, "content_type": 13, "object_id": "2", "object_repr": "admin", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"}}, {"model": "admin.logentry", "pk": 14, "fields": {"action_time": "2026-02-21T16:48:59.200Z", "user": 1, "content_type": 13, "object_id": "3", "object_repr": "testadmin", "action_flag": 3, "change_message": ""}}, {"model": "auth.user", "pk": 1, "fields": {"password": "pbkdf2_sha256$1000000$Pn5LxAoEmTDsb0FQ8XJcWQ$wLsUxrHNznhLy7L0ea6c4Xopc6ec6f8kVdwtcTUsUk4=", "last_login": "2026-02-21T16:46:37.077Z", "is_superuser": true, "username": "capstone", "first_name": "", "last_name": "", "email": "juizelander@gmail.com", "is_staff": true, "is_active": true, "date_joined": "2025-10-27T10:05:08.260Z", "groups": [], "user_permissions": []}}, {"model": "sessions.session", "pk": "2ge7fisk2uxqvqgw7jrhpzwrbhycdds6", "fields": {"session_data": "eyJ1c2VyX2lkIjoxfQ:1vDSP5:27Kj5zP3RNn5zZPGUg1Dz7ugq046mIarEXsMj31MjZs", "expire_date": "2025-11-10T18:57:15.642Z"}}, {"model": "sessions.session", "pk": "81e1ellwsqgrz2dk5pcdt199s3tud8g0", "fields": {"session_data": ".eJyrViotTi2KL8rPSVWyUiouKU1JzStR0oGIZqYoWRkaQzh5ibkgFSCmUi0ACpkSmA:1vtQqU:rOO45AifHzZKw7raFIBnehqswZnsMhMHpEGP5qIVpFw", "expire_date": "2026-03-06T13:47:02.429Z"}}, {"model": "sessions.session", "pk": "ackhne8itu2h1z48pzjupkn9mtger8tj", "fields": {"session_data": "eyJ1c2VyX3JvbGUiOiJhZG1pbiIsInVzZXJfaWQiOjJ9:1vuXjj:gzToDpzD9LMhsyLDpg-sI4YJ9Aq1uyMnc-hflSrFoy4", "expire_date": "2026-03-09T15:20:39.518Z"}}, {"model": "sessions.session", "pk": "cp8wzbmd8vmt27h5vtuvqa6uwn5khhul", "fields": {"session_data": "eyJ1c2VyX2lkIjoxfQ:1vDSOp:Q-e62tl1jrUNmPg_xlAFRoetyChllfiawQ24uo46QG0", "expire_date": "2025-11-10T18:56:59.126Z"}}, {"model": "sessions.session", "pk": "cx8hp9luhwbeo3i1v64rhkknl2xxrmga", "fields": {"session_data": ".eJxVjMsKgzAQAP9lzxKyMWvEY-_9BtndxGofCfg4lf57kUrB68wwb9iWNPdzeSbogONrylD92BShwwp63tax_xNAODFhfaS8i3jnfCtGS17nScyemMMu5lpiel6O9jQYeRmhA9EBLTrb2FqDS4qOPFPjWDwG9ihEtfpaSDkGsqgxRZJWmjbYFnmAzxeYKUIw:1vDSN1:3aQa8jqd8MininCLG3c02VDIzcecqcAhWtqtkn6J9vQ", "expire_date": "2025-11-10T18:55:07.634Z"}}, {"model": "sessions.session", "pk": "ofwoluxe9e3jk4m48k2pjm6mip99urcb", "fields": {"session_data": "eyJ1c2VyX3JvbGUiOiJhZG1pbiIsInVzZXJfaWQiOjJ9:1vtokO:Ouy8RnZIvsih9nMvPn871xivitBnSu-6iFdsOmRlueA", "expire_date": "2026-03-07T15:18:20.503Z"}}, {"model": "sessions.session", "pk": "y1yr9ci334gcti10ug4ksbwaafbx6t1f", "fields": {"session_data": ".eJyrViotTi2KL8rPSVWyUiouKU1JzStR0oGIZqYoWRkaQTh5ibkgFV6pRZXJSrUAHIIS1Q:1vE0AR:y3BWaCEMUTxJi8h7fs6ToCKQIWLPclAougWe308tEyc", "expire_date": "2025-11-12T07:00:23.883Z"}}, {"model": "home.program", "pk": 20, "fields": {"program_name": "Edukalinga", "requirements": "School ID\r\nTOR\r\nVoter's certificate", "application_start_date": "2026-02-04", "application_end_date": "2026-02-25", "program_image": "program_images/edukalinga.jpg", "program_type": "Financial Assistance", "is_active": true}}, {"model": "home.program", "pk": 21, "fields": {"program_name": "Takbo Para Sa Ligtas na Juana", "requirements": "", "application_start_date": "2026-02-02", "application_end_date": "2026-02-03", "program_image": "program_images/625908260_787512197698269_1001502589793903269_n.jpg", "program_type": "Other", "is_active": true}}, {"model": "home.program", "pk": 22, "fields": {"program_name": "2026 DOST-SEI Undergraduate Scholarship", "requirements": "https://www.facebook.com/DOST.SEI/posts/pfbid05cX7uWpNtqgkDR1moyDTBajrN6kY2dx3xMmgtQjexQweiAEeWHpGGDd1orVoa6e2l?rdid=b6HQYKOXgYCH9DTp#", "application_start_date": "2026-02-20", "application_end_date": "2026-04-11", "program_image": "program_images/637776545_1386200883538486_7113656837947321308_n.jpg", "program_type": "Scholarship", "is_active": true}}, {"model": "home.program", "pk": 23, "fields": {"program_name": 
+[
+{
+    "model": "auth.user",
+    "fields": {
+        "password": "pbkdf2_sha256$1000000$Pn5LxAoEmTDsb0FQ8XJcWQ$wLsUxrHNznhLy7L0ea6c4Xopc6ec6f8kVdwtcTUsUk4=",
+        "last_login": "2026-02-24T10:01:22.991Z",
+        "is_superuser": true,
+        "username": "capstone",
+        "first_name": "",
+        "last_name": "",
+        "email": "juizelander@gmail.com",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2025-10-27T10:05:08.260Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "2ge7fisk2uxqvqgw7jrhpzwrbhycdds6",
+    "fields": {
+        "session_data": "eyJ1c2VyX2lkIjoxfQ:1vDSP5:27Kj5zP3RNn5zZPGUg1Dz7ugq046mIarEXsMj31MjZs",
+        "expire_date": "2025-11-10T18:57:15.642Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "81e1ellwsqgrz2dk5pcdt199s3tud8g0",
+    "fields": {
+        "session_data": ".eJyrViotTi2KL8rPSVWyUiouKU1JzStR0oGIZqYoWRkaQzh5ibkgFSCmUi0ACpkSmA:1vtQqU:rOO45AifHzZKw7raFIBnehqswZnsMhMHpEGP5qIVpFw",
+        "expire_date": "2026-03-06T13:47:02.429Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "b5rhgcoisopu02xwfhorui600h3nf9m7",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAUBe_C2hCg8BWX7nsG8j-8StW0SWlXxrubJl3odmYyb5V4W2vaGpY0FnVVVp1-mXB-YtpFefB0n3Wep3UZRe-JPmzT_Vzwuh3t36Byq_tWBCb6MwBDA1kOloJ0VJgjsg0eRJfoMoqDN8aDYJwMgwCd67JVny_1xDiC:1vupEJ:0Aghdif-4Wf0oDQTTVGJMkUg0FSKw_LzkZZ5ENfvIEM",
+        "expire_date": "2026-03-10T10:01:23.001Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "cp8wzbmd8vmt27h5vtuvqa6uwn5khhul",
+    "fields": {
+        "session_data": "eyJ1c2VyX2lkIjoxfQ:1vDSOp:Q-e62tl1jrUNmPg_xlAFRoetyChllfiawQ24uo46QG0",
+        "expire_date": "2025-11-10T18:56:59.126Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "cx8hp9luhwbeo3i1v64rhkknl2xxrmga",
+    "fields": {
+        "session_data": ".eJxVjMsKgzAQAP9lzxKyMWvEY-_9BtndxGofCfg4lf57kUrB68wwb9iWNPdzeSbogONrylD92BShwwp63tax_xNAODFhfaS8i3jnfCtGS17nScyemMMu5lpiel6O9jQYeRmhA9EBLTrb2FqDS4qOPFPjWDwG9ihEtfpaSDkGsqgxRZJWmjbYFnmAzxeYKUIw:1vDSN1:3aQa8jqd8MininCLG3c02VDIzcecqcAhWtqtkn6J9vQ",
+        "expire_date": "2025-11-10T18:55:07.634Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "y1yr9ci334gcti10ug4ksbwaafbx6t1f",
+    "fields": {
+        "session_data": ".eJyrViotTi2KL8rPSVWyUiouKU1JzStR0oGIZqYoWRkaQTh5ibkgFV6pRZXJSrUAHIIS1Q:1vE0AR:y3BWaCEMUTxJi8h7fs6ToCKQIWLPclAougWe308tEyc",
+        "expire_date": "2025-11-12T07:00:23.883Z"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "y77trkzuhu3ox5wskrc85iiu3vkbkblp",
+    "fields": {
+        "session_data": ".eJyrViotTi2KL8rPSVWyUkpMyc3MU9KBiGWmKFkZQdh5ibkg6eCS_LxUpVoA3CgRsg:1vusYb:JwMtYmyUOv2hRu8hiPEGoV9gv1mBaE3tdqkB3r-Nr0Q",
+        "expire_date": "2026-03-10T13:34:33.452Z"
+    }
+},
+{
+    "model": "home.program",
+    "pk": 20,
+    "fields": {
+        "program_name": "EduKalinga",
+        "requirements": "School ID\r\nTOR\r\nVoter's certificate",
+        "application_start_date": "2026-02-04",
+        "application_end_date": "2026-02-25",
+        "program_image": "program_images/edukalinga.jpg",
+        "program_type": "Financial Assistance",
+        "is_active": true
+    }
+},
+{
+    "model": "home.program",
+    "pk": 21,
+    "fields": {
+        "program_name": "Takbo Para Sa Ligtas na Juana",
+        "requirements": "",
+        "application_start_date": "2026-02-02",
+        "application_end_date": "2026-02-03",
+        "program_image": "program_images/625908260_787512197698269_1001502589793903269_n.jpg",
+        "program_type": "Other",
+        "is_active": true
+    }
+},
+{
+    "model": "home.program",
+    "pk": 22,
+    "fields": {
+        "program_name": "2026 DOST-SEI Undergraduate Scholarship",
+        "requirements": "https://www.facebook.com/DOST.SEI/posts/pfbid05cX7uWpNtqgkDR1moyDTBajrN6kY2dx3xMmgtQjexQweiAEeWHpGGDd1orVoa6e2l?rdid=b6HQYKOXgYCH9DTp#",
+        "application_start_date": "2026-02-20",
+        "application_end_date": "2026-04-11",
+        "program_image": "program_images/637776545_1386200883538486_7113656837947321308_n.jpg",
+        "program_type": "Scholarship",
+        "is_active": true
+    }
+},
+{
+    "model": "home.program",
+    "pk": 23,
+    "fields": {
+        "program_name": "𝗭𝗔𝗠𝗘𝗖𝗢 𝗜𝗜 𝗘𝗗𝗨𝗖𝗔𝗧𝗜𝗢𝗡𝗔𝗟 𝗔𝗦𝗦𝗜𝗦𝗧𝗔𝗡𝗖𝗘 𝗣𝗥𝗢𝗚𝗥𝗔𝗠",
+        "requirements": "i. Letter of intent (printed in a short bond paper) addressed to Engr Romwil F. De Jesus, General Manager\r\n\r\nii. Application form with 2x2 picture (provided by ZAMECO II)\r\n\r\niii. Certificate of Grades (COG) duly certified by university seal (Original)\r\n\r\niv. Certificate of Registration/Enrolment (Pervious and Present Semester)\r\n\r\nv. PSA/NSO Birth Certificate (Copy)\r\n\r\nvi. Proof of billing (statement of account of the registered consumer – family member)\r\n\r\nvii. Income Tax Return (ITR)/BIR Certification (parent)\r\n\r\nviii. Brgy Clearance (Student)\r\n\r\nix. School ID (Photocopy)\r\n\r\nx. Parents/ guardian Valid ID (Photocopy) (or any Proof of Identification)",
+        "application_start_date": "2026-02-20",
+        "application_end_date": "2026-04-23",
+        "program_image": "program_images/545142133_1171578651666643_713540255117894255_n.jpg",
+        "program_type": "Financial Assistance",
+        "is_active": true
+    }
+},
+{
+    "model": "home.program",
+    "pk": 24,
+    "fields": {
+        "program_name": "SM SCHOLARSHIP 2026–2027",
+        "requirements": "1. Either one of the following:\r\n■ Latest Income Tax Returns of parent/s or guardian; or\r\n■ Certificate of Non-Filing of Income; or\r\n·\r\nCertificate of Indigency;\r\n2. Latest Grade 12 report card\r\n3. Birth Certificate\r\n4. Two (2) copies of recent 2×2 ID pictures; and\r\n5. Sketch of residence to the nearest SM Mall.",
+        "application_start_date": "2026-02-19",
+        "application_end_date": "2026-04-22",
+        "program_image": "program_images/625065669_1332047502293312_8543261726328427625_n.jpg",
+        "program_type": "Scholarship",
+        "is_active": true
+    }
+},
+{
+    "model": "home.application",
+    "pk": 32,
+    "fields": {
+        "student": 13,
+        "program": 20,
+        "requirement_status": "rejected",
+        "remarks": "<p><br></p>",
+        "is_remarks_viewed": true,
+        "notification": null,
+        "created_at": "2026-02-03T17:08:28.608Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 36,
+    "fields": {
+        "student": 13,
+        "program": 20,
+        "requirement_status": "approved",
+        "remarks": "<p>Congrats!!!!</p>",
+        "is_remarks_viewed": true,
+        "notification": null,
+        "created_at": "2026-02-18T08:35:50.690Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 38,
+    "fields": {
+        "student": 13,
+        "program": 23,
+        "requirement_status": "approved",
+        "remarks": "<p>congrats niga</p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-23T11:18:40.031Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 39,
+    "fields": {
+        "student": 13,
+        "program": 24,
+        "requirement_status": "submitted",
+        "remarks": "cvbcvb",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-23T11:19:16.042Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 40,
+    "fields": {
+        "student": 13,
+        "program": 22,
+        "requirement_status": "approved",
+        "remarks": "<p>test email</p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-23T11:38:14.016Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 41,
+    "fields": {
+        "student": 13,
+        "program": 22,
+        "requirement_status": "rejected",
+        "remarks": "<p><br></p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-23T15:20:20.141Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 42,
+    "fields": {
+        "student": 13,
+        "program": 22,
+        "requirement_status": "rejected",
+        "remarks": "<p>haha bobo</p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-23T15:53:19.594Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 43,
+    "fields": {
+        "student": 17,
+        "program": 24,
+        "requirement_status": "approved",
+        "remarks": "<p>Congrats! you have been approve</p><p><br></p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-24T10:06:21.864Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 44,
+    "fields": {
+        "student": 17,
+        "program": 23,
+        "requirement_status": "submitted",
+        "remarks": "",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-24T12:04:09.673Z"
+    }
+},
+{
+    "model": "home.application",
+    "pk": 45,
+    "fields": {
+        "student": 17,
+        "program": 23,
+        "requirement_status": "approved",
+        "remarks": "<p>Congrats! you have been approved! </p>",
+        "is_remarks_viewed": false,
+        "notification": null,
+        "created_at": "2026-02-24T12:04:38.770Z"
+    }
+},
+{
+    "model": "accounts.admin",
+    "pk": 1,
+    "fields": {
+        "admin_name": "mj",
+        "full_name": "Michael James Feliminiano",
+        "password": "123"
+    }
+},
+{
+    "model": "accounts.admin",
+    "pk": 2,
+    "fields": {
+        "admin_name": "admin",
+        "full_name": "Ricky Coronel",
+        "password": "123"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 1,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T14:43:34.117Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 2,
+    "fields": {
+        "admin": 2,
+        "action": "Changed password",
+        "timestamp": "2026-02-21T14:56:05.189Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 3,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T14:57:05.157Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 4,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T14:58:59.467Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 5,
+    "fields": {
+        "admin": 2,
+        "action": "Created new admin: testadmin",
+        "timestamp": "2026-02-21T15:09:56.290Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 7,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T15:18:20.491Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 8,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T15:34:27.012Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 9,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted popup 'vbhghgh'",
+        "timestamp": "2026-02-21T15:34:42.876Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 10,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T16:31:00.239Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 11,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T16:37:06.921Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 12,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted student jozlanderbarrera",
+        "timestamp": "2026-02-21T16:45:53.506Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 13,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted student landerbarrera",
+        "timestamp": "2026-02-21T16:45:56.631Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 14,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted student shamae",
+        "timestamp": "2026-02-21T16:46:01.199Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 15,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted student frncsbj",
+        "timestamp": "2026-02-21T16:46:03.759Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 16,
+    "fields": {
+        "admin": 2,
+        "action": "Deleted student Jeryc",
+        "timestamp": "2026-02-21T16:46:06.123Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 17,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-21T16:47:27.562Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 18,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T10:47:48.321Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 19,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:03:58.845Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 20,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:08:26.008Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 21,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:10:11.751Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 22,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:20:39.510Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 23,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 41",
+        "timestamp": "2026-02-23T15:20:48.640Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 24,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 40",
+        "timestamp": "2026-02-23T15:23:13.266Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 25,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:52:36.817Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 26,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T15:53:24.969Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 27,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 42",
+        "timestamp": "2026-02-23T15:53:34.053Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 28,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 42",
+        "timestamp": "2026-02-23T15:53:35.427Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 29,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 42",
+        "timestamp": "2026-02-23T15:53:36.477Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 30,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 42",
+        "timestamp": "2026-02-23T15:53:37.718Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 31,
+    "fields": {
+        "admin": 2,
+        "action": "Rejected program application 42",
+        "timestamp": "2026-02-23T15:53:37.952Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 32,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-23T16:28:21.812Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 33,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 38",
+        "timestamp": "2026-02-23T16:28:44.147Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 34,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 38",
+        "timestamp": "2026-02-23T16:28:46.117Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 35,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T09:55:37.116Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 36,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T10:05:35.082Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 37,
+    "fields": {
+        "admin": 2,
+        "action": "Approved student Stone",
+        "timestamp": "2026-02-24T10:05:42.782Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 38,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T10:06:28.313Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 39,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 43",
+        "timestamp": "2026-02-24T10:06:50.720Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 40,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 43",
+        "timestamp": "2026-02-24T10:06:54.316Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 41,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T10:11:18.231Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 42,
+    "fields": {
+        "admin": 1,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T10:14:33.393Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 43,
+    "fields": {
+        "admin": 1,
+        "action": "Generated students report in CSV format",
+        "timestamp": "2026-02-24T10:15:43.112Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 44,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T11:20:35.895Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 45,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T11:55:17.363Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 46,
+    "fields": {
+        "admin": 2,
+        "action": "Generated students report in Word format",
+        "timestamp": "2026-02-24T11:55:52.772Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 47,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T12:02:37.127Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 48,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T12:04:49.254Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 49,
+    "fields": {
+        "admin": 2,
+        "action": "Approved program application 45",
+        "timestamp": "2026-02-24T12:06:20.682Z"
+    }
+},
+{
+    "model": "accounts.adminlog",
+    "pk": 50,
+    "fields": {
+        "admin": 2,
+        "action": "Signed in",
+        "timestamp": "2026-02-24T13:34:33.441Z"
+    }
+},
+{
+    "model": "accounts.student",
+    "pk": 13,
+    "fields": {
+        "username": "user",
+        "first_name": "Lander",
+        "last_name": "Barrera",
+        "bday": "2003-09-03",
+        "address": "Block 12, Lot 38 Fiesta Homes Communities, Mangan-Vaca, Subic, Zambales",
+        "barangay": null,
+        "student_type": null,
+        "contact_num": "09928619479",
+        "email": "juizelander@gmail.com",
+        "program_and_yr": "BSIT-4",
+        "scholarship": "",
+        "sex": "Male",
+        "password": "123",
+        "status": "active",
+        "doc_submitted": "",
+        "created_at": null,
+        "updated_at": null
+    }
+},
+{
+    "model": "accounts.student",
+    "pk": 17,
+    "fields": {
+        "username": "Stone",
+        "first_name": "Stone",
+        "last_name": "Deblois",
+        "bday": "2002-08-03",
+        "address": "Purok 4 Pinagpala st.",
+        "barangay": "Mangan-Vaca",
+        "student_type": "Undergraduate",
+        "contact_num": "09504894033",
+        "email": "stonephilipd@gmail.com",
+        "program_and_yr": "",
+        "scholarship": null,
+        "sex": "Male",
+        "password": "March03082002",
+        "status": "active",
+        "doc_submitted": "documents/613392440_882969337658316_5397006279564049417_n_0XI1ZOE.png",
+        "created_at": null,
+        "updated_at": null
+    }
+},
+{
+    "model": "accounts.student",
+    "pk": 18,
+    "fields": {
+        "username": "Angelo",
+        "first_name": "Angelo ",
+        "last_name": "Lejardo",
+        "bday": "1990-02-26",
+        "address": "#3 gordon st. new banicain",
+        "barangay": "Asinan Proper",
+        "student_type": "Undergraduate",
+        "contact_num": "1241253576",
+        "email": "enotboldigoat@gmail.com",
+        "program_and_yr": "",
+        "scholarship": null,
+        "sex": "Male",
+        "password": "Qwerty12345",
+        "status": "pending",
+        "doc_submitted": "documents/St._Sebastian_by_Sodoma.jpg",
+        "created_at": null,
+        "updated_at": null
+    }
+},
+{
+    "model": "accounts.student",
+    "pk": 19,
+    "fields": {
+        "username": "Carlo",
+        "first_name": "Carlo",
+        "last_name": "Biado",
+        "bday": "1989-04-05",
+        "address": "#23 Del Carment street",
+        "barangay": "Calapandayan (Poblacion)",
+        "student_type": "Undergraduate",
+        "contact_num": "09345322122",
+        "email": "tlikc.ruru23@gmail.com",
+        "program_and_yr": "",
+        "scholarship": null,
+        "sex": "Male",
+        "password": "Qwerty12345",
+        "status": "pending",
+        "doc_submitted": "documents/avatar.png",
+        "created_at": null,
+        "updated_at": null
+    }
+},
+{
+    "model": "accounts.studentdocument",
+    "pk": 4,
+    "fields": {
+        "student": 17,
+        "file": "documents/613392440_882969337658316_5397006279564049417_n_Tpv7RdV.png",
+        "uploaded_at": "2026-02-24T10:05:25.373Z"
+    }
+},
+{
+    "model": "accounts.studentdocument",
+    "pk": 5,
+    "fields": {
+        "student": 18,
+        "file": "documents/St_Zr85Hhf._Sebastian_by_Sodoma.jpg",
+        "uploaded_at": "2026-02-24T10:10:14.782Z"
+    }
+},
+{
+    "model": "accounts.studentdocument",
+    "pk": 6,
+    "fields": {
+        "student": 19,
+        "file": "documents/avatar_WBAI0Vj.png",
+        "uploaded_at": "2026-02-24T10:13:45.255Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 29,
+    "fields": {
+        "application": 38,
+        "file": "application_docs/ScholarSync_Voucher_user.pdf",
+        "uploaded_at": "2026-02-23T11:18:40.051Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 30,
+    "fields": {
+        "application": 39,
+        "file": "application_docs/subic_logo_68nEWUH.png",
+        "uploaded_at": "2026-02-23T11:19:16.056Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 31,
+    "fields": {
+        "application": 40,
+        "file": "application_docs/ScholarSync_Voucher_jozlanderbarrera.pdf",
+        "uploaded_at": "2026-02-23T11:38:14.029Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 32,
+    "fields": {
+        "application": 41,
+        "file": "application_docs/ScholarSync_Voucher_user_NFqRyEO.pdf",
+        "uploaded_at": "2026-02-23T15:20:20.152Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 33,
+    "fields": {
+        "application": 42,
+        "file": "application_docs/ScholarSync_Voucher_user_rkXMM5c.pdf",
+        "uploaded_at": "2026-02-23T15:53:19.603Z"
+    }
+},
+{
+    "model": "accounts.applicationdocument",
+    "pk": 34,
+    "fields": {
+        "application": 43,
+        "file": "application_docs/report_applications_20260218.docx",
+        "uploaded_at": "2026-02-24T10:06:21.876Z"
+    }
+},
+{
+    "model": "accounts.message",
+    "pk": 1,
+    "fields": {
+        "student": 13,
+        "admin": null,
+        "sender_type": "student",
+        "subject": "Voucher did not print",
+        "body": "voucher printing did not appear even though my application is approved.",
+        "is_read": true,
+        "created_at": "2026-02-20T13:46:53.097Z"
+    }
+},
+{
+    "model": "accounts.message",
+    "pk": 2,
+    "fields": {
+        "student": 13,
+        "admin": 2,
+        "sender_type": "admin",
+        "subject": "Re: Voucher did not print",
+        "body": "why\n",
+        "is_read": true,
+        "created_at": "2026-02-21T10:21:26.036Z"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 1,
+    "fields": {
+        "action_time": "2025-10-27T11:11:17.135Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "1",
+        "object_repr": "mj",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 2,
+    "fields": {
+        "action_time": "2025-10-27T11:12:25.603Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "student"
+        ],
+        "object_id": "1",
+        "object_repr": "lander",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 3,
+    "fields": {
+        "action_time": "2025-10-27T13:17:37.637Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "student"
+        ],
+        "object_id": "2",
+        "object_repr": "shrek",
+        "action_flag": 3,
+        "change_message": ""
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 4,
+    "fields": {
+        "action_time": "2025-10-29T06:10:40.820Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "2",
+        "object_repr": "admin",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 5,
+    "fields": {
+        "action_time": "2025-10-29T06:11:11.891Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "student"
+        ],
+        "object_id": "4",
+        "object_repr": "student1",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Username\", \"First name\", \"Last name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 6,
+    "fields": {
+        "action_time": "2025-10-29T06:11:37.494Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "home",
+            "program"
+        ],
+        "object_id": "6",
+        "object_repr": "scholarship local",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 7,
+    "fields": {
+        "action_time": "2025-10-29T06:15:36.681Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "home",
+            "program"
+        ],
+        "object_id": "9",
+        "object_repr": "bbbb",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 8,
+    "fields": {
+        "action_time": "2025-10-29T06:15:43.577Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "home",
+            "program"
+        ],
+        "object_id": "1",
+        "object_repr": "Edukalsss",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 9,
+    "fields": {
+        "action_time": "2025-10-29T06:15:51.222Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "home",
+            "program"
+        ],
+        "object_id": "2",
+        "object_repr": "Edukalambingan",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Program name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 10,
+    "fields": {
+        "action_time": "2026-01-16T14:59:54.904Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "student"
+        ],
+        "object_id": "13",
+        "object_repr": "user",
+        "action_flag": 1,
+        "change_message": "[{\"added\": {}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 11,
+    "fields": {
+        "action_time": "2026-02-21T14:43:13.639Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "1",
+        "object_repr": "mj",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 12,
+    "fields": {
+        "action_time": "2026-02-21T14:43:23.381Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "2",
+        "object_repr": "admin",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 13,
+    "fields": {
+        "action_time": "2026-02-21T16:47:13.681Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "2",
+        "object_repr": "admin",
+        "action_flag": 2,
+        "change_message": "[{\"changed\": {\"fields\": [\"Full name\"]}}]"
+    }
+},
+{
+    "model": "admin.logentry",
+    "pk": 14,
+    "fields": {
+        "action_time": "2026-02-21T16:48:59.200Z",
+        "user": [
+            "capstone"
+        ],
+        "content_type": [
+            "accounts",
+            "admin"
+        ],
+        "object_id": "3",
+        "object_repr": "testadmin",
+        "action_flag": 3,
+        "change_message": ""
+    }
+}
+]
