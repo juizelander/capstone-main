@@ -611,6 +611,15 @@ def get_student_applications(request):
         application_data = []
         
         for student in students:
+            student_docs = student.documents.all()
+            doc_list = []
+            for d in student_docs:
+                doc_list.append({
+                    'id': d.id,
+                    'name': d.document_name,
+                    'url': d.file.url if d.file else None
+                })
+                
             application_data.append({
                 'id': student.pk,
                 'username': student.username,
@@ -625,6 +634,7 @@ def get_student_applications(request):
                 'program_and_yr': student.program_and_yr,
                 'status': student.status,
                 'doc_submitted': student.doc_submitted.url if student.doc_submitted else None,
+                'student_documents': doc_list,
                 'created_at': student.created_at.isoformat() if student.created_at else None
             })
         
@@ -857,6 +867,15 @@ def get_program_applications(request):
         
         for app in applications:
             try:
+                # Fetch global student documents
+                student_docs_list = []
+                for s_doc in app.student.documents.all():
+                    student_docs_list.append({
+                        'id': s_doc.id,
+                        'name': s_doc.document_name,
+                        'url': s_doc.file.url if s_doc.file else None
+                    })
+
                 # Safely access student data
                 student_data = {
                     'username': getattr(app.student, 'username', 'Unknown'),
@@ -864,6 +883,7 @@ def get_program_applications(request):
                     'last_name': getattr(app.student, 'last_name', 'Unknown'),
                     'email': getattr(app.student, 'email', 'Unknown'),
                     'doc_submitted': app.student.doc_submitted.url if app.student.doc_submitted else None,
+                    'student_documents': student_docs_list,
                 }
                 
                 # Fetch documents for this application
@@ -1595,6 +1615,76 @@ def send_message(request):
         return JsonResponse({'success': True, 'message': 'Message sent successfully.'})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+# -------------------------------------------------------------
+# Document Management Views (Student)
+# -------------------------------------------------------------
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_student_documents(request):
+    """Fetch documents for the logged in student"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        documents = student.documents.all().order_by('-uploaded_at')
+        doc_list = []
+        for doc in documents:
+            doc_list.append({
+                'id': doc.id,
+                'name': doc.document_name,
+                'url': doc.file.url if doc.file else None,
+                'uploaded_at': doc.uploaded_at.isoformat()
+            })
+        return JsonResponse({'success': True, 'documents': doc_list})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def upload_student_document(request):
+    """Upload a new document for the logged in student"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        document_name = request.POST.get('document_name')
+        file = request.FILES.get('file')
+        
+        if not document_name or not file:
+             return JsonResponse({'success': False, 'error': 'Document name and file are required'}, status=400)
+             
+        doc = StudentDocument.objects.create(
+            student=student,
+            document_name=document_name,
+            file=file
+        )
+        return JsonResponse({'success': True, 'message': 'Document uploaded successfully', 'doc_id': doc.id})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST", "DELETE"])
+def delete_student_document(request, doc_id):
+    """Delete a student document"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        doc = get_object_or_404(StudentDocument, id=doc_id, student__pk=student_id)
+        doc.delete()
+        return JsonResponse({'success': True, 'message': 'Document deleted successfully'})
+    except Exception as e:
+         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @csrf_exempt

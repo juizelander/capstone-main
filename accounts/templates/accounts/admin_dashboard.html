@@ -1501,12 +1501,19 @@
               <span class="text-xs font-semibold text-gray-500 uppercase">Applied:</span>
               <span>${new Date(application.created_at || Date.now()).toLocaleDateString()}</span>
             </div>
-            ${application.doc_submitted ? `
+            ${(application.student_documents && application.student_documents.length > 0) ? `
+            <div class="grid grid-cols-[100px_1fr] flex-col gap-2 mt-1">
+              <span class="text-xs font-semibold text-gray-500 uppercase">Documents:</span>
+              <div class="flex flex-col gap-1">
+                 ${application.student_documents.map(doc => `<a href="${doc.url}" target="_blank" class="text-brand-primary hover:underline flex items-center gap-1"><i class="fas fa-file-alt"></i> ${doc.name || 'View'}</a>`).join('')}
+              </div>
+            </div>
+            ` : (application.doc_submitted ? `
             <div class="grid grid-cols-[100px_1fr] gap-2 mt-1">
               <span class="text-xs font-semibold text-gray-500 uppercase">Document:</span>
               <a href="${application.doc_submitted}" target="_blank" class="text-brand-primary hover:underline flex items-center gap-1"><i class="fas fa-file-alt"></i> View</a>
             </div>
-            ` : ''}
+            ` : '')}
         </div>
         
         <div class="flex gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
@@ -1732,6 +1739,11 @@
       docContainer.innerHTML = ''; // Clear previous content
 
       const documents = app.documents || [];
+      if (app.student.student_documents && app.student.student_documents.length > 0) {
+        app.student.student_documents.forEach(s_doc => {
+            documents.push({ url: s_doc.url, name: s_doc.name });
+        });
+      }
       // Backward compatibility: check if doc_submitted exists and isn't already in documents list
       if (app.student.doc_submitted && documents.length === 0) {
         documents.push({ url: app.student.doc_submitted, name: 'Document' });
@@ -3106,6 +3118,18 @@
       </div>
     </div>
   </div>
+  <script>
+    // Clear forms on load and disable autocomplete for all inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => form.reset());
+      
+      const inputs = document.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.setAttribute('autocomplete', 'off');
+      });
+    });
+  </script>
 </body>
 
 </html>

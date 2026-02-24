@@ -75,11 +75,12 @@ class Student(models.Model):
 
 class StudentDocument(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='documents')
+    document_name = models.CharField(max_length=255, blank=True, null=True)
     file = models.FileField(upload_to='documents/')
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Document for {self.student.username}"
+        return f"Document for {self.student.username} - {self.document_name}"
 
 
 class Popup(models.Model):

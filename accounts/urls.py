@@ -43,6 +43,11 @@ urlpatterns = [
     # Student profile API
     path('api/student/profile/update/', views.update_student_profile, name='update_student_profile'),
     
+    # Student Document endpoints
+    path('api/student/documents/', views.get_student_documents, name='get_student_documents'),
+    path('api/student/documents/upload/', views.upload_student_document, name='upload_student_document'),
+    path('api/student/documents/<int:doc_id>/delete/', views.delete_student_document, name='delete_student_document'),
+    
     # Program application management endpoints
     path('api/admin/program-applications/', views.get_program_applications, name='get_program_applications'),
     path('api/admin/program-applications/<int:application_id>/approve/', views.approve_program_application, name='approve_program_application'),

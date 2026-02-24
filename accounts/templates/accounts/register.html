@@ -470,6 +470,18 @@
         });
     });
   </script>
+  <script>
+    // Clear forms on load and disable autocomplete for all inputs
+    document.addEventListener('DOMContentLoaded', function() {
+      const forms = document.querySelectorAll('form');
+      forms.forEach(form => form.reset());
+      
+      const inputs = document.querySelectorAll('input, textarea');
+      inputs.forEach(input => {
+        input.setAttribute('autocomplete', 'off');
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -1,0 +1,8 @@
+﻿git : error: src refspec main does not match any
+At line:1 char:1
++ git push origin main 2>&1 | Out-File -Encoding utf8 git_error_utf8.tx ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (error: src refs...s not match any:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error: failed to push some refs to 'https://github.com/juizelander/capstone-main.git'
