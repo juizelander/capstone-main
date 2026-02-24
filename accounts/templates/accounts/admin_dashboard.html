@@ -78,8 +78,10 @@
     <!-- Sidebar -->
     <aside class="sd-sidebar">
       <div class="sd-sidebar-header">
-        <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
-        <span>ScholarSync</span>
+        <a href="#" onclick="document.querySelector('[data-tab=dashboard]').click(); return false;" class="flex items-center gap-2" style="text-decoration:none; color:inherit;">
+          <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
+          <span>ScholarSync</span>
+        </a>
       </div>
       <nav class="sd-sidebar-nav">
 
@@ -149,12 +151,8 @@
     <!-- Main Wrapper -->
     <div class="sd-main-wrapper">
       <!-- Topbar -->
-      <header class="sd-topbar">
-        <div class="topbar-search">
-          <i class="fas fa-search"></i>
-          <input type="text" placeholder="Search... (⌘F)">
-        </div>
-        <div class="topbar-actions">
+      <header class="sd-topbar" style="justify-content: flex-end;">
+        <div class="topbar-actions" style="margin-left: auto;">
           <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
             <i class="fas fa-moon"></i>
           </button>
@@ -357,7 +355,7 @@
 
       <!-- Students Tab -->
       <div id="students" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+        <div id="student-list-card" class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
           <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
             <h3 class="text-xl font-bold text-gray-800 dark:text-white">Applicant Management</h3>
             <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -377,6 +375,74 @@
             <!-- Students will be loaded here via JavaScript -->
           </div>
         </div>
+
+        <!-- ====== Student Profile Section (inline, no card, no modal) ====== -->
+        <div id="student-profile-section" style="display:none;" class="bg-white dark:bg-gray-800 p-6 rounded-xl">
+
+          <!-- Navigation row: Back + counter + arrows -->
+          <div class="flex items-center justify-between mb-8">
+            <button onclick="goBackToStudentList()" class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+              Back
+            </button>
+            <div class="flex items-center gap-3">
+              <button onclick="navigateStudent(-1)" class="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors border border-gray-200 dark:border-gray-700 rounded-lg">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Prev
+              </button>
+              <span id="sp-nav-label" class="text-sm font-medium text-gray-400 min-w-[60px] text-center"></span>
+              <button onclick="navigateStudent(1)" class="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors border border-gray-200 dark:border-gray-700 rounded-lg">
+                Next
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Profile body: avatar col + info col -->
+          <div class="flex flex-col lg:flex-row gap-10">
+
+            <!-- Left: Avatar + status + actions -->
+            <div class="flex flex-col items-center lg:items-start gap-4 lg:w-56 shrink-0">
+              <div id="sp-avatar" class="w-28 h-28 rounded-full overflow-hidden shadow-lg"></div>
+              <div class="text-center lg:text-left">
+                <h2 id="sp-name" class="text-2xl font-extrabold text-gray-900 dark:text-white"></h2>
+                <p id="sp-username" class="text-sm text-gray-400 mt-0.5"></p>
+              </div>
+              <span id="sp-status" class="px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider"></span>
+              <div class="flex flex-col gap-2 w-full mt-2">
+                <button id="sp-toggle-btn" class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-white bg-brand-primary hover:opacity-90 transition"></button>
+                <button id="sp-delete-btn" class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition">Delete Student</button>
+              </div>
+            </div>
+
+            <!-- Right: Details + Documents -->
+            <div class="flex-1 min-w-0">
+
+              <!-- Info fields -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 mb-10">
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</p><p id="sp-email" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Contact</p><p id="sp-contact" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Sex</p><p id="sp-sex" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Birthday</p><p id="sp-birthday" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Student Type</p><p id="sp-student-type" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Program / Year</p><p id="sp-program" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+                <div class="sm:col-span-2 xl:col-span-3"><p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Address</p><p id="sp-address" class="text-gray-800 dark:text-gray-100 font-medium"></p></div>
+              </div>
+
+              <!-- Documents checklist -->
+              <div>
+                <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                  <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                  Uploaded Documents
+                </h4>
+                <div id="sp-documents" class="flex flex-col gap-2"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!-- ====== End Profile Section ====== -->
+
       </div>
 
       <!-- Inbox / Support Tab -->
@@ -2359,12 +2425,10 @@
     function createStudentElement(student) {
       const div = document.createElement('div');
       div.className = `student-item student-${student.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
-      // Add data attributes for filtering
       div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
       div.dataset.status = student.status;
 
       const isActive = student.status === 'active';
-      const isInactive = student.status === 'inactive';
       
       const statusColors = {
         'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
@@ -2399,8 +2463,8 @@
         </div>
         
         <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
-            <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='openEditStudentModal(${student.id})'>
-                <i class="fas fa-edit mr-1"></i> Edit
+            <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='viewStudentProfile(${student.id})'>
+                <i class="fas fa-eye mr-1"></i> View
             </button>
             <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
                     onclick="toggleStudentStatus(${student.id}, '${student.status}')">
@@ -2413,6 +2477,169 @@
       `;
       return div;
     }
+    let _spCurrentIndex = 0;
+
+    function _spGetVisible() {
+      const search = (document.getElementById('student-search').value || '').toLowerCase();
+      const status = document.getElementById('student-status-filter').value;
+      return currentStudents.filter(s =>
+        (s.first_name + ' ' + s.last_name + ' ' + s.username).toLowerCase().includes(search) &&
+        (status === 'all' || s.status === status)
+      );
+    }
+
+    function viewStudentProfile(studentId) {
+      const visible = _spGetVisible();
+      const idx = visible.findIndex(s => s.id === studentId);
+      _renderStudentProfile(idx < 0 ? 0 : idx, visible);
+    }
+
+    function navigateStudent(dir) {
+      const visible = _spGetVisible();
+      const next = Math.max(0, Math.min(_spCurrentIndex + dir, visible.length - 1));
+      _renderStudentProfile(next, visible);
+    }
+
+    function goBackToStudentList() {
+      document.getElementById('student-profile-section').style.display = 'none';
+      document.getElementById('student-list-card').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function _renderStudentProfile(index, students) {
+      if (!students || !students.length) return;
+      _spCurrentIndex = index;
+      const s = students[index];
+
+      // Hide list card, show profile section (like Apply view)
+      document.getElementById('student-list-card').style.display = 'none';
+      const section = document.getElementById('student-profile-section');
+      section.style.display = 'block';
+      section.style.removeProperty('border-top');
+      section.style.removeProperty('margin-top');
+      section.style.removeProperty('padding-top');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('sp-nav-label').textContent = `${index + 1} of ${students.length}`;
+
+      // Sex-based SVG avatar
+      const isMale = s.sex && s.sex.toLowerCase() === 'male';
+      const isFemale = s.sex && s.sex.toLowerCase() === 'female';
+      const avatarEl = document.getElementById('sp-avatar');
+      if (isMale) {
+        avatarEl.style.background = 'linear-gradient(135deg,#bfdbfe,#3b82f6)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#93c5fd"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#3b82f6"/><circle cx="50" cy="38" r="17" fill="#fde68a"/><path d="M33 36 Q50 21 67 36" stroke="#92400e" stroke-width="3" fill="none"/></svg>`;
+      } else if (isFemale) {
+        avatarEl.style.background = 'linear-gradient(135deg,#fbcfe8,#ec4899)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#f9a8d4"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#ec4899"/><circle cx="50" cy="38" r="17" fill="#fde68a"/><path d="M30 28 Q50 8 70 28 Q68 17 50 14 Q32 17 30 28Z" fill="#92400e"/><path d="M29 30 Q19 38 28 48" stroke="#92400e" stroke-width="4" fill="none"/><path d="M71 30 Q81 38 72 48" stroke="#92400e" stroke-width="4" fill="none"/></svg>`;
+      } else {
+        avatarEl.style.background = 'linear-gradient(135deg,#e5e7eb,#6b7280)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#d1d5db"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#6b7280"/><circle cx="50" cy="38" r="17" fill="#fde68a"/></svg>`;
+      }
+
+      const statusColors = {
+        active:   'bg-green-100 text-green-700 border-green-300',
+        inactive: 'bg-gray-100 text-gray-600 border-gray-300',
+        pending:  'bg-yellow-100 text-yellow-700 border-yellow-300',
+        rejected: 'bg-red-100 text-red-700 border-red-300'
+      };
+
+      document.getElementById('sp-name').textContent = `${s.first_name} ${s.last_name}`;
+      document.getElementById('sp-username').textContent = `@${s.username}`;
+      const statusEl = document.getElementById('sp-status');
+      statusEl.textContent = s.status || 'N/A';
+      statusEl.className = `px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider ${statusColors[s.status] || statusColors.pending}`;
+      document.getElementById('sp-email').textContent = s.email || 'N/A';
+      document.getElementById('sp-contact').textContent = s.contact_num || 'N/A';
+      document.getElementById('sp-sex').textContent = s.sex || 'N/A';
+      document.getElementById('sp-birthday').textContent = s.birthday || 'N/A';
+      document.getElementById('sp-student-type').textContent = s.student_type || 'N/A';
+      document.getElementById('sp-program').textContent = s.program_and_yr || 'N/A';
+      document.getElementById('sp-address').textContent = s.address || 'N/A';
+
+      const isActive = s.status === 'active';
+      const toggleBtn = document.getElementById('sp-toggle-btn');
+      toggleBtn.textContent = isActive ? 'Deactivate' : 'Activate';
+      toggleBtn.className = `w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition ${isActive ? 'bg-orange-500 hover:bg-orange-600' : 'bg-brand-primary hover:opacity-90'}`;
+      toggleBtn.onclick = () => toggleStudentStatus(s.id, s.status);
+      document.getElementById('sp-delete-btn').onclick = () => deleteStudent(s.id);
+
+      _loadStudentDocs(s.id);
+    }
+
+    async function _loadStudentDocs(studentId) {
+      const container = document.getElementById('sp-documents');
+      container.innerHTML = '<p class="text-xs text-gray-400">Loading...</p>';
+      try {
+        const res = await fetch(`/api/admin/students/${studentId}/documents/`, { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        container.innerHTML = '';
+
+        const requiredDocs = data.required_documents || [];
+        const uploadedNames = new Set(data.uploaded_names || []);
+
+        // Build a lookup: document name → uploaded doc object (for view link)
+        const uploadedMap = {};
+        (data.documents || []).forEach(d => { if (d.name) uploadedMap[d.name] = d; });
+
+        if (requiredDocs.length > 0) {
+          // Show all required docs with check/uncheck state
+          requiredDocs.forEach(docName => {
+            const isUploaded = uploadedNames.has(docName);
+            const uploadedDoc = uploadedMap[docName];
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+            row.innerHTML = `
+              <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 ${isUploaded ? 'bg-brand-primary border-brand-primary' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'}">
+                ${isUploaded ? '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+              </div>
+              <span class="flex-1 text-sm font-medium ${isUploaded ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-500'}">${docName}</span>
+              ${isUploaded && uploadedDoc ? `<a href="${uploadedDoc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>` : '<span class="text-xs text-gray-300 dark:text-gray-600 shrink-0 ml-2">Not uploaded</span>'}
+            `;
+            container.appendChild(row);
+          });
+          // If there are extra uploaded docs not in the required list, show them too
+          (data.documents || []).forEach(doc => {
+            if (doc.name && !uploadedNames.has(doc.name) === false && !requiredDocs.includes(doc.name)) {
+              const date = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              const row = document.createElement('div');
+              row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+              row.innerHTML = `
+                <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 bg-brand-primary border-brand-primary">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <span class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">${doc.name}</span>
+                <span class="text-xs text-gray-400 shrink-0">${date}</span>
+                <a href="${doc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>
+              `;
+              container.appendChild(row);
+            }
+          });
+        } else if (data.documents && data.documents.length > 0) {
+          // No required docs list — just show uploaded ones
+          data.documents.forEach(doc => {
+            const date = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+            row.innerHTML = `
+              <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 bg-brand-primary border-brand-primary">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+              </div>
+              <span class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">${doc.name || 'Document'}</span>
+              <span class="text-xs text-gray-400 shrink-0">${date}</span>
+              <a href="${doc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>
+            `;
+            container.appendChild(row);
+          });
+        } else {
+          container.innerHTML = '<p class="text-xs text-gray-400 italic">No documents or program requirements found.</p>';
+        }
+      } catch(e) {
+        container.innerHTML = '<p class="text-xs text-red-400 italic">Could not load documents.</p>';
+      }
+    }
+
 
     // Inbox & Ticketing System Functions
     let adminMessages = [];
@@ -3176,6 +3403,7 @@
       });
     });
   </script>
+
 </body>
 
 </html>

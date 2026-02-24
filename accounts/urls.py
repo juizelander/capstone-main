@@ -64,5 +64,5 @@ urlpatterns = [
     
     # Student Voucher
     path('student/voucher/<int:application_id>/', views.student_voucher_view, name='student_voucher'),
-
+    path('api/admin/students/<int:student_id>/documents/', views.admin_get_student_documents, name='admin_get_student_documents'),
 ]

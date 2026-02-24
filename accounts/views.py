@@ -1634,6 +1634,47 @@ def send_message(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
+# Admin: get a specific student's documents
+@csrf_exempt
+@require_http_methods(["GET"])
+def admin_get_student_documents(request, student_id):
+    if not request.session.get('user_id'):
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    try:
+        from home.models import Program as HomeProgram
+        student = get_object_or_404(Student, pk=student_id)
+
+        # Uploaded documents
+        docs = student.documents.all().order_by('-uploaded_at')
+        uploaded = [
+            {'id': d.id, 'name': d.document_name, 'url': d.file.url if d.file else None,
+             'uploaded_at': d.uploaded_at.isoformat()}
+            for d in docs
+        ]
+
+        # Collect ALL unique required document names from ALL programs
+        required_set = []
+        seen = set()
+        for program in HomeProgram.objects.all():
+            for req in (program.document_requirements or []):
+                if req and req not in seen:
+                    seen.add(req)
+                    required_set.append(req)
+
+        # Build uploaded names set for quick lookup
+        uploaded_names = {d['name'] for d in uploaded if d['name']}
+
+        return JsonResponse({
+            'success': True,
+            'documents': uploaded,
+            'required_documents': required_set,
+            'uploaded_names': list(uploaded_names),
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+
 # -------------------------------------------------------------
 # Document Management Views (Student)
 # -------------------------------------------------------------
