@@ -1269,3 +1269,254 @@ form {
   line-height: 1.6;
   white-space: pre-wrap;
 }
+
+/* ============================================================
+   DARK MODE OVERRIDES
+   Covers all hardcoded light-mode colors in admin_dashboard.css
+   The admin dashboard uses Tailwind's class-based dark mode
+   (darkMode: 'class'), so selectors use `.dark`
+   ============================================================ */
+
+.dark body {
+  background: linear-gradient(135deg, #064e3b 0%, #78350f 100%);
+  color: #e2e8f0;
+}
+
+/* Sidebar */
+.dark .sidebar {
+  background: rgba(17, 24, 39, 0.97);
+  border-color: #374151;
+}
+
+.dark .sidebar .nav-link,
+.dark .sidebar .nav-item {
+  color: #d1d5db;
+}
+
+.dark .sidebar .nav-link:hover,
+.dark .sidebar .nav-item:hover {
+  color: white;
+}
+
+.dark .sidebar a,
+.dark .sidebar .nav-item {
+  color: #d1d5db !important;
+}
+
+.dark .sidebar a:hover,
+.dark .sidebar .nav-item:hover {
+  color: #10B981 !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+}
+
+/* Cards */
+.dark .card {
+  background: rgba(17, 24, 39, 0.97);
+  border-color: #374151;
+  color: #e2e8f0;
+}
+
+.dark .card h3 {
+  color: #f3f4f6;
+}
+
+.dark .card p {
+  color: #9ca3af;
+}
+
+/* Stat cards */
+.dark .stat-card {
+  background: rgba(17, 24, 39, 0.97);
+  border-color: #374151;
+}
+
+.dark .stat-content h4 {
+  color: #9ca3af;
+}
+
+.dark .stat-number {
+  color: #f3f4f6;
+}
+
+/* Program items */
+.dark .program-item {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .program-header h4 {
+  color: #f3f4f6;
+}
+
+.dark .program-body {
+  color: #9ca3af;
+}
+
+.dark .program-period {
+  color: #9ca3af !important;
+  border-top-color: #374151;
+}
+
+.dark .no-programs {
+  background: #111827;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+/* Program form */
+.dark .program-form-wrapper {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .program-form label {
+  color: #d1d5db;
+}
+
+.dark .program-form input,
+.dark .program-form textarea,
+.dark .program-form select {
+  background-color: #111827;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+/* Modal */
+.dark .modal-content {
+  background-color: #1f2937;
+  color: #e2e8f0;
+}
+
+.dark .modal-header {
+  border-bottom-color: #374151;
+}
+
+.dark .modal-header h3 {
+  color: #f3f4f6;
+}
+
+.dark .modal-footer {
+  border-top-color: #374151;
+}
+
+.dark .close {
+  color: #9ca3af;
+}
+
+.dark .close:hover {
+  color: #f3f4f6;
+}
+
+/* Form fields inside modal */
+.dark .modal-body input,
+.dark .modal-body select,
+.dark .modal-body textarea {
+  background-color: #111827;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+.dark .modal-body label {
+  color: #d1d5db;
+}
+
+/* Popup items */
+.dark .popup-item {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #e2e8f0;
+}
+
+.dark .popup-header h4 {
+  color: #f3f4f6;
+}
+
+.dark .popup-content p {
+  color: #9ca3af;
+}
+
+.dark .popup-meta {
+  color: #6b7280;
+}
+
+.dark .popup-type {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.dark .popup-filters select {
+  background-color: #1f2937;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+/* Student items */
+.dark .student-item {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+.dark .student-info h4 {
+  color: #f3f4f6;
+}
+
+.dark .student-username {
+  color: #9ca3af;
+}
+
+.dark .student-actions {
+  border-top-color: #374151;
+}
+
+/* Chart controls */
+.dark .chart-controls select {
+  background: #1f2937;
+  border-color: #4b5563;
+  color: #f3f4f6;
+}
+
+/* Document wrappers */
+.dark .document-wrapper {
+  background-color: #111827;
+  border-color: #374151;
+}
+
+.dark .document-title {
+  color: #f3f4f6;
+}
+
+.dark .document-preview-frame {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+.dark .document-fallback {
+  background: #1f2937;
+  border-color: #4b5563;
+}
+
+.dark .document-fallback i {
+  color: #9ca3af;
+}
+
+.dark .document-fallback p {
+  color: #9ca3af;
+}
+
+/* Modal section title */
+.dark .modal-section-title {
+  color: #f3f4f6;
+}
+
+/* Motivation box */
+.dark .motivation-box {
+  background: #111827;
+  border-color: #374151;
+  color: #9ca3af;
+}
+
+/* Admin table text fix */
+.dark .data-table th,
+.dark .data-table td {
+  color: #d1d5db;
+}

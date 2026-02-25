@@ -14,6 +14,9 @@
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -1235,14 +1238,14 @@
         .then(response => response.json())
         .then(data => {
           if (data.error) {
-            alert('Error generating report: ' + data.error);
+            Swal.fire('Error', 'Error generating report: ' + data.error, 'error');
             return;
           }
           renderReportTable(data.data, type);
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while generating the report.');
+          Swal.fire('Error', 'An error occurred while generating the report.', 'error');
         });
     }
 
@@ -1457,7 +1460,7 @@
           if (data.success) {
             loadPopups();
           } else {
-            alert('Error toggling popup: ' + data.error);
+            Swal.fire('Error', 'Error toggling popup: ' + data.error, 'error');
           }
         });
     }
@@ -1471,7 +1474,7 @@
       const new_admin_confirm_password = document.getElementById('new_admin_confirm_password').value;
 
       if (new_admin_password !== new_admin_confirm_password) {
-        alert('Passwords do not match!');
+        Swal.fire('Error', 'Passwords do not match!', 'error');
         return;
       }
 
@@ -1496,15 +1499,21 @@
       .then(response => response.json())
       .then(data => {
         if (data.success) {
-          alert('Admin created successfully!');
-          window.location.reload();
+          Swal.fire({
+            title: 'Success!',
+            text: 'Admin created successfully!',
+            icon: 'success',
+            confirmButtonColor: '#10B981'
+          }).then(() => {
+            window.location.reload();
+          });
         } else {
-          alert('Error: ' + data.error);
+          Swal.fire('Error', 'Error: ' + data.error, 'error');
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred during admin creation.');
+        Swal.fire('Error', 'An error occurred during admin creation.', 'error');
       })
       .finally(() => {
         btn.innerHTML = originalText;
@@ -1519,7 +1528,7 @@
       const confirmPassword = document.getElementById('confirm_password').value;
 
       if (newPassword !== confirmPassword) {
-        alert("Passwords do not match!");
+        Swal.fire('Error', 'Passwords do not match!', 'error');
         return;
       }
 
@@ -1537,36 +1546,52 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert(data.message);
+            Swal.fire({
+              title: 'Success!',
+              text: data.message,
+              icon: 'success',
+              confirmButtonColor: '#10B981'
+            });
             document.getElementById('change-password-form').reset();
           } else {
-            alert(data.error);
+            Swal.fire('Error', data.error, 'error');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while changing the password.');
+          Swal.fire('Error', 'An error occurred while changing the password.', 'error');
         });
     }
 
     function deletePopup(popupId) {
-      if (confirm('Are you sure you want to delete this popup?')) {
-        fetch(`/api/admin/popups/${popupId}/delete/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              loadPopups();
-            } else {
-              alert('Error deleting popup: ' + data.error);
-            }
-          });
-      }
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#10B981',
+        cancelButtonColor: '#ef4444',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/popups/${popupId}/delete/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                loadPopups();
+                Swal.fire('Deleted!', 'The popup has been deleted.', 'success');
+              } else {
+                Swal.fire('Error', 'Error deleting popup: ' + data.error, 'error');
+              }
+            });
+        }
+      });
     }
 
     function filterPopups() {
@@ -1907,53 +1932,75 @@
     }
 
     function approveStudent(studentId) {
-      if (confirm('Are you sure you want to approve this student application?')) {
-        fetch(`/api/admin/student-applications/${studentId}/approve/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              loadStudentRegistrations();
-              loadDashboardStats(); // Refresh stats
-            } else {
-              alert('Error approving student: ' + data.error);
-            }
+      Swal.fire({
+        title: 'Approve Application?',
+        text: "Are you sure you want to approve this student application?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10B981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, approve it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/student-applications/${studentId}/approve/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json',
+            },
           })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Error approving student application');
-          });
-      }
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                loadStudentRegistrations();
+                loadDashboardStats(); // Refresh stats
+                Swal.fire('Approved!', 'The student application has been approved.', 'success');
+              } else {
+                Swal.fire('Error', 'Error approving student: ' + data.error, 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire('Error', 'Error approving student application', 'error');
+            });
+        }
+      });
     }
 
     function rejectStudent(studentId) {
-      if (confirm('Are you sure you want to reject this student application?')) {
-        fetch(`/api/admin/student-applications/${studentId}/reject/`, {
-          method: 'POST',
-          headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-          },
-        })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              loadStudentRegistrations();
-              loadDashboardStats(); // Refresh stats
-            } else {
-              alert('Error rejecting student: ' + data.error);
-            }
+      Swal.fire({
+        title: 'Reject Application?',
+        text: "Are you sure you want to reject this student application?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, reject it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/student-applications/${studentId}/reject/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json',
+            },
           })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('Error rejecting student application');
-          });
-      }
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                loadStudentRegistrations();
+                loadDashboardStats(); // Refresh stats
+                Swal.fire('Rejected!', 'The student application has been rejected.', 'success');
+              } else {
+                Swal.fire('Error', 'Error rejecting student: ' + data.error, 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire('Error', 'Error rejecting student application', 'error');
+            });
+        }
+      });
     }
 
     function filterRegistrations() {
@@ -2359,7 +2406,7 @@
       const textLength = composeQuill ? composeQuill.getText().trim().length : 0;
 
       if (!subject || textLength === 0) {
-        alert('Please fill out both subject and message.');
+        Swal.fire('Error', 'Please fill out both subject and message.', 'error');
         return;
       }
 
@@ -2406,14 +2453,15 @@
 
         const data = await response.json();
         if (data.success) {
-          alert('Message sent successfully!');
-          closeComposeModal();
+          Swal.fire('Success', 'Message sent successfully!', 'success').then(() => {
+            closeComposeModal();
+          });
         } else {
-          alert('Error: ' + (data.error || 'Failed to send message.'));
+          Swal.fire('Error', 'Error: ' + (data.error || 'Failed to send message.'), 'error');
         }
       } catch (error) {
         console.error('Error sending message:', error);
-        alert('An error occurred while sending the message.');
+        Swal.fire('Error', 'An error occurred while sending the message.', 'error');
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
@@ -2455,13 +2503,14 @@
               if (data.success) {
                 closeRemarksModal();
                 loadProgramApplications();
+                Swal.fire('Success!', 'Remarks have been saved.', 'success');
               } else {
-                alert('Error: ' + data.error);
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
               }
             })
             .catch(error => {
               console.error('Error:', error);
-              alert('An error occurred.');
+              Swal.fire('Error', 'An error occurred.', 'error');
             });
         });
       }
@@ -2518,8 +2567,9 @@
           if (data.success) {
             closePopupModal();
             loadPopups();
+            Swal.fire('Success', 'Popup saved successfully', 'success');
           } else {
-            alert('Error saving popup: ' + data.error);
+            Swal.fire('Error', 'Error saving popup: ' + data.error, 'error');
           }
         });
     });
@@ -2607,16 +2657,16 @@
 
         const data = await response.json();
         if (data.success) {
-          alert('Program created successfully!');
+          Swal.fire('Success', 'Program created successfully!', 'success');
           this.reset();
           hideCreateProgram();
           await loadPrograms();
           // Optionally reload programs list
         } else {
-          alert(data.error || 'Failed to create program');
+          Swal.fire('Error', data.error || 'Failed to create program', 'error');
         }
       } catch (error) {
-        alert('Error creating program');
+        Swal.fire('Error', 'Error creating program', 'error');
         console.error(error);
       }
     });
@@ -2814,43 +2864,67 @@
     }
 
     function togglePopup(id) {
-      if (!confirm('Toggle this notification status?')) return;
-      fetch(`/api/admin/popups/${id}/toggle/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            loadPopups();
-          } else {
-            alert('Error: ' + data.error);
-          }
-        });
+      Swal.fire({
+        title: 'Toggle Status?',
+        text: "Are you sure you want to toggle this notification's status?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10B981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, toggle it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/popups/${id}/toggle/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                loadPopups();
+                Swal.fire('Toggled!', 'The notification status has been updated.', 'success');
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
+              }
+            });
+        }
+      });
     }
 
     function deletePopup(id) {
-      if (!confirm('Are you sure you want to delete this notification?')) return;
-      fetch(`/api/admin/popups/${id}/delete/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            loadPopups();
-          } else {
-            alert('Error: ' + data.error);
-          }
-        });
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "Are you sure you want to delete this notification?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/popups/${id}/delete/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                loadPopups();
+                Swal.fire('Deleted!', 'The notification has been deleted.', 'success');
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
+              }
+            });
+        }
+      });
     }
 
     function filterPopups() {
@@ -3355,58 +3429,79 @@
 
     function toggleStudentStatus(studentId, currentStatus) {
       const action = currentStatus === 'active' ? 'deactivate' : 'activate';
-      if (!confirm(`Are you sure you want to ${action} this student?`)) return;
-
-      fetch(`/api/admin/students/${studentId}/toggle/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            // Reload list to update UI
-            loadStudents();
-            // Optionally update stats
-            loadDashboardStats();
-          } else {
-            alert('Error: ' + data.error);
-          }
-        })
-        .catch(err => {
-          console.error('Error toggling student status:', err);
-          alert('An error occurred.');
-        });
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `Are you sure you want to ${action} this student?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: currentStatus === 'active' ? '#f59e0b' : '#10b981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: `Yes, ${action}!`
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${studentId}/toggle/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                // Reload list to update UI
+                loadStudents();
+                // Optionally update stats
+                loadDashboardStats();
+                Swal.fire('Updated!', `The student has been ${action}d.`, 'success');
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
+              }
+            })
+            .catch(err => {
+              console.error('Error toggling student status:', err);
+              Swal.fire('Error', 'An error occurred.', 'error');
+            });
+        }
+      });
     }
 
     function deleteStudent(studentId) {
-      if (!confirm('Are you sure you want to delete this student? This action cannot be undone and will delete all associated applications and documents.')) return;
-
-      fetch(`/api/admin/students/${studentId}/delete/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert(data.message);
-            loadStudents();
-            loadDashboardStats();
-          } else {
-            alert('Error deleting student: ' + data.error);
-          }
-        })
-        .catch(err => {
-          console.error('Error deleting student:', err);
-          alert('An error occurred while deleting the student.');
-        });
+      Swal.fire({
+        title: 'Delete Student?',
+        text: "Are you sure you want to delete this student? This action cannot be undone and will delete all associated applications and documents.",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${studentId}/delete/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Deleted!', data.message, 'success');
+                loadStudents();
+                loadDashboardStats();
+              } else {
+                Swal.fire('Error', 'Error deleting student: ' + data.error, 'error');
+              }
+            })
+            .catch(err => {
+              console.error('Error deleting student:', err);
+              Swal.fire('Error', 'An error occurred while deleting the student.', 'error');
+            });
+        }
+      });
     }
 
     function openEditStudentModal(studentId) {
@@ -3491,16 +3586,16 @@
             .then(res => res.json())
             .then(data => {
               if (data.success) {
-                alert(data.message);
+                Swal.fire('Success', data.message, 'success');
                 closeEditStudentModal();
                 loadStudents();
               } else {
-                alert('Error updating student: ' + data.error);
+                Swal.fire('Error', 'Error updating student: ' + data.error, 'error');
               }
             })
             .catch(err => {
               console.error('Error updating student:', err);
-              alert('An error occurred while updating the student.');
+              Swal.fire('Error', 'An error occurred while updating the student.', 'error');
             });
         });
       }
@@ -3796,42 +3891,52 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert('Program updated successfully');
+            Swal.fire('Success', 'Program updated successfully', 'success');
             closeEditProgramModal();
             loadPrograms();
           } else {
-            alert('Error updating program: ' + (data.error || 'Unknown error'));
+            Swal.fire('Error', 'Error updating program: ' + (data.error || 'Unknown error'), 'error');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while updating the program.');
+          Swal.fire('Error', 'An error occurred while updating the program.', 'error');
         });
     });
 
     function deleteProgram(programId) {
-      if (!confirm('Are you sure you want to delete this program? This cannot be undone.')) return;
-
-      fetch(`/home/delete_program/${programId}/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
+      Swal.fire({
+        title: 'Delete Program?',
+        text: "Are you sure you want to delete this program? This cannot be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/home/delete_program/${programId}/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            }
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Deleted', 'Program deleted successfully', 'success');
+                loadPrograms();
+              } else {
+                Swal.fire('Error', 'Error deleting program: ' + (data.error || 'Unknown error'), 'error');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              Swal.fire('Error', 'An error occurred while deleting the program.', 'error');
+            });
         }
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Program deleted successfully');
-            loadPrograms();
-          } else {
-            alert('Error deleting program: ' + (data.error || 'Unknown error'));
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred while deleting the program.');
-        });
+      });
     }
   </script>
   <!-- Edit Student Modal -->
