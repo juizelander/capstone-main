@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import threading
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -19,8 +19,6 @@ from home.models import Program, Application
 from django.http import HttpResponse
 import csv
 import os
-from django.conf import settings
-from django.core.mail import send_mail
 from django.utils.html import strip_tags
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
@@ -1634,6 +1632,186 @@ def send_message(request):
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_send_system_message(request):
+    """Send a direct system message to a student."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id or user_role != 'admin':
+        return JsonResponse({'success': False, 'error': 'Not authorized'}, status=403)
+
+    try:
+        admin = get_object_or_404(Admin, pk=user_id)
+        student_id = request.POST.get('student_id')
+        subject = request.POST.get('subject')
+        body = request.POST.get('body')
+
+        if not student_id or not subject or not body:
+            return JsonResponse({'success': False, 'error': 'Missing required fields.'}, status=400)
+
+        student = get_object_or_404(Student, pk=student_id)
+        
+        Message.objects.create(
+            student=student,
+            admin=admin,
+            sender_type='admin',
+            subject=subject,
+            body=body
+        )
+
+        AdminLog.objects.create(admin=admin, action=f"Sent direct system message to {student.username}")
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_send_email(request):
+    """Send an email wrapper to a student, with optional attachment."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id or user_role != 'admin':
+        return JsonResponse({'success': False, 'error': 'Not authorized'}, status=403)
+
+    try:
+        admin = get_object_or_404(Admin, pk=user_id)
+        student_id = request.POST.get('student_id')
+        subject = request.POST.get('subject')
+        body_html = request.POST.get('body')
+        attachment = request.FILES.get('attachment')
+
+        if not student_id or not subject or not body_html:
+            return JsonResponse({'success': False, 'error': 'Missing required fields.'}, status=400)
+
+        student = get_object_or_404(Student, pk=student_id)
+        
+        if not student.email:
+            return JsonResponse({'success': False, 'error': 'Student does not have an email address.'}, status=400)
+
+        # Build Email
+        from_email = settings.EMAIL_HOST_USER if hasattr(settings, 'EMAIL_HOST_USER') and settings.EMAIL_HOST_USER else 'admin@scholarsync.com'
+        text_content = strip_tags(body_html)
+        
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [student.email])
+        msg.attach_alternative(body_html, "text/html")
+        
+        if attachment:
+            msg.attach(attachment.name, attachment.read(), attachment.content_type)
+            
+        # Send Email
+        def send_email_thread():
+            msg.send(fail_silently=True)
+            
+        threading.Thread(target=send_email_thread).start()
+
+        AdminLog.objects.create(admin=admin, action=f"Sent direct email to {student.username}")
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def admin_send_batch_message(request):
+    """Send a batch message (email or system) to filtered students."""
+    user_id = request.session.get('user_id')
+    user_role = request.session.get('user_role')
+
+    if not user_id or user_role != 'admin':
+        return JsonResponse({'success': False, 'error': 'Not authorized'}, status=403)
+
+    try:
+        admin = get_object_or_404(Admin, pk=user_id)
+        
+        mode = request.POST.get('mode') # 'email' or 'system'
+        status_filter = request.POST.get('status', 'all')
+        program_filter = request.POST.get('program', 'all')
+        type_filter = request.POST.get('student_type', 'all')
+        
+        subject = request.POST.get('subject')
+        body_html = request.POST.get('body')
+        attachment = request.FILES.get('attachment')
+
+        if not mode or not subject or not body_html:
+            return JsonResponse({'success': False, 'error': 'Missing required fields.'}, status=400)
+
+        # Build queryset based on filters (same logic as report generation)
+        students = Student.objects.all()
+        
+        if status_filter != 'all':
+            students = students.filter(status=status_filter)
+            
+        if type_filter != 'all':
+            students = students.filter(student_type=type_filter)
+            
+        if program_filter != 'all':
+            # Need to join with applications to filter by program
+            students = students.filter(applications__program__program_name__icontains=program_filter).distinct()
+
+        student_count = students.count()
+        if student_count == 0:
+            return JsonResponse({'success': False, 'error': 'No students matched the selected filters.'}, status=400)
+
+        if mode == 'system':
+            # Create a system message for each student
+            messages_to_create = [
+                Message(
+                    student=student,
+                    admin=admin,
+                    sender_type='admin',
+                    subject=subject,
+                    body=body_html
+                ) for student in students
+            ]
+            Message.objects.bulk_create(messages_to_create)
+            AdminLog.objects.create(admin=admin, action=f"Sent batch system message to {student_count} students")
+
+        elif mode == 'email':
+            # Send an email to each student
+            from_email = settings.EMAIL_HOST_USER if hasattr(settings, 'EMAIL_HOST_USER') and settings.EMAIL_HOST_USER else 'admin@scholarsync.com'
+            text_content = strip_tags(body_html)
+            
+            attachment_data = None
+            if attachment:
+                attachment_data = {
+                    'name': attachment.name,
+                    'content': attachment.read(),
+                    'type': attachment.content_type
+                }
+            
+            # Send emails in a background thread to prevent blocking
+            def send_batch_emails_thread(student_list, att_data):
+                for student in student_list:
+                    if not student.email:
+                        continue
+                    
+                    try:
+                        msg = EmailMultiAlternatives(subject, text_content, from_email, [student.email])
+                        msg.attach_alternative(body_html, "text/html")
+                        
+                        if att_data:
+                            msg.attach(att_data['name'], att_data['content'], att_data['type'])
+                            
+                        msg.send(fail_silently=True)
+                    except Exception as e:
+                        print(f"Failed to send email to {student.email}: {e}")
+
+            threading.Thread(target=send_batch_emails_thread, args=(list(students), attachment_data)).start()
+            AdminLog.objects.create(admin=admin, action=f"Sent batch email to {student_count} students")
+
+        return JsonResponse({'success': True, 'count': student_count})
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+
 # Admin: get a specific student's documents
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -1652,9 +1830,18 @@ def admin_get_student_documents(request, student_id):
             for d in docs
         ]
 
-        # Collect ALL unique required document names from ALL programs
-        required_set = []
-        seen = set()
+        # Standard student dashboard checklist 
+        required_set = [
+            "School ID (Current Semester)",
+            "Valid ID",
+            "TOR",
+            "Voter's Certificate",
+            "Certificate of Indigency",
+            "Letter of Application"
+        ]
+        seen = set(required_set)
+        
+        # Also collect any unique required document names from programs just in case
         for program in HomeProgram.objects.all():
             for req in (program.document_requirements or []):
                 if req and req not in seen:

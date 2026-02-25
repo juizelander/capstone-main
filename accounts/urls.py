@@ -57,6 +57,9 @@ urlpatterns = [
     path('api/messages/', views.get_messages, name='get_messages'),
     path('api/messages/<int:message_id>/read/', views.mark_message_read, name='mark_message_read'),
     path('api/messages/send/', views.send_message, name='send_message'),
+    path('api/admin/messages/send-system/', views.admin_send_system_message, name='admin_send_system_message'),
+    path('api/admin/messages/send-email/', views.admin_send_email, name='admin_send_email'),
+    path('api/admin/messages/send-batch/', views.admin_send_batch_message, name='admin_send_batch_message'),
     
     # Chart data endpoints
     path('api/admin/charts/application-trends/', views.get_application_trends, name='get_application_trends'),
