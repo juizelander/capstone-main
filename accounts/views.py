@@ -111,6 +111,7 @@ def register_view(request):
         contact_num = request.POST.get('contact_num')
         program_and_yr = request.POST.get('program_and_yr')
         sex = request.POST.get('sex')
+        current_school = request.POST.get('current_school')
         documents = request.FILES.getlist('document')
         
         if student_type != 'Undergraduate':
@@ -131,6 +132,7 @@ def register_view(request):
             contact_num=contact_num,
             program_and_yr=program_and_yr,
             sex=sex,
+            current_school=current_school,
             doc_submitted=first_doc,
             status='pending' 
         )
@@ -778,6 +780,21 @@ def edit_student(request, student_id):
         if 'status' in data:
             student.status = data['status']
 
+        # Extended Profile Fields
+        student.mname = data.get('mname', student.mname)
+        student.elem_school = data.get('elem_school', student.elem_school)
+        student.elem_year = data.get('elem_year', student.elem_year)
+        student.jhs_school = data.get('jhs_school', student.jhs_school)
+        student.jhs_year = data.get('jhs_year', student.jhs_year)
+        student.shs_school = data.get('shs_school', student.shs_school)
+        student.shs_year = data.get('shs_year', student.shs_year)
+        student.college_school = data.get('college_school', student.college_school)
+        student.college_year = data.get('college_year', student.college_year)
+        student.achievements = data.get('achievements', student.achievements)
+        student.parent_name = data.get('parent_name', student.parent_name)
+        student.guardian_name = data.get('guardian_name', student.guardian_name)
+        student.guardian_contact = data.get('guardian_contact', student.guardian_contact)
+
         student.save()
 
         current_admin = Admin.objects.get(admin_id=admin_id)
@@ -850,6 +867,21 @@ def update_student_profile(request):
             
         student.sex = data.get('sex', student.sex)
         student.scholarship = data.get('scholarship', student.scholarship)
+        
+        # Extended Profile Fields
+        student.mname = data.get('mname', student.mname)
+        student.elem_school = data.get('elem_school', student.elem_school)
+        student.elem_year = data.get('elem_year', student.elem_year)
+        student.jhs_school = data.get('jhs_school', student.jhs_school)
+        student.jhs_year = data.get('jhs_year', student.jhs_year)
+        student.shs_school = data.get('shs_school', student.shs_school)
+        student.shs_year = data.get('shs_year', student.shs_year)
+        student.college_school = data.get('college_school', student.college_school)
+        student.college_year = data.get('college_year', student.college_year)
+        student.achievements = data.get('achievements', student.achievements)
+        student.parent_name = data.get('parent_name', student.parent_name)
+        student.guardian_name = data.get('guardian_name', student.guardian_name)
+        student.guardian_contact = data.get('guardian_contact', student.guardian_contact)
 
         student.save()
 
@@ -1047,6 +1079,30 @@ def reject_program_application(request, application_id):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
+@csrf_exempt
+def get_program_applicants_by_program(request, program_id):
+    """Get formatting applications for a specific program"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+        
+    try:
+        applications = Application.objects.filter(program_id=program_id).select_related('student', 'program').order_by('-created_at')
+        
+        app_list = []
+        for app in applications:
+            app_list.append({
+                'app_id': app.app_id,
+                'student_name': f"{app.student.first_name} {app.student.last_name}",
+                'username': app.student.username,
+                'requirement_status': app.requirement_status,
+                'created_at': app.created_at.strftime('%Y-%m-%d %H:%M') if app.created_at else None,
+                'program_type': app.program.program_type
+            })
+            
+        return JsonResponse({'success': True, 'applications': app_list})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 # Chart Data API Views
 def get_application_trends(request):
@@ -1249,6 +1305,41 @@ def student_voucher_view(request, application_id):
     return render(request, 'accounts/student_voucher.html', context)
 
 
+def admin_receipt_view(request, application_id):
+    """View to print receiving copy / receipt for accepted students in Financial Assistance"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return redirect('accounts:login')
+    
+    application = get_object_or_404(Application, app_id=application_id)
+    student = application.student
+    
+    amount = request.GET.get('amount', '0')
+    
+    # Check if application is approved
+    if application.requirement_status != 'approved':
+        return HttpResponse("Receipt is only available for approved applications.", status=400)
+    
+    if application.program.program_type != 'Financial Assistance':
+        return HttpResponse("Receipt corresponds to Financial Assistance only.", status=400)
+        
+    # Format amount with commas
+    try:
+        amount_float = float(amount.replace(',', ''))
+        formatted_amount = f"{amount_float:,.2f}"
+    except ValueError:
+        formatted_amount = amount
+
+    context = {
+        'student': student,
+        'application': application,
+        'program': application.program,
+        'now': timezone.now(),
+        'amount': formatted_amount
+    }
+    return render(request, 'accounts/admin_receipt.html', context)
+    
+
 def generate_report(request):
     """Generate and export reports"""
     admin_id = request.session.get('user_id')
@@ -1283,12 +1374,17 @@ def generate_report(request):
                 query = query.filter(created_at__date__lte=end_date)
             if status and status != 'all':
                 query = query.filter(status=status)
-            # Program filter for students is based on 'program_and_yr' string
-            # This might be tricky if it's just free text in Student model
-            # But let's try if the user passes something matching
+            
+            barangay = request.GET.get('barangay')
+            school = request.GET.get('school')
+            
+            if barangay and barangay != 'all':
+                query = query.filter(barangay__iexact=barangay)
+            if school:
+                query = query.filter(current_school__icontains=school)
             
             # For data creation
-            header = ['Student ID', 'Username', 'First Name', 'Last Name', 'Email', 'Program', 'Status', 'Date Joined']
+            header = ['Student ID', 'Username', 'First Name', 'Last Name', 'Email', 'Program', 'Barangay', 'School', 'Status', 'Date Joined']
             
             for s in query:
                 data.append({
@@ -1298,6 +1394,8 @@ def generate_report(request):
                     'last_name': s.last_name,
                     'email': s.email,
                     'program': s.program_and_yr,
+                    'barangay': s.barangay,
+                    'school': s.current_school,
                     'status': s.status,
                     'created_at': s.created_at.strftime('%Y-%m-%d') if s.created_at else 'N/A'
                 })
@@ -1315,14 +1413,24 @@ def generate_report(request):
                 query = query.filter(requirement_status=status)
             if program_id and program_id != 'all':
                 query = query.filter(program_id=program_id)
+                
+            barangay = request.GET.get('barangay')
+            school = request.GET.get('school')
+            
+            if barangay and barangay != 'all':
+                query = query.filter(student__barangay__iexact=barangay)
+            if school:
+                query = query.filter(student__current_school__icontains=school)
 
-            header = ['App ID', 'Student', 'Program', 'Status', 'Date Submitted']
+            header = ['App ID', 'Student', 'Program', 'Barangay', 'School', 'Status', 'Date Submitted']
             
             for app in query:
                 data.append({
                     'id': app.app_id,
                     'student': f"{app.student.first_name} {app.student.last_name}",
                     'program': app.program.program_name,
+                    'barangay': app.student.barangay,
+                    'school': app.student.current_school,
                     'status': app.requirement_status,
                     'created_at': app.created_at.strftime('%Y-%m-%d') if app.created_at else 'N/A'
                 })
@@ -1340,10 +1448,10 @@ def generate_report(request):
 
             if report_type == 'students':
                  for row in data:
-                    writer.writerow([row['id'], row['username'], row['first_name'], row['last_name'], row['email'], row['program'], row['status'], row['created_at']])
+                    writer.writerow([row['id'], row['username'], row['first_name'], row['last_name'], row['email'], row['program'], row['barangay'], row['school'], row['status'], row['created_at']])
             else:
                 for row in data:
-                    writer.writerow([row['id'], row['student'], row['program'], row['status'], row['created_at']])
+                    writer.writerow([row['id'], row['student'], row['program'], row['barangay'], row['school'], row['status'], row['created_at']])
 
             return response
         
@@ -1483,6 +1591,8 @@ def generate_report(request):
                         str(row.get('first_name', '')),
                         str(row.get('last_name', '')),
                         str(row.get('program', '')),
+                        str(row.get('barangay', '')),
+                        str(row.get('school', '')),
                         str(row.get('created_at', ''))
                     ])
             else:
@@ -1491,6 +1601,8 @@ def generate_report(request):
                         str(row.get('id', '')),
                         str(row.get('student', '')),
                         str(row.get('program', '')),
+                        str(row.get('barangay', '')),
+                        str(row.get('school', '')),
                         str(row.get('created_at', ''))
                     ])
 
@@ -1731,6 +1843,8 @@ def admin_send_batch_message(request):
         status_filter = request.POST.get('status', 'all')
         program_filter = request.POST.get('program', 'all')
         type_filter = request.POST.get('student_type', 'all')
+        barangay_filter = request.POST.get('barangay', 'all')
+        school_filter = request.POST.get('school', '')
         
         subject = request.POST.get('subject')
         body_html = request.POST.get('body')
@@ -1751,6 +1865,12 @@ def admin_send_batch_message(request):
         if program_filter != 'all':
             # Need to join with applications to filter by program
             students = students.filter(applications__program__program_name__icontains=program_filter).distinct()
+            
+        if barangay_filter != 'all':
+            students = students.filter(barangay__iexact=barangay_filter)
+            
+        if school_filter:
+            students = students.filter(current_school__icontains=school_filter)
 
         student_count = students.count()
         if student_count == 0:

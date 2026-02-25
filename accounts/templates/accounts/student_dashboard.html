@@ -147,7 +147,7 @@
     <div class="sd-main-wrapper">
       <!-- Topbar -->
       <header class="sd-topbar">
-        <div class="topbar-actions">
+        <div class="topbar-actions" style="justify-content: flex-end; margin-left: auto;">
           <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
             <i class="fas fa-moon"></i>
           </button>
@@ -163,15 +163,6 @@
               <div class="notification-list" id="notification-list">
                 <!-- Notifications loaded via JS -->
               </div>
-            </div>
-          </div>
-          <div class="user-profile">
-            <div class="avatar-circle">
-              <i class="fas fa-user"></i>
-            </div>
-            <div class="user-info">
-              <span class="user-name">{{ student.first_name|default:student.username }}</span>
-              <span class="user-role">Student Account</span>
             </div>
           </div>
         </div>
@@ -370,15 +361,21 @@
                 <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Personal Information
                 </h4>
-                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; align-items: start;">
+                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr 1fr; align-items: start; margin-bottom: 15px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="prof_first_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">First Name</label>
                     <input type="text" id="prof_first_name" name="first_name" value="{{ student.first_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_mname" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Middle Name</label>
+                    <input type="text" id="prof_mname" name="mname" value="{{ student.mname|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="prof_last_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Last Name</label>
                     <input type="text" id="prof_last_name" name="last_name" value="{{ student.last_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
+                </div>
+                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; align-items: start;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="prof_sex" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sex</label>
                     <select id="prof_sex" name="sex" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent disabled:appearance-none dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
@@ -461,6 +458,91 @@
                   <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label for="prof_scholarship" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current Scholarship (If any)</label>
                     <input type="text" id="prof_scholarship" name="scholarship" value="{{ student.scholarship|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                </div>
+              </section>
+
+              <!-- Academic History Card -->
+              <section class="card tab-card animate-slide-up relative h-full" style="animation-delay: 200ms;">
+                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                  Academic History
+                </h4>
+                <div style="display: grid; gap: 15px;">
+                  <!-- Elementary -->
+                  <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Elementary School</label>
+                      <input type="text" name="elem_school" value="{{ student.elem_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
+                      <input type="text" name="elem_year" value="{{ student.elem_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                  </div>
+                  <!-- Secondary -->
+                  <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Secondary School (JHS)</label>
+                      <input type="text" name="jhs_school" value="{{ student.jhs_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
+                      <input type="text" name="jhs_year" value="{{ student.jhs_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                  </div>
+                  <!-- Senior High -->
+                  <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Senior High School</label>
+                      <input type="text" name="shs_school" value="{{ student.shs_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
+                      <input type="text" name="shs_year" value="{{ student.shs_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                  </div>
+                  <!-- College -->
+                  <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">College</label>
+                      <input type="text" name="college_school" value="{{ student.college_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
+                      <input type="text" name="college_year" value="{{ student.college_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Certificates and Achievements Card -->
+              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2" style="animation-delay: 300ms;">
+                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                  Certificates & Achievements
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 5px;">
+                  <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sports, academic achievements, extracurricular activities, and competitions</label>
+                  <textarea name="achievements" rows="4" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" placeholder="List your achievements here...">{{ student.achievements|default:'' }}</textarea>
+                </div>
+              </section>
+
+              <!-- Family Background Card -->
+              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2" style="animation-delay: 400ms;">
+                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                  Family Background
+                </h4>
+                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr 1fr;">
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Parent Name</label>
+                    <input type="text" name="parent_name" value="{{ student.parent_name|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Guardian Name</label>
+                    <input type="text" name="guardian_name" value="{{ student.guardian_name|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact Number</label>
+                    <input type="text" name="guardian_contact" value="{{ student.guardian_contact|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
               </section>

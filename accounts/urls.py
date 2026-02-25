@@ -52,6 +52,7 @@ urlpatterns = [
     path('api/admin/program-applications/', views.get_program_applications, name='get_program_applications'),
     path('api/admin/program-applications/<int:application_id>/approve/', views.approve_program_application, name='approve_program_application'),
     path('api/admin/program-applications/<int:application_id>/reject/', views.reject_program_application, name='reject_program_application'),
+    path('api/admin/programs/<int:program_id>/applicants/', views.get_program_applicants_by_program, name='get_program_applicants_by_program'),
     
     # Messaging and Ticketing API
     path('api/messages/', views.get_messages, name='get_messages'),
@@ -65,7 +66,8 @@ urlpatterns = [
     path('api/admin/charts/application-trends/', views.get_application_trends, name='get_application_trends'),
     path('api/admin/charts/student-statistics/', views.get_student_statistics, name='get_student_statistics'),
     
-    # Student Voucher
+    # Student Voucher and Admin Receipt
     path('student/voucher/<int:application_id>/', views.student_voucher_view, name='student_voucher'),
+    path('admin-receipt/<int:application_id>/', views.admin_receipt_view, name='admin_receipt'),
     path('api/admin/students/<int:student_id>/documents/', views.admin_get_student_documents, name='admin_get_student_documents'),
 ]

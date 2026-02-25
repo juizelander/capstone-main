@@ -62,6 +62,29 @@ class Student(models.Model):
     email = models.EmailField(unique=True)
     program_and_yr = models.CharField(max_length=100, blank=True, null=True)
     scholarship = models.CharField(max_length=100, blank=True, null=True)
+    
+    # --- New Profile Fields ---
+    mname = models.CharField(max_length=100, blank=True, null=True)
+    current_school = models.CharField(max_length=255, blank=True, null=True)
+    
+    # Academic History
+    elem_school = models.CharField(max_length=255, blank=True, null=True)
+    elem_year = models.CharField(max_length=20, blank=True, null=True)
+    jhs_school = models.CharField(max_length=255, blank=True, null=True)
+    jhs_year = models.CharField(max_length=20, blank=True, null=True)
+    shs_school = models.CharField(max_length=255, blank=True, null=True)
+    shs_year = models.CharField(max_length=20, blank=True, null=True)
+    college_school = models.CharField(max_length=255, blank=True, null=True)
+    college_year = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Achievements
+    achievements = models.TextField(blank=True, null=True)
+    
+    # Family Background
+    parent_name = models.CharField(max_length=200, blank=True, null=True)
+    guardian_name = models.CharField(max_length=200, blank=True, null=True)
+    guardian_contact = models.CharField(max_length=20, blank=True, null=True)
+    # --------------------------
     sex = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')], default='Male')
     password = models.CharField(max_length=100)
     status = models.CharField(max_length=50, default='pending')
