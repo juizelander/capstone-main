@@ -836,121 +836,137 @@
             <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
           </div>
 
-          <div class="report-filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
-            <div class="form-group w-full mb-0">
-              <label for="report-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Report Type</label>
-              <select id="report-type" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" onchange="toggleReportFilters()">
-                <option value="students">Students</option>
-                <option value="applications">Program Applications</option>
-              </select>
+          <div class="report-filters-container bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mb-8 shadow-sm">
+            
+            <!-- Search Control Rows -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-5 items-end">
+              <div class="form-group w-full mb-0">
+                <label for="report-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Report Type</label>
+                <select id="report-type" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow" onchange="toggleReportFilters()">
+                  <option value="students">Students</option>
+                  <option value="applications">Program Applications</option>
+                </select>
+              </div>
+
+              <div class="form-group w-full mb-0">
+                <label for="report-status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status Category</label>
+                <select id="report-status" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                  <option value="all">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="submitted">Submitted (Applications)</option>
+                  <option value="approved">Approved (Applications)</option>
+                </select>
+              </div>
+
+              <div class="form-group w-full mb-0">
+                <label for="report-start-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
+                <input type="date" id="report-start-date" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+              </div>
+
+              <div class="form-group w-full mb-0">
+                <label for="report-end-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
+                <input type="date" id="report-end-date" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+              </div>
             </div>
 
-            <div class="form-group w-full mb-0">
-              <label for="report-start-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-              <input type="date" id="report-start-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 items-end">
+              <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
+                <label for="report-program" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Program Selection</label>
+                <select id="report-program" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                  <option value="all">All Programs</option>
+                  {% for program in programs %}
+                  <option value="{{ program.program_id }}">{{ program.program_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group w-full flex-1 mb-0">
+                <label for="report-barangay" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Barangay Match</label>
+                <select id="report-barangay" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                  <option value="all">All Barangays</option>
+                  <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
+                  <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
+                  <option value="Asinan Proper">Asinan Proper</option>
+                  <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
+                  <option value="Batiawan">Batiawan</option>
+                  <option value="Calapacuan">Calapacuan</option>
+                  <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
+                  <option value="Cawag">Cawag</option>
+                  <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
+                  <option value="Mangan-Vaca">Mangan-Vaca</option>
+                  <option value="Matain">Matain</option>
+                  <option value="Naugsol">Naugsol</option>
+                  <option value="Pamatawan">Pamatawan</option>
+                  <option value="San Isidro">San Isidro</option>
+                  <option value="Santo Tomas">Santo Tomas</option>
+                  <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
+                </select>
+              </div>
+
+              <div class="form-group w-full flex-1 mb-0">
+                <label for="report-school" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">School Match</label>
+                <input type="text" id="report-school" placeholder="e.g. Subic National High School" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+              </div>
             </div>
 
-            <div class="form-group w-full mb-0">
-              <label for="report-end-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-              <input type="date" id="report-end-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-              <select id="report-status" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-                <option value="submitted">Submitted (Applications Only)</option>
-                <option value="approved">Approved (Applications Only)</option>
-              </select>
-            </div>
-
-            <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
-              <label for="report-program" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program</label>
-              <select id="report-program" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                <option value="all">All Programs</option>
-                {% for program in programs %}
-                <option value="{{ program.program_id }}">{{ program.program_name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-barangay" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Barangay</label>
-              <select id="report-barangay" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                <option value="all">All Barangays</option>
-                <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
-                <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
-                <option value="Asinan Proper">Asinan Proper</option>
-                <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
-                <option value="Batiawan">Batiawan</option>
-                <option value="Calapacuan">Calapacuan</option>
-                <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
-                <option value="Cawag">Cawag</option>
-                <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
-                <option value="Mangan-Vaca">Mangan-Vaca</option>
-                <option value="Matain">Matain</option>
-                <option value="Naugsol">Naugsol</option>
-                <option value="Pamatawan">Pamatawan</option>
-                <option value="San Isidro">San Isidro</option>
-                <option value="Santo Tomas">Santo Tomas</option>
-                <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
-              </select>
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-school" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">School</label>
-              <input type="text" id="report-school" placeholder="e.g. Subic National High School" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-            </div>
-
-            <div class="form-group w-full lg:col-span-5 mb-0 bg-gray-50 dark:bg-gray-700/30 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
-              <label class="block text-sm font-bold text-gray-800 dark:text-white mb-3"><i class="fas fa-list-check text-brand-primary mr-2"></i>Fields to Include in Report</label>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+            <!-- Fields Container -->
+            <div class="form-group w-full mb-6 bg-gray-50 dark:bg-gray-700/40 p-5 rounded-xl border border-gray-200 dark:border-gray-600 shadow-inner">
+              <label class="block text-sm font-bold text-gray-800 dark:text-white mb-4"><i class="fas fa-list-check text-brand-primary mr-2"></i>Fields to Include in Data Export</label>
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="id" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">ID</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600" id="label-rf-username">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow" id="label-rf-username">
                   <input type="checkbox" name="report-fields" value="username" checked id="rf-username" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Username</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="name" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Name</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600" id="label-rf-email">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow" id="label-rf-email">
                   <input type="checkbox" name="report-fields" value="email" checked id="rf-email" class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Email</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="program" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Program</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="status" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Status</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="date" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Date</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="barangay" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Barangay</span>
                 </label>
-                <label class="inline-flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer border border-transparent hover:border-gray-200 dark:hover:border-gray-600">
+                <label class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
                   <input type="checkbox" name="report-fields" value="school" checked class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
                   <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">School</span>
                 </label>
               </div>
             </div>
 
-            <div class="form-actions w-full flex flex-wrap gap-2 lg:col-span-auto" style="margin-bottom: 0;">
-              <button class="btn btn-primary bg-brand-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto" onclick="generateReport()">Generate</button>
-              <button class="btn btn-success bg-green-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('csv')">CSV</button>
-              <button class="btn btn-info bg-cyan-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('word')">Word</button>
+            <div class="form-actions w-full flex flex-wrap gap-4 pt-4 border-t border-gray-100 dark:border-gray-700 lg:justify-end">
+              <button class="btn btn-primary bg-brand-primary text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto flex items-center justify-center gap-2" onclick="generateReport()">
+                <i class="fas fa-table text-lg"></i>
+                Generate Table
+              </button>
+              <button class="btn btn-success bg-green-500 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex items-center justify-center gap-2 flex-1 md:flex-none" onclick="exportReport('csv')">
+                <i class="fas fa-file-csv text-lg"></i>
+                Export CSV
+              </button>
+              <button class="btn btn-info bg-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex items-center justify-center gap-2 flex-1 md:flex-none" onclick="exportReport('word')">
+                <i class="fas fa-file-word text-lg"></i>
+                Export Word
+              </button>
             </div>
           </div>
 

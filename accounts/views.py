@@ -1448,6 +1448,11 @@ def generate_report(request):
 
             writer = csv.writer(response)
 
+            writer.writerow(['Municipality of Subic'])
+            writer.writerow(['Baraca-Camachile, National Highway, Subic, 2209 Zambales'])
+            writer.writerow(['Applicants List'])
+            writer.writerow([])
+
             if report_type == 'students':
                 export_header = []
                 if 'id' in selected_fields: export_header.append('Student ID')
@@ -1521,18 +1526,17 @@ def generate_report(request):
             header_section = section.header
             header_section.is_linked_to_previous = False
             
-            # Use a table for header layout to align Logo Left and Title Center
-            # 3 columns: Left (Logo), Center (Title), Right (Logo)
-            htable = header_section.add_table(1, 3, width=Inches(7.5)) # Width = 8.5 - 0.5 - 0.5
+            # 3 columns: Left padding/Logo, Center Title, Right Padding
+            htable = header_section.add_table(1, 3, width=Inches(7.5))
             htable.autofit = False
-            htable.columns[0].width = Inches(1.5)
-            htable.columns[1].width = Inches(4.5)
-            htable.columns[2].width = Inches(1.5)
+            htable.columns[0].width = Inches(2.0)
+            htable.columns[1].width = Inches(3.5)
+            htable.columns[2].width = Inches(2.0)
             
             # Cell 0: Logo
             cell0 = htable.cell(0, 0)
             p0 = cell0.paragraphs[0]
-            p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            p0.alignment = WD_ALIGN_PARAGRAPH.RIGHT
             
             logo_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'subic_seal.png')
             if os.path.exists(logo_path):
@@ -1543,9 +1547,9 @@ def generate_report(request):
             cell1 = htable.cell(0, 1)
             p1 = cell1.paragraphs[0]
             p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run1 = p1.add_run('ScholarSync Subic\n')
+            run1 = p1.add_run('Municipality of Subic\n')
             run1.bold = True
-            run1.font.size = Pt(16) 
+            run1.font.size = Pt(22) 
             
             run_address = p1.add_run('Baraca-Camachile, National Highway, Subic, 2209 Zambales\n')
             run_address.font.size = Pt(10)
@@ -1554,15 +1558,9 @@ def generate_report(request):
             run_title.bold = True
             run_title.font.size = Pt(14)
             
-            # Cell 2: Second Logo
+            # Cell 2: Empty padding
             cell2 = htable.cell(0, 2)
             p2 = cell2.paragraphs[0]
-            p2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            
-            logo2_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'scholarsync_logo.png')
-            if os.path.exists(logo2_path):
-                run2 = p2.add_run()
-                run2.add_picture(logo2_path, height=Inches(0.8))
             
             # Remove the default empty paragraph in the header if it causes spacing issues
             if len(header_section.paragraphs) > 0:
@@ -1705,22 +1703,44 @@ def generate_report(request):
             def add_page_number(run):
                 fldChar1 = OxmlElement('w:fldChar')
                 fldChar1.set(qn('w:fldCharType'), 'begin')
-                instrText = OxmlElement('w:instrText')
-                instrText.set(qn('xml:space'), 'preserve')
-                instrText.text = "PAGE"
+                instrText1 = OxmlElement('w:instrText')
+                instrText1.set(qn('xml:space'), 'preserve')
+                instrText1.text = "PAGE"
                 fldChar2 = OxmlElement('w:fldChar')
                 fldChar2.set(qn('w:fldCharType'), 'separate')
                 fldChar3 = OxmlElement('w:fldChar')
                 fldChar3.set(qn('w:fldCharType'), 'end')
                 run._r.append(fldChar1)
-                run._r.append(instrText)
+                run._r.append(instrText1)
                 run._r.append(fldChar2)
                 run._r.append(fldChar3)
                 
-            fr1 = fp1.add_run('Page ')
+            def add_num_pages(run):
+                fldChar1 = OxmlElement('w:fldChar')
+                fldChar1.set(qn('w:fldCharType'), 'begin')
+                instrText1 = OxmlElement('w:instrText')
+                instrText1.set(qn('xml:space'), 'preserve')
+                instrText1.text = "NUMPAGES"
+                fldChar2 = OxmlElement('w:fldChar')
+                fldChar2.set(qn('w:fldCharType'), 'separate')
+                fldChar3 = OxmlElement('w:fldChar')
+                fldChar3.set(qn('w:fldCharType'), 'end')
+                run._r.append(fldChar1)
+                run._r.append(instrText1)
+                run._r.append(fldChar2)
+                run._r.append(fldChar3)
+
+            fr1 = fp1.add_run('')
             fr1.font.color.rgb = RGBColor(128, 128, 128)
             fr1.font.size = Pt(9)
+            
             add_page_number(fp1.add_run())
+            
+            fr_of = fp1.add_run(' out of ')
+            fr_of.font.color.rgb = RGBColor(128, 128, 128)
+            fr_of.font.size = Pt(9)
+            
+            add_num_pages(fp1.add_run())
 
             # Right Footer: Approved By
             fcell2 = ftable.cell(0, 2)
