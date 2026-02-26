@@ -1352,7 +1352,7 @@ def generate_report(request):
         end_date = request.GET.get('end_date')
         status = request.GET.get('status')
         program_id = request.GET.get('program')
-        export_csv = request.GET.get('export') == 'true'
+        export_csv = request.GET.get('export') == 'csv'
 
         data = []
         filename = f"report_{report_type}_{datetime.now().strftime('%Y%m%d')}"
@@ -1443,15 +1443,59 @@ def generate_report(request):
             response = HttpResponse(content_type='text/csv')
             response['Content-Disposition'] = f'attachment; filename="{filename}.csv"'
 
+            fields_param = request.GET.get('fields')
+            selected_fields = fields_param.split(',') if fields_param else ['id', 'username', 'name', 'email', 'program', 'status', 'date', 'barangay', 'school']
+
             writer = csv.writer(response)
-            writer.writerow(header)
 
             if report_type == 'students':
-                 for row in data:
-                    writer.writerow([row['id'], row['username'], row['first_name'], row['last_name'], row['email'], row['program'], row['barangay'], row['school'], row['status'], row['created_at']])
-            else:
+                export_header = []
+                if 'id' in selected_fields: export_header.append('Student ID')
+                if 'username' in selected_fields: export_header.append('Username')
+                if 'name' in selected_fields: export_header.extend(['First Name', 'Last Name'])
+                if 'email' in selected_fields: export_header.append('Email')
+                if 'program' in selected_fields: export_header.append('Program')
+                if 'barangay' in selected_fields: export_header.append('Barangay')
+                if 'school' in selected_fields: export_header.append('School')
+                if 'status' in selected_fields: export_header.append('Status')
+                if 'date' in selected_fields: export_header.append('Date Joined')
+                
+                writer.writerow(export_header)
+                
                 for row in data:
-                    writer.writerow([row['id'], row['student'], row['program'], row['barangay'], row['school'], row['status'], row['created_at']])
+                    out_row = []
+                    if 'id' in selected_fields: out_row.append(row['id'])
+                    if 'username' in selected_fields: out_row.append(row['username'])
+                    if 'name' in selected_fields: out_row.extend([row['first_name'], row['last_name']])
+                    if 'email' in selected_fields: out_row.append(row['email'])
+                    if 'program' in selected_fields: out_row.append(row['program'])
+                    if 'barangay' in selected_fields: out_row.append(row['barangay'])
+                    if 'school' in selected_fields: out_row.append(row['school'])
+                    if 'status' in selected_fields: out_row.append(row['status'])
+                    if 'date' in selected_fields: out_row.append(row['created_at'])
+                    writer.writerow(out_row)
+            else:
+                export_header = []
+                if 'id' in selected_fields: export_header.append('App ID')
+                if 'name' in selected_fields: export_header.append('Student')
+                if 'program' in selected_fields: export_header.append('Program')
+                if 'barangay' in selected_fields: export_header.append('Barangay')
+                if 'school' in selected_fields: export_header.append('School')
+                if 'status' in selected_fields: export_header.append('Status')
+                if 'date' in selected_fields: export_header.append('Date Submitted')
+                
+                writer.writerow(export_header)
+                
+                for row in data:
+                    out_row = []
+                    if 'id' in selected_fields: out_row.append(row['id'])
+                    if 'name' in selected_fields: out_row.append(row['student'])
+                    if 'program' in selected_fields: out_row.append(row['program'])
+                    if 'barangay' in selected_fields: out_row.append(row['barangay'])
+                    if 'school' in selected_fields: out_row.append(row['school'])
+                    if 'status' in selected_fields: out_row.append(row['status'])
+                    if 'date' in selected_fields: out_row.append(row['created_at'])
+                    writer.writerow(out_row)
 
             return response
         
@@ -1464,7 +1508,7 @@ def generate_report(request):
             style = document.styles['Normal']
             font = style.font
             font.name = 'Calibri'
-            font.size = Pt(11) # Default size, usually 11 for Calibri
+            font.size = Pt(11)
             
             # Adjust Margins
             section = document.sections[0]
@@ -1472,14 +1516,13 @@ def generate_report(request):
             section.left_margin = Inches(0.5)
             section.right_margin = Inches(0.5)
             section.bottom_margin = Inches(0.5)
-
             
             # Header Setup
             header_section = section.header
             header_section.is_linked_to_previous = False
             
             # Use a table for header layout to align Logo Left and Title Center
-            # 3 columns: Left (Logo), Center (Title), Right (Balance/Empty)
+            # 3 columns: Left (Logo), Center (Title), Right (Logo)
             htable = header_section.add_table(1, 3, width=Inches(7.5)) # Width = 8.5 - 0.5 - 0.5
             htable.autofit = False
             htable.columns[0].width = Inches(1.5)
@@ -1488,22 +1531,28 @@ def generate_report(request):
             
             # Cell 0: Logo
             cell0 = htable.cell(0, 0)
-            # Remove default empty paragraph if needed, or just use it
             p0 = cell0.paragraphs[0]
             p0.alignment = WD_ALIGN_PARAGRAPH.LEFT
             
             logo_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'subic_seal.png')
             if os.path.exists(logo_path):
                 run0 = p0.add_run()
-                run0.add_picture(logo_path, height=Inches(0.8)) # Changed to height
+                run0.add_picture(logo_path, height=Inches(0.8))
             
-            # Cell 1: Title
+            # Cell 1: Title and Address
             cell1 = htable.cell(0, 1)
             p1 = cell1.paragraphs[0]
             p1.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            run1 = p1.add_run('ScholarSync Subic')
+            run1 = p1.add_run('ScholarSync Subic\n')
             run1.bold = True
-            run1.font.size = Pt(22) 
+            run1.font.size = Pt(16) 
+            
+            run_address = p1.add_run('Baraca-Camachile, National Highway, Subic, 2209 Zambales\n')
+            run_address.font.size = Pt(10)
+            
+            run_title = p1.add_run('Applicants List')
+            run_title.bold = True
+            run_title.font.size = Pt(14)
             
             # Cell 2: Second Logo
             cell2 = htable.cell(0, 2)
@@ -1513,18 +1562,16 @@ def generate_report(request):
             logo2_path = os.path.join(settings.BASE_DIR, 'accounts', 'static', 'accounts', 'scholarsync_logo.png')
             if os.path.exists(logo2_path):
                 run2 = p2.add_run()
-                run2.add_picture(logo2_path, height=Inches(0.8)) # Changed to height
+                run2.add_picture(logo2_path, height=Inches(0.8))
             
-            # Remove the default empty paragraph in the header if it causes spacing issues?
-            # No, standard is just adding it. But usually header starts with one P. 
-            # Let's remove the default paragraph to avoid top padding.
+            # Remove the default empty paragraph in the header if it causes spacing issues
             if len(header_section.paragraphs) > 0:
                 header_section.paragraphs[0]._element.getparent().remove(header_section.paragraphs[0]._element)
 
             # Add a paragraph for the separator line
             border_paragraph = header_section.add_paragraph()
             border_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            border_paragraph.paragraph_format.space_after = Pt(0)
+            border_paragraph.paragraph_format.space_after = Pt(6)
             
             # Apply bottom border to this paragraph using OXML
             p = border_paragraph._p
@@ -1538,25 +1585,57 @@ def generate_report(request):
             pBdr.append(bottom)
             pPr.append(pBdr)
 
-            
-            # Subtitle (Body)
-            # Subtitle (Body)
-            subtitle = document.add_paragraph()
-            subtitle_run = subtitle.add_run(f'REPORT: {report_type.upper()}')
-            subtitle_run.bold = True
-            subtitle_run.underline = True
-            subtitle_run.font.size = Pt(14)
-            subtitle.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            subtitle.paragraph_format.space_after = Pt(6) # Small space before table
-            
-            # Spacer removed to bring closer to table
-            
-            # Filter headers for Word (Remove Email and Status)
-            word_header = list(header)
-            fields_to_remove = ['Email', 'Status']
-            for field in fields_to_remove:
-                if field in word_header:
-                    word_header.remove(field)
+            # Map fields for Word export
+            fields_param = request.GET.get('fields')
+            selected_fields = fields_param.split(',') if fields_param else ['id', 'username', 'name', 'email', 'program', 'status', 'date', 'barangay', 'school']
+
+            if report_type == 'students':
+                word_header = []
+                if 'id' in selected_fields: word_header.append('Student ID')
+                if 'username' in selected_fields: word_header.append('Username')
+                if 'name' in selected_fields: word_header.extend(['First Name', 'Last Name'])
+                if 'email' in selected_fields: word_header.append('Email')
+                if 'program' in selected_fields: word_header.append('Program')
+                if 'barangay' in selected_fields: word_header.append('Barangay')
+                if 'school' in selected_fields: word_header.append('School')
+                if 'status' in selected_fields: word_header.append('Status')
+                if 'date' in selected_fields: word_header.append('Date Joined')
+            else:
+                word_header = []
+                if 'id' in selected_fields: word_header.append('App ID')
+                if 'name' in selected_fields: word_header.append('Student')
+                if 'program' in selected_fields: word_header.append('Program')
+                if 'barangay' in selected_fields: word_header.append('Barangay')
+                if 'school' in selected_fields: word_header.append('School')
+                if 'status' in selected_fields: word_header.append('Status')
+                if 'date' in selected_fields: word_header.append('Date Submitted')
+
+            # Build data rows correspondingly
+            rows_data = []
+            if report_type == 'students':
+                for row in data:
+                    out_row = []
+                    if 'id' in selected_fields: out_row.append(str(row['id']))
+                    if 'username' in selected_fields: out_row.append(str(row['username']))
+                    if 'name' in selected_fields: out_row.extend([str(row['first_name']), str(row['last_name'])])
+                    if 'email' in selected_fields: out_row.append(str(row['email']))
+                    if 'program' in selected_fields: out_row.append(str(row['program']))
+                    if 'barangay' in selected_fields: out_row.append(str(row['barangay']))
+                    if 'school' in selected_fields: out_row.append(str(row['school']))
+                    if 'status' in selected_fields: out_row.append(str(row['status']))
+                    if 'date' in selected_fields: out_row.append(str(row.get('created_at', '')))
+                    rows_data.append(out_row)
+            else:
+                for row in data:
+                    out_row = []
+                    if 'id' in selected_fields: out_row.append(str(row['id']))
+                    if 'name' in selected_fields: out_row.append(str(row['student']))
+                    if 'program' in selected_fields: out_row.append(str(row['program']))
+                    if 'barangay' in selected_fields: out_row.append(str(row['barangay']))
+                    if 'school' in selected_fields: out_row.append(str(row['school']))
+                    if 'status' in selected_fields: out_row.append(str(row['status']))
+                    if 'date' in selected_fields: out_row.append(str(row.get('created_at', '')))
+                    rows_data.append(out_row)
 
             # Table
             table = document.add_table(rows=1, cols=len(word_header))
@@ -1581,65 +1660,76 @@ def generate_report(request):
                 run.font.color.rgb = RGBColor(255, 255, 255) # White text
                 cell.paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
             
-            # Table Data
-            rows_data = [] # Collect data first to iterate easily
-            if report_type == 'students':
-                for row in data:
-                    rows_data.append([
-                        str(row.get('id', '')),
-                        str(row.get('username', '')),
-                        str(row.get('first_name', '')),
-                        str(row.get('last_name', '')),
-                        str(row.get('program', '')),
-                        str(row.get('barangay', '')),
-                        str(row.get('school', '')),
-                        str(row.get('created_at', ''))
-                    ])
-            else:
-                for row in data:
-                    rows_data.append([
-                        str(row.get('id', '')),
-                        str(row.get('student', '')),
-                        str(row.get('program', '')),
-                        str(row.get('barangay', '')),
-                        str(row.get('school', '')),
-                        str(row.get('created_at', ''))
-                    ])
-
+            # Table Data Content
             for index, row_content in enumerate(rows_data):
                 row_cells = table.add_row().cells
                 is_even = (index % 2 == 0)
                 bg_color = 'E8F5E9' if is_even else 'FFFFFF' # Light Green / White
                 
                 for i, text in enumerate(row_content):
-                    cell = row_cells[i]
-                    cell.text = text
-                    # Apply background color
-                    if is_even: # Only apply if not white (default)
-                         set_cell_background(cell, bg_color)
+                    if i < len(row_cells):
+                        cell = row_cells[i]
+                        cell.text = text
+                        if is_even: 
+                             set_cell_background(cell, bg_color)
             
-            # Metadata (Below Table)
-            document.add_paragraph() # Spacer
-            meta = document.add_paragraph()
-            meta.alignment = WD_ALIGN_PARAGRAPH.LEFT
-            gen_run = meta.add_run(f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}\n')
-            gen_run.font.color.rgb = RGBColor(128, 128, 128) # Gray color
+            # Footer Setup (Metadata, Page Number, Approved By)
+            footer = section.footer
+            footer.is_linked_to_previous = False
             
-            if start_date:
-                meta.add_run(f'Start Date: {start_date}\n')
-            if end_date:
-                meta.add_run(f'End Date: {end_date}')
+            ftable = footer.add_table(1, 3, width=Inches(7.5))
+            ftable.autofit = False
+            ftable.columns[0].width = Inches(2.5)
+            ftable.columns[1].width = Inches(2.5)
+            ftable.columns[2].width = Inches(2.5)
+            
+            # Left Footer: Generated On
+            fcell0 = ftable.cell(0, 0)
+            fp0 = fcell0.paragraphs[0]
+            fp0.alignment = WD_ALIGN_PARAGRAPH.LEFT
+            fr0 = fp0.add_run(f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}')
+            fr0.font.color.rgb = RGBColor(128, 128, 128)
+            fr0.font.size = Pt(9)
+            if start_date or end_date:
+                sd = start_date if start_date else 'Any'
+                ed = end_date if end_date else 'Any'
+                fr_dates = fp0.add_run(f'\nPeriod: {sd} to {ed}')
+                fr_dates.font.color.rgb = RGBColor(128, 128, 128)
+                fr_dates.font.size = Pt(9)
+            
+            # Middle Footer: Page Numbers
+            fcell1 = ftable.cell(0, 1)
+            fp1 = fcell1.paragraphs[0]
+            fp1.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            
+            def add_page_number(run):
+                fldChar1 = OxmlElement('w:fldChar')
+                fldChar1.set(qn('w:fldCharType'), 'begin')
+                instrText = OxmlElement('w:instrText')
+                instrText.set(qn('xml:space'), 'preserve')
+                instrText.text = "PAGE"
+                fldChar2 = OxmlElement('w:fldChar')
+                fldChar2.set(qn('w:fldCharType'), 'separate')
+                fldChar3 = OxmlElement('w:fldChar')
+                fldChar3.set(qn('w:fldCharType'), 'end')
+                run._r.append(fldChar1)
+                run._r.append(instrText)
+                run._r.append(fldChar2)
+                run._r.append(fldChar3)
+                
+            fr1 = fp1.add_run('Page ')
+            fr1.font.color.rgb = RGBColor(128, 128, 128)
+            fr1.font.size = Pt(9)
+            add_page_number(fp1.add_run())
 
-            # Signature Section
-            document.add_paragraph() # Spacer
-            
-            signature = document.add_paragraph()
-            signature.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-            sig_run = signature.add_run('Approved by: ____________________')
-            sig_run.font.name = 'Calibri'
-            sig_run.font.size = Pt(12)
-            sig_run.font.color.rgb = RGBColor(0, 0, 0) # Black color explicitly
-            
+            # Right Footer: Approved By
+            fcell2 = ftable.cell(0, 2)
+            fp2 = fcell2.paragraphs[0]
+            fp2.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+            fr2 = fp2.add_run('Approved by: ____________________')
+            fr2.font.color.rgb = RGBColor(0, 0, 0)
+            fr2.font.size = Pt(11)
+
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
             response['Content-Disposition'] = f'attachment; filename="{filename}.docx"'
             document.save(response)
@@ -2077,5 +2167,42 @@ def mark_message_read(request, message_id):
         msg.is_read = True
         msg.save()
         return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def student_change_password(request):
+    """Change student password"""
+    student_id = request.session.get('user_id')
+    if not student_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        current_password = data.get('current_password')
+        new_password = data.get('new_password')
+        confirm_password = data.get('confirm_password')
+        
+        if not current_password or not new_password or not confirm_password:
+            return JsonResponse({'success': False, 'error': 'All password fields are required.'})
+            
+        student = get_object_or_404(Student, pk=student_id)
+        
+        if student.password != current_password:
+            return JsonResponse({'success': False, 'error': 'Incorrect current password.'})
+            
+        if new_password != confirm_password:
+            return JsonResponse({'success': False, 'error': 'New passwords do not match.'})
+            
+        # Password Validation
+        if not re.match(r'^(?=.*\d)(?=.*[A-Z]).{8,}$', new_password):
+            return JsonResponse({'success': False, 'error': 'Password must be at least 8 characters long, contain at least one capital letter and one number.'})
+            
+        student.password = new_password
+        student.save()
+        
+        return JsonResponse({'success': True, 'message': 'Password changed successfully.'})
+        
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)

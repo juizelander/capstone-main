@@ -1520,3 +1520,38 @@ form {
 .dark .data-table td {
   color: #d1d5db;
 }
+
+/* Print Styles for Student Profile */
+@media print {
+  body.printing-profile .sd-sidebar,
+  body.printing-profile .sd-topbar,
+  body.printing-profile .application-filters,
+  body.printing-profile button {
+    display: none !important;
+  }
+  
+  body.printing-profile .sd-content {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing-profile .sd-main-wrapper {
+    margin-left: 0 !important;
+  }
+  
+  body.printing-profile #student-profile-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: none;
+    box-shadow: none;
+    background: white;
+    color: black;
+  }
+
+  body.printing-profile * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

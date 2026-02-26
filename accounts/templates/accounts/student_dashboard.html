@@ -349,9 +349,14 @@
               <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">My Profile</h2>
               <p class="muted">View and update your personal and academic information.</p>
             </div>
-            <button type="button" id="editProfileBtn" class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="toggleProfileEditMode(true)">
-              <i class="fas fa-user-edit"></i> Edit Profile
-            </button>
+            <div class="flex gap-2">
+              <button type="button" class="btn btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="openChangePasswordModal()">
+                <i class="fas fa-key"></i> Change Password
+              </button>
+              <button type="button" id="editProfileBtn" class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="toggleProfileEditMode(true)">
+                <i class="fas fa-user-edit"></i> Edit Profile
+              </button>
+            </div>
           </div>
           
           <div id="profile-msg" class="app-message" style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
@@ -752,6 +757,38 @@
         <button type="button" class="btn btn-outline" onclick="closeProgramDetailsModal()">Close</button>
         <button type="button" class="btn btn-primary" id="details-modal-apply-btn">Apply Now</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="change-password-modal" class="fixed inset-0 z-[1050] flex items-center justify-center p-4 sm:p-6 w-full h-full" style="display: none; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
+    <div class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-md mx-auto animate-slide-up overflow-hidden">
+      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Change Password</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeChangePasswordModal()">&times;</span>
+      </div>
+      <div class="modal-body overflow-y-auto custom-scrollbar flex-1">
+        <div id="change-pwd-msg" class="app-message" style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
+        <form id="changePasswordForm" onsubmit="handleChangePasswordSubmit(event)">
+            <div class="mb-4">
+              <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
+              <input type="password" id="current_password" name="current_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
+            </div>
+            <div class="mb-4">
+              <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+              <input type="password" id="new_password" name="new_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
+              <p class="mt-1 text-xs text-gray-500">Must be at least 8 characters long, contain at least one capital letter and one number.</p>
+            </div>
+            <div class="mb-4">
+              <label for="confirm_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
+              <input type="password" id="confirm_password" name="confirm_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
+            </div>
+          </div>
+          <div class="modal-footer flex gap-3 pt-6 mt-4 border-t border-gray-100 dark:border-gray-700 justify-end">
+            <button type="button" class="btn btn-outline" onclick="closeChangePasswordModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" id="change-pwd-btn">Save Changes</button>
+          </div>
+        </form>
     </div>
   </div>
 
@@ -2142,6 +2179,87 @@
     </div>
   </div>
   <script>
+    // Change Password Modal and Form Handling
+    function openChangePasswordModal() {
+      document.getElementById('change-password-modal').style.display = 'flex';
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('change-password-modal').style.display = 'none';
+      document.getElementById('changePasswordForm').reset();
+      const msgDiv = document.getElementById('change-pwd-msg');
+      msgDiv.style.display = 'none';
+      msgDiv.className = 'app-message';
+      msgDiv.textContent = '';
+    }
+
+    async function handleChangePasswordSubmit(e) {
+      e.preventDefault();
+      
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      const msgDiv = document.getElementById('change-pwd-msg');
+      const btn = document.getElementById('change-pwd-btn');
+      
+      // Basic client-side validation
+      if (data.new_password !== data.confirm_password) {
+        msgDiv.textContent = 'New passwords do not match.';
+        msgDiv.className = 'app-message error';
+        msgDiv.style.display = 'block';
+        return;
+      }
+      
+      const pwdRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
+      if (!pwdRegex.test(data.new_password)) {
+        msgDiv.textContent = 'Password must be at least 8 characters long, contain at least one capital letter and one number.';
+        msgDiv.className = 'app-message error';
+        msgDiv.style.display = 'block';
+        return;
+      }
+
+      msgDiv.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+      try {
+        const response = await fetch("{% url 'accounts:student_change_password' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]') ? document.querySelector('[name=csrfmiddlewaretoken]').value : '{{ csrf_token }}'
+          },
+          body: JSON.stringify(data),
+          credentials: 'same-origin'
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: result.message || 'Password changed successfully.',
+            confirmButtonColor: '#10B981'
+          }).then(() => {
+            closeChangePasswordModal();
+          });
+        } else {
+          msgDiv.textContent = result.error || 'Failed to change password.';
+          msgDiv.className = 'app-message error';
+          msgDiv.style.display = 'block';
+        }
+      } catch (error) {
+        msgDiv.textContent = 'An error occurred. Please try again.';
+        msgDiv.className = 'app-message error';
+        msgDiv.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Changes';
+      }
+    }
+
     // Clear forms on load and disable autocomplete for all inputs
     document.addEventListener('DOMContentLoaded', function() {
       const forms = document.querySelectorAll('form');
