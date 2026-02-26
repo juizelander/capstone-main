@@ -59,5 +59,7 @@ urlpatterns = [
     
     # Student Voucher
     path('student/voucher/<int:application_id>/', views.student_voucher_view, name='student_voucher'),
-
+    
+    # Chatbot API
+    path('api/chatbot/', views.chatbot_response, name='chatbot_response'),
 ]

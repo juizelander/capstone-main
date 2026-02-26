@@ -480,6 +480,252 @@
             color: white;
             font-size: 0.9rem;
         }
+
+        /* --- Chatbot Styles --- */
+        .chatbot-toggler {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            outline: none;
+            border: none;
+            height: 60px;
+            width: 60px;
+            display: flex;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #10B981;
+            /* Matches existing theme primary color */
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .chatbot-toggler:hover {
+            transform: scale(1.05);
+        }
+
+        .show-chatbot .chatbot-toggler {
+            transform: rotate(90deg);
+        }
+
+        .chatbot-toggler i {
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .show-chatbot .chatbot-toggler i {
+            display: none;
+        }
+
+        .show-chatbot .chatbot-toggler::before {
+            content: "\f00d"; /* FontAwesome times icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #fff;
+            font-size: 1.8rem;
+        }
+
+        .chatbot {
+            position: fixed;
+            right: 35px;
+            bottom: 100px;
+            width: 380px;
+            background: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.5);
+            transform-origin: bottom right;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .show-chatbot .chatbot {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1);
+        }
+
+        .chatbot header {
+            padding: 16px 0;
+            position: relative;
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(135deg, #10B981, #F59E0B);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chatbot header h2 {
+            font-size: 1.4rem;
+            font-family: 'Lemon Milk', sans-serif;
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .chatbot header span {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            color: #fff;
+            cursor: pointer;
+            display: none;
+            transform: translateY(-50%);
+        }
+
+        .chatbox {
+            overflow-y: auto;
+            height: 400px;
+            padding: 20px 15px 100px; /* Padding for the input box */
+        }
+
+        .chatbox::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chatbox::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .chat {
+            display: flex;
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .chat p {
+            white-space: pre-wrap;
+            padding: 12px 16px;
+            border-radius: 10px 10px 0 10px;
+            max-width: 80%;
+            color: #fff;
+            background: #10B981;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .chat.incoming p {
+            border-radius: 10px 10px 10px 0;
+            color: #2d3748;
+            background: #f1f5f9;
+        }
+
+        .chat.outgoing {
+            justify-content: flex-end;
+        }
+
+        .chat.incoming i {
+            width: 32px;
+            height: 32px;
+            color: #fff;
+            cursor: default;
+            text-align: center;
+            line-height: 32px;
+            align-self: flex-end;
+            background: #10B981;
+            border-radius: 4px;
+            margin: 0 10px 0 0;
+            font-size: 0.9rem;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: #fff;
+            padding: 15px 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .chat-input textarea {
+            height: 45px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            font-family: 'Roboto', sans-serif;
+            transition: border-color 0.2s;
+        }
+        
+        .chat-input textarea:focus {
+            border-color: #10B981;
+        }
+
+        .chat-input span {
+            align-self: flex-end;
+            color: #10B981;
+            cursor: pointer;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            font-size: 1.35rem;
+            transition: color 0.2s ease;
+        }
+
+        .chat-input span:hover {
+            color: #059669; /* Darker green */
+        }
+        
+        .chat-input textarea:valid ~ span {
+            visibility: visible;
+        }
+        
+        /* Loading animation bubbles */
+        .typing-indicator span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #2d3748;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        @media (max-width: 490px) {
+            .chatbot-toggler {
+                right: 20px;
+                bottom: 20px;
+            }
+
+            .chatbot {
+                right: 0;
+                bottom: 0;
+                height: 100%;
+                border-radius: 0;
+                width: 100%;
+            }
+
+            .chatbot .chatbox {
+                height: 90%;
+                padding: 25px 15px 100px;
+            }
+
+            .chatbot .chat-input {
+                padding: 15px;
+            }
+
+            .chatbot header span {
+                display: block;
+            }
+        }
     </style>
 </head>
 
@@ -592,6 +838,131 @@
         </footer>
     </div>
 
+    <!-- Chatbot UI elements -->
+    <button class="chatbot-toggler">
+        <i class="fa-solid fa-message"></i>
+    </button>
+    <div class="chatbot">
+        <header>
+            <h2>ScholarSync AI</h2>
+            <span class="close-btn material-symbols-outlined"><i class="fa-solid fa-xmark"></i></span>
+        </header>
+        <ul class="chatbox">
+            <li class="chat incoming">
+                <i class="fa-solid fa-robot"></i>
+                <p>Hi there 👋<br>How can I help you regarding ScholarSync Subic today?</p>
+            </li>
+        </ul>
+        <div class="chat-input">
+            <textarea placeholder="Ask something..." spellcheck="false" required></textarea>
+            <span id="send-btn" class="material-symbols-outlined"><i class="fa-solid fa-paper-plane"></i></span>
+        </div>
+    </div>
+
+    <!-- Chatbot logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const chatbotToggler = document.querySelector(".chatbot-toggler");
+            const closeBtn = document.querySelector(".close-btn");
+            const chatbox = document.querySelector(".chatbox");
+            const chatInput = document.querySelector(".chat-input textarea");
+            const sendChatBtn = document.querySelector(".chat-input span");
+
+            let userMessage = null;
+
+            const createChatLi = (message, className, isTyping = false) => {
+                const chatLi = document.createElement("li");
+                chatLi.classList.add("chat", className);
+                
+                let chatContent = "";
+                if (className === "outgoing") {
+                    chatContent = `<p>${message}</p>`;
+                } else {
+                    if (isTyping) {
+                        chatContent = `<i class="fa-solid fa-robot"></i><p class="typing-indicator"><span></span><span></span><span></span></p>`;
+                    } else {
+                        // In a real scenario we might want to sanitize this, but textContent handles simple strings safely
+                        chatContent = `<i class="fa-solid fa-robot"></i><p></p>`;
+                    }
+                }
+                
+                chatLi.innerHTML = chatContent;
+                if(className === "incoming" && !isTyping){
+                     chatLi.querySelector("p").innerText = message;
+                }
+                
+                return chatLi;
+            }
+
+            const generateResponse = (chatElement) => {
+                const messageElement = chatElement.querySelector("p");
+
+                const requestOptions = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        message: userMessage
+                    })
+                }
+
+                // Send request to our Django API view
+                fetch("/api/chatbot/", requestOptions)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            messageElement.classList.remove("typing-indicator");
+                            messageElement.innerText = data.reply;
+                        } else {
+                            messageElement.classList.add("error");
+                            messageElement.innerText = "Oops! " + (data.error || "Something went wrong.");
+                        }
+                    })
+                    .catch(() => {
+                        messageElement.classList.add("error");
+                        messageElement.innerText = "Oops! Something went wrong. Please try again.";
+                    })
+                    .finally(() => {
+                        chatbox.scrollTo(0, chatbox.scrollHeight);
+                    });
+            }
+
+            const handleChat = () => {
+                userMessage = chatInput.value.trim();
+                if (!userMessage) return;
+
+                // Clear input textarea
+                chatInput.value = "";
+                chatInput.style.height = "45px";
+
+                // Append user message
+                chatbox.appendChild(createChatLi(userMessage, "outgoing"));
+                chatbox.scrollTo(0, chatbox.scrollHeight);
+                
+                setTimeout(() => {
+                    // Display typing indicator
+                    const incomingChatLi = createChatLi("", "incoming", true);
+                    chatbox.appendChild(incomingChatLi);
+                    chatbox.scrollTo(0, chatbox.scrollHeight);
+                    // Fetch response
+                    generateResponse(incomingChatLi);
+                }, 600);
+            }
+
+            chatInput.addEventListener("keyup", (e) => {
+                if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+                    e.preventDefault();
+                    handleChat();
+                }
+            });
+
+            sendChatBtn.addEventListener("click", handleChat);
+            
+            closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
+            chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
+        });
+    </script>
 </body>
 
 </html>

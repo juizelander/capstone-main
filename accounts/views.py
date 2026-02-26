@@ -1619,3 +1619,26 @@ def mark_message_read(request, message_id):
         return JsonResponse({'success': True})
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def chatbot_response(request):
+    """Handle incoming messages to the Gemini chatbot."""
+    try:
+        data = json.loads(request.body)
+        user_message = data.get('message', '')
+        
+        if not user_message:
+            return JsonResponse({'success': False, 'error': 'Message is required.'}, status=400)
+            
+        from capstone.chatbot import get_chatbot_response
+        bot_reply = get_chatbot_response(user_message)
+        
+        return JsonResponse({
+            'success': True,
+            'reply': bot_reply
+        })
+    except Exception as e:
+        print(f"Chatbot View Error: {str(e)}")
+        return JsonResponse({'success': False, 'error': 'An internal error occurred.'}, status=500)
