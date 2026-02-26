@@ -91,6 +91,8 @@ class Student(models.Model):
     doc_submitted = models.FileField(upload_to='documents/', blank=True, null=True)
     created_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(null=True, blank=True)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    warning_sent_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.username

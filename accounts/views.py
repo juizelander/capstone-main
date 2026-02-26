@@ -161,6 +161,8 @@ def approve_student(request, student_id):
         
         if action == 'approve':
             student.status = 'active'
+            student.approved_at = timezone.now()
+            student.warning_sent_at = None
             student.save()
             # Send approval email
             subject = 'Your application has been approved'
@@ -652,7 +654,8 @@ def get_student_applications(request):
                 'status': student.status,
                 'doc_submitted': student.doc_submitted.url if student.doc_submitted else None,
                 'student_documents': doc_list,
-                'created_at': student.created_at.isoformat() if student.created_at else None
+                'created_at': student.created_at.isoformat() if student.created_at else None,
+                'approved_at': student.approved_at.isoformat() if student.approved_at else None
             })
         
         return JsonResponse({'applications': application_data})
@@ -671,6 +674,8 @@ def approve_student(request, student_id):
     try:
         student = get_object_or_404(Student, pk=student_id)
         student.status = 'active'
+        student.approved_at = timezone.now()
+        student.warning_sent_at = None
         student.save()
         
         current_admin = Admin.objects.get(admin_id=admin_id)
@@ -710,6 +715,32 @@ def reject_student(request, student_id):
 
 @csrf_exempt
 @require_http_methods(["POST"])
+def renew_student(request, student_id):
+    """Renew an account by resetting approved_at and warning_sent_at"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        student = get_object_or_404(Student, pk=student_id)
+        student.approved_at = timezone.now()
+        student.warning_sent_at = None
+        student.status = 'active'
+        student.save()
+        
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Renewed student {student.username}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': 'Student account renewed successfully'
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
 def toggle_student_status(request, student_id):
     """Toggle student active status"""
     admin_id = request.session.get('user_id')
@@ -728,6 +759,8 @@ def toggle_student_status(request, student_id):
         else:
             # If rejected, pending, or inactive, set to active
             student.status = 'active'
+            student.approved_at = timezone.now()
+            student.warning_sent_at = None
             action = 'activated'
             log_action = "Activated"
             

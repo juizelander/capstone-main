@@ -3127,6 +3127,39 @@
       );
     }
 
+    function renewStudent(studentId) {
+      Swal.fire({
+        title: 'Renew Account?',
+        text: "This will extend the account expiry for another 6 months.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, renew it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${studentId}/renew/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Renewed!', 'Account has been renewed.', 'success');
+                loadStudents();
+                setTimeout(() => viewStudentProfile(studentId), 500);
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
+              }
+            });
+        }
+      });
+    }
+
     function viewStudentProfile(studentId) {
       const visible = _spGetVisible();
       const idx = visible.findIndex(s => s.id === studentId);
@@ -3212,7 +3245,19 @@
       document.getElementById('sp-username').textContent = `@${s.username}`;
       
       const now = new Date();
-      document.getElementById('sp-generated-date').textContent = `Generated on: ${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+      let expiryInfo = '';
+      if (s.approved_at) {
+        const approvedAt = new Date(s.approved_at);
+        const expiryDate = new Date(approvedAt.getTime() + (180 * 24 * 60 * 60 * 1000));
+        const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+        
+        let expiryColor = 'text-gray-500';
+        if (daysLeft < 30) expiryColor = 'text-red-500 font-bold';
+        else if (daysLeft < 60) expiryColor = 'text-orange-500 font-bold';
+        
+        expiryInfo = `<span class="ml-4 ${expiryColor}">Expiring: ${expiryDate.toLocaleDateString()} (${daysLeft > 0 ? daysLeft + ' days left' : 'Expired'})</span>`;
+      }
+      document.getElementById('sp-generated-date').innerHTML = `Generated on: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} ${expiryInfo}`;
 
       const statusEl = document.getElementById('sp-status');
       statusEl.textContent = s.status || 'N/A';
@@ -3254,6 +3299,22 @@
         toggleBtn.className = `w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition ${isActive ? 'bg-orange-500 hover:bg-orange-600' : 'bg-brand-primary hover:opacity-90'}`;
         toggleBtn.title = '';
         toggleBtn.onclick = () => toggleStudentStatus(s.id, s.status);
+      }
+
+      let renewBtn = document.getElementById('sp-renew-btn');
+      if (!renewBtn) {
+          renewBtn = document.createElement('button');
+          renewBtn.id = 'sp-renew-btn';
+          toggleBtn.parentNode.insertBefore(renewBtn, toggleBtn.nextSibling);
+      }
+      
+      if (s.status === 'active' || s.status === 'inactive') {
+          renewBtn.style.display = 'block';
+          renewBtn.textContent = 'Renew Account';
+          renewBtn.className = 'w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition bg-blue-500 hover:bg-blue-600 mt-2';
+          renewBtn.onclick = () => renewStudent(s.id);
+      } else {
+          renewBtn.style.display = 'none';
       }
 
       document.getElementById('sp-delete-btn').onclick = () => deleteStudent(s.id);

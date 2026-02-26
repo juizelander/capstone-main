@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/admin/students/<int:student_id>/toggle/', views.toggle_student_status, name='toggle_student_status'),
     path('api/admin/students/<int:student_id>/edit/', views.edit_student, name='edit_student'),
     path('api/admin/students/<int:student_id>/delete/', views.delete_student, name='delete_student'),
+    path('api/admin/students/<int:student_id>/renew/', views.renew_student, name='renew_student'),
     # path('api/programs/create/', views.create_program, name='create_program'),
     path('create_program/', views.create_program, name='create_program'),
     path('api/applications/create/', views.create_student_application, name='create_student_application'),
