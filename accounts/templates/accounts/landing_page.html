@@ -249,12 +249,11 @@
         }
 
         .carousel-container {
-            display: flex;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            gap: 20px;
-            padding: 10px 5px 20px 5px;
-            /* Bottom padding for shadow */
+            position: relative;
+    width: 100%;
+    max-width: 1300px; /* Adjust based on how many cards you want visible */
+    overflow: hidden; 
+    padding: 0 40px;
         }
 
         .program-card {
@@ -509,11 +508,12 @@
 
         .program-cards-row {
             display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
+    flex-direction: row;
+    gap: 20px;
+    width: 100%;
+    overflow-x: hidden; /* Changed to hidden because JS handles the scroll */
+    scroll-behavior: smooth;
+    padding: 20px 0;
         }
         .ui-card {
     background: #f0f9f8;
@@ -592,6 +592,7 @@
     scroll-behavior: smooth;
     scrollbar-width: none; /* Firefox */
     padding: 20px 0;
+    transition: transform 0.5s ease-in-out;
 }
 
 .program-cards-row::-webkit-scrollbar {
@@ -717,12 +718,11 @@
                 <h1>Featured Programs</h1>
             </div>
             <div class="carousel-container">
-        <button class="nav-btn prev" onclick="scrollCarousel(-1)">&#10094;</button>
-        <button class="nav-btn next" onclick="scrollCarousel(1)">&#10095;</button>
+        <button class="nav-btn prev" id="prevBtn">&#10094;</button>
+        <button class="nav-btn next" id="nextBtn">&#10095;</button>
 
-            
-            <div class="program-cards-row" id="carouselRow">
-                <div class="ui-card">
+        <div class="program-cards-row" id="carouselRow">
+            <div class="ui-card">
                     <div class="ui-card-image">
                         <img src="/media/program_images/edukalinga.jpg" alt="EduKALINGA Scholarship Poster">
                     </div>
@@ -789,10 +789,9 @@
                             <button class="ui-primary-btn">Apply Now</button>
                         </div>
                     </div>
-                </div>
-                <!-- Add more cards here if needed -->
             </div>
             </div>
+    </div>
             <div class="indicator-row" id="indicatorRow">
         <span class="dot active"></span>
         <span class="dot"></span>
@@ -847,21 +846,72 @@
 </html>
 
 <script>
-    const row = document.getElementById('carouselRow');
+    const track = document.getElementById('carouselRow');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
 const dots = document.querySelectorAll('.dot');
 
-function scrollCarousel(direction) {
-    const cardWidth = document.querySelector('.ui-card').offsetWidth + 20; // card + gap
-    row.scrollLeft += direction * cardWidth;
-}
+let isTransitioning = false;
+let activeIndex = 0;
+const totalCards = dots.length;
 
-// Update dots on scroll
-row.addEventListener('scroll', () => {
-    const cardWidth = document.querySelector('.ui-card').offsetWidth + 20;
-    const index = Math.round(row.scrollLeft / cardWidth);
-    
+function updateDots(index) {
     dots.forEach((dot, i) => {
         dot.classList.toggle('active', i === index);
     });
-});
+}
+
+function moveNext() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    const cardWidth = track.firstElementChild.offsetWidth + 20; // Card + gap
+
+    // Slide the whole track to the left
+    track.style.transition = "transform 0.5s ease-in-out";
+    track.style.transform = `translateX(-${cardWidth}px)`;
+
+    // Logic for dots
+    activeIndex = (activeIndex + 1) % totalCards;
+    updateDots(activeIndex);
+
+    // After animation, move the first element to the end and reset position
+    track.addEventListener('transitionend', () => {
+        track.style.transition = "none";
+        track.appendChild(track.firstElementChild); // Move first card to end
+        track.style.transform = "translateX(0)";
+        isTransitioning = false;
+    }, { once: true });
+}
+
+function movePrev() {
+    if (isTransitioning) return;
+    isTransitioning = true;
+
+    const cardWidth = track.lastElementChild.offsetWidth + 20;
+
+    // 1. Move the last card to the front instantly
+    track.style.transition = "none";
+    track.prepend(track.lastElementChild);
+    
+    // 2. Offset the track so it doesn't look like it jumped
+    track.style.transform = `translateX(-${cardWidth}px) `;
+
+    // 3. Logic for dots
+    activeIndex = (activeIndex - 1 + totalCards) % totalCards;
+    updateDots(activeIndex);
+
+    // 4. Slide back to 0
+    setTimeout(() => {
+        track.style.transition = "transform 0.5s ease-in-out";
+        track.style.transform = "translateX(0)";
+    }, 1);
+
+    track.addEventListener('transitionend', () => {
+        isTransitioning = false;
+    }, { once: true });
+}
+
+nextBtn.addEventListener('click', moveNext);
+prevBtn.addEventListener('click', movePrev);
 </script>
