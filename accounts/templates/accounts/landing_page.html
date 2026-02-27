@@ -637,17 +637,263 @@
         .chat-menu-dropdown.show {
             display: flex;
             animation: fadeIn 0.2s ease;
-        }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+            /* --- Featured Programs Carousel --- */
+            .featured-programs-section {
+                padding: 80px 5%;
+                background-color: #f8fafc;
             }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            .fp-carousel-wrapper {
+                position: relative;
+                max-width: 1200px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+            }
+
+            .fp-carousel-container {
+                display: flex;
+                gap: 20px;
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                padding: 20px 10px;
+                /* Hide scrollbar for a cleaner look */
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                flex: 1;
+            }
+
+            .fp-carousel-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .fp-carousel-btn {
+                background-color: #fff;
+                border: 2px solid #10B981;
+                color: #10B981;
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+                z-index: 2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                margin: 0 10px;
+            }
+
+            .fp-carousel-btn:hover {
+                background-color: #10B981;
+                color: #fff;
+                transform: scale(1.1);
+            }
+
+            /* Flip Card Base */
+            .fp-card {
+                background-color: transparent;
+                min-width: 320px;
+                max-width: 320px;
+                height: 420px;
+                /* Fixed height for consistency */
+                perspective: 1000px;
+                /* Required for 3D effect */
+                flex-shrink: 0;
+            }
+
+            .fp-card-inner {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+                transform-style: preserve-3d;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                border-radius: 12px;
+            }
+
+            /* Toggle this class via JS to flip the card */
+            .fp-card.is-flipped .fp-card-inner {
+                transform: rotateY(180deg);
+            }
+
+            /* Front and Back common styles */
+            .fp-card-front,
+            .fp-card-back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                -webkit-backface-visibility: hidden;
+                /* Safari */
+                backface-visibility: hidden;
+                border-radius: 12px;
+                background-color: white;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+            }
+
+            /* Front specific */
+            .fp-card-front .fp-card-img {
+                height: 180px;
+                background-size: cover;
+                background-position: center;
+                border-bottom: 3px solid #10B981;
+            }
+
+            .fp-card-front .fp-card-content {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                text-align: left;
+            }
+
+            .fp-card-front h3 {
+                color: #2d3748;
+                font-size: 1.25rem;
+                margin-bottom: 15px;
+                line-height: 1.3;
+            }
+
+            .fp-dates {
+                background: #f1f5f9;
+                padding: 10px;
+                border-radius: 8px;
+                margin-bottom: auto;
+                /* Push view details button down */
+            }
+
+            .fp-dates p {
+                margin: 5px 0;
+                font-size: 0.9rem;
+                color: #4a5568;
+            }
+
+            .fp-dates i {
+                color: #10B981;
+                width: 20px;
+            }
+
+            .fp-flip-btn {
+                background: transparent;
+                color: #10B981;
+                border: 1px solid #10B981;
+                padding: 10px;
+                border-radius: 6px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .fp-flip-btn:hover {
+                background: #10B981;
+                color: white;
+            }
+
+            /* Back specific */
+            .fp-card-back {
+                transform: rotateY(180deg);
+                padding: 25px;
+                text-align: left;
+                background: linear-gradient(to bottom, #ffffff, #f8fafc);
+            }
+
+            .fp-card-back h3 {
+                color: #10B981;
+                font-size: 1.15rem;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #e2e8f0;
+            }
+
+            .fp-back-content {
+                flex: 1;
+                overflow-y: auto;
+                margin-bottom: 15px;
+                font-size: 0.9rem;
+                color: #4a5568;
+                line-height: 1.5;
+            }
+
+            .fp-back-content h4 {
+                color: #2d3748;
+                margin-bottom: 8px;
+            }
+
+            .fp-back-content p {
+                margin: 0;
+            }
+
+            /* Custom scrollbar for back content */
+            .fp-back-content::-webkit-scrollbar {
+                width: 4px;
+            }
+
+            .fp-back-content::-webkit-scrollbar-thumb {
+                background: #cbd5e0;
+                border-radius: 4px;
+            }
+
+            .fp-back-actions {
+                display: flex;
+                gap: 10px;
+            }
+
+            .fp-flip-back-btn {
+                background: #e2e8f0;
+                color: #4a5568;
+                border: none;
+                padding: 10px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background 0.2s;
+                flex: 1;
+            }
+
+            .fp-flip-back-btn:hover {
+                background: #cbd5e0;
+            }
+
+            .fp-back-actions .btn-landing {
+                flex: 2;
+                padding: 10px;
+                font-size: 0.95rem;
+                text-align: center;
+            }
+
+            @media (max-width: 768px) {
+                .fp-carousel-wrapper {
+                    flex-direction: column;
+                }
+
+                .fp-carousel-btn {
+                    margin: 10px 0;
+                }
+
+                .fp-card {
+                    min-width: 280px;
+                    max-width: 280px;
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
             }
         }
 
@@ -934,6 +1180,613 @@
                 display: block;
             }
         }
+
+        .featured-programs-section {
+            padding: 80px 5%;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .fp-carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .fp-carousel-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 20px 10px;
+            /* Hide scrollbar for a cleaner look */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            flex: 1;
+        }
+
+        .fp-carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fp-carousel-btn {
+            background-color: #fff;
+            border: 2px solid #10B981;
+            color: #10B981;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin: 0 10px;
+        }
+
+        .fp-carousel-btn:hover {
+            background-color: #10B981;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* Flip Card Base */
+        .fp-card {
+            background-color: transparent;
+            min-width: 320px;
+            max-width: 320px;
+            height: 420px;
+            /* Fixed height for consistency */
+            perspective: 1000px;
+            /* Required for 3D effect */
+            flex-shrink: 0;
+        }
+
+        .fp-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        /* Toggle this class via JS to flip the card */
+        .fp-card.is-flipped .fp-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        /* Front and Back common styles */
+        .fp-card-front,
+        .fp-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            /* Safari */
+            backface-visibility: hidden;
+            border-radius: 12px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Front specific */
+        .fp-card-front .fp-card-img {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            border-bottom: 3px solid #10B981;
+        }
+
+        .fp-card-front .fp-card-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            text-align: left;
+        }
+
+        .fp-card-front h3 {
+            color: #2d3748;
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .fp-dates {
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: auto;
+            /* Push view details button down */
+        }
+
+        .fp-dates p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .fp-dates i {
+            color: #10B981;
+            width: 20px;
+        }
+
+        .fp-flip-btn {
+            background: transparent;
+            color: #10B981;
+            border: 1px solid #10B981;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .fp-flip-btn:hover {
+            background: #10B981;
+            color: white;
+        }
+
+        /* Back specific */
+        .fp-card-back {
+            transform: rotateY(180deg);
+            padding: 25px;
+            text-align: left;
+            background: linear-gradient(to bottom, #ffffff, #f8fafc);
+        }
+
+        .fp-card-back h3 {
+            color: #10B981;
+            font-size: 1.15rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .fp-back-content {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+
+        .fp-back-content h4 {
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        .fp-back-content p {
+            margin: 0;
+        }
+
+        /* Custom scrollbar for back content */
+        .fp-back-content::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .fp-back-content::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        .fp-back-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .fp-flip-back-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            flex: 1;
+        }
+
+        .fp-flip-back-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .fp-back-actions .btn-landing {
+            flex: 2;
+            padding: 10px;
+            font-size: 0.95rem;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .fp-carousel-wrapper {
+                flex-direction: column;
+            }
+
+            .fp-carousel-btn {
+                margin: 10px 0;
+            }
+
+            .fp-card {
+                min-width: 280px;
+                max-width: 280px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-menu-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        /* --- Premium Footer Styling --- */
+        .premium-footer {
+            background: #111827;
+            color: #d1d5db;
+            padding: 80px 5% 40px;
+            font-family: 'Roboto', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-footer::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            transform: translate(-50%, -50%);
+            background-image: url('{% static "accounts/subic_seal.png" %}');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            opacity: 0.08;
+            pointer-events: none;
+            filter: grayscale(100%) brightness(200%);
+            z-index: 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            margin-bottom: 25px;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 30px;
+            height: 2px;
+            background: #10B981;
+        }
+
+        .footer-about .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .footer-about .footer-logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .footer-about .footer-logo span {
+            font-family: 'Lemon Milk', sans-serif;
+            font-size: 1.4rem;
+            color: #fff;
+            background: linear-gradient(135deg, #10B981, #F59E0B);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-about p {
+            line-height: 1.6;
+            font-size: 0.95rem;
+            color: #9ca3af;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .footer-links ul li a:hover {
+            color: #10B981;
+            transform: translateX(5px);
+        }
+
+        .footer-contact .contact-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .footer-contact .contact-item i {
+            color: #10B981;
+            font-size: 1.1rem;
+            margin-top: 3px;
+        }
+
+        .footer-contact .contact-item .item-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #10B981;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-bottom-links a {
+            color: #6b7280;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: #10B981;
+        }
+
+        @media (max-width: 992px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-col h4::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .footer-about .footer-logo {
+                justify-content: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        /* --- Student News Section --- */
+        .student-news-section {
+            padding: 80px 5%;
+            background-color: #f8fafc;
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .news-featured {
+            height: 100%;
+        }
+
+        .news-side {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .news-img {
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .news-featured .news-img {
+            height: 350px;
+        }
+
+        .news-side .news-img {
+            height: 150px;
+        }
+
+        .news-body {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-side .news-body {
+            padding: 20px;
+        }
+
+        .news-body h3 {
+            color: #1e293b;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            line-height: 1.3;
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+        }
+
+        .news-side .news-body h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .news-meta {
+            margin-top: auto;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .news-side .news-card {
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .news-side .news-content {
+            display: none;
+            color: #475569;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .news-side .news-card.expanded .news-content {
+            display: block;
+        }
+
+        .news-side .news-card.expanded {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-color: #bee3f8;
+            background: #f8fafc;
+        }
+
+        .news-side .expand-icon {
+            transition: transform 0.3s ease;
+            color: #94a3b8;
+        }
+
+        .news-side .news-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 992px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .news-featured .news-img {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 
@@ -1041,8 +1894,210 @@
             </div>
         </section>
 
-        <footer>
-            <p>&copy; 2026 Lander. All rights reserved.</p>
+        <!-- Featured Programs Section (Carousel with Flip Cards) -->
+        <section id="featured-programs" class="featured-programs-section">
+            <div class="section-title">
+                <h2>Featured Programs</h2>
+                <p>Explore current scholarship opportunities available for you.</p>
+            </div>
+
+            {% if active_programs %}
+            <div class="fp-carousel-wrapper">
+                <button class="fp-carousel-btn fp-prev-btn" id="fp-prev">&#10094;</button>
+
+                <div class="fp-carousel-container" id="fp-track">
+                    {% for program in active_programs %}
+                    <div class="fp-card">
+                        <div class="fp-card-inner">
+                            <!-- Card Front -->
+                            <div class="fp-card-front">
+                                {% if program.program_image %}
+                                <div class="fp-card-img"
+                                    style="background-image: url('{{ program.program_image.url }}');"></div>
+                                {% else %}
+                                <div class="fp-card-img" style="background: linear-gradient(135deg, #10B981, #059669);">
+                                </div>
+                                {% endif %}
+                                <div class="fp-card-content">
+                                    <h3>{{ program.program_name }}</h3>
+                                    <div class="fp-dates">
+                                        <p><i class="fa-regular fa-calendar-check"></i> <strong>Start:</strong> {{
+                                            program.application_start_date|date:"M d, Y" }}</p>
+                                        <p><i class="fa-regular fa-clock"></i> <strong>Due:</strong> {{
+                                            program.application_end_date|date:"M d, Y" }}</p>
+                                    </div>
+                                    <button class="fp-flip-btn">View Details <i
+                                            class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Card Back -->
+                            <div class="fp-card-back">
+                                <h3>{{ program.program_name }}</h3>
+                                <div class="fp-back-content">
+                                    <h4>Requirements & Description:</h4>
+                                    <!-- Use linebreaksbr to format text nicely -->
+                                    <p>{{ program.requirements|linebreaksbr }}</p>
+                                </div>
+                                <div class="fp-back-actions">
+                                    <button class="fp-flip-back-btn"><i class="fa-solid fa-arrow-left"></i>
+                                        Back</button>
+                                    <a href="{% url 'accounts:register' %}"
+                                        class="btn-landing btn-primary-landing">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button class="fp-carousel-btn fp-next-btn" id="fp-next">&#10095;</button>
+            </div>
+            {% else %}
+            <div
+                style="text-align: center; color: #718096; padding: 40px; background: rgba(255,255,255,0.7); border-radius: 12px; max-width: 600px; margin: 0 auto;">
+                <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 15px; color: #cbd5e0;"></i>
+                <p style="font-size: 1.1rem;">No scholarship programs are currently open. Please check back later.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- Student News Section -->
+        <section class="student-news-section">
+            <h2 class="section-heading" style="text-align: center; margin-bottom: 50px;">Applicant News</h2>
+
+            {% if announcements %}
+            <div class="news-grid">
+                <!-- Featured News (Large) -->
+                {% with featured=announcements.0 %}
+                <div class="news-featured">
+                    <div class="news-card">
+                        <div class="news-img"
+                            style="background-image: url('{% if featured.image %}{{ featured.image.url }}{% else %}/static/accounts/scholarsync_logo.png{% endif %}');">
+                        </div>
+                        <div class="news-body">
+                            <h3>{{ featured.title }}</h3>
+                            <p>{{ featured.content|truncatechars:150 }}</p>
+                            <div class="news-meta">
+                                {{ featured.created_at|date:"F d, Y" }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+
+                <!-- Side News (Collapsible) -->
+                <div class="news-side">
+                    {% for item in announcements|slice:"1:5" %}
+                    <div class="news-card" onclick="toggleNews(this)">
+                        <div style="display: flex; flex-direction: column; padding: 20px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                                <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
+                                    <div
+                                        style="width: 60px; height: 60px; background-image: url('{% if item.image %}{{ item.image.url }}{% else %}/static/accounts/scholarsync_logo.png{% endif %}'); background-size: cover; background-position: center; border-radius: 10px; flex-shrink: 0;">
+                                    </div>
+                                    <h3 style="margin: 0; font-size: 1.1rem; line-height: 1.4;">{{ item.title }}</h3>
+                                </div>
+                                <i class="fas fa-chevron-down expand-icon" style="flex-shrink: 0; margin-top: 5px;"></i>
+                            </div>
+
+                            <div class="news-content">
+                                {{ item.content|linebreaksbr }}
+                            </div>
+
+                            <div class="news-meta" style="margin-top: 15px;">
+                                {{ item.created_at|date:"F d, Y" }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% else %}
+            <!-- Fallback if no news -->
+            <div
+                style="text-align: center; color: #94a3b8; padding: 40px; border: 2px dashed #e2e8f0; border-radius: 20px; max-width: 800px; margin: 0 auto;">
+                <i class="fa-solid fa-newspaper" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                <h3>No Recent News</h3>
+                <p>Check back later for important announcements and scholarship guides!</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <footer class="premium-footer">
+            <div class="footer-grid">
+                <!-- Branding Col -->
+                <div class="footer-col footer-about">
+                    <div class="footer-logo">
+                        <img src="{% static 'accounts/favicon.png' %}" alt="ScholarSync Logo">
+                        <span>ScholarSync Subic</span>
+                    </div>
+                    <p>Empowering the youth of Subic through accessible educational opportunities. Bridging students and
+                        scholarships for a brighter tomorrow.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-col footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#featured-programs">Programs</a></li>
+                        <li><a href="{% url 'accounts:login' %}">Student Login</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="footer-col footer-links">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Application Guide</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="footer-col footer-contact">
+                    <h4>Contact Us</h4>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <div class="item-text">
+                            Municipal Hall, Subic,<br>
+                            Zambales, Philippines 2209
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-envelope"></i>
+                        <div class="item-text">
+                            support@scholarsyncsubic.gov.ph
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <div class="item-text">
+                            (047) 123-4567
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 ScholarSync Subic. MJ, Lander, BJ, Stone. All rights reserved.</p>
+                <div class="footer-bottom-links">
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Cookies</a>
+                </div>
+            </div>
         </footer>
     </div>
 
@@ -1334,6 +2389,52 @@
                 }
             });
 
+            // --- Featured Programs Logic ---
+            const fpTrack = document.getElementById("fp-track");
+            const fpPrevBtn = document.getElementById("fp-prev");
+            const fpNextBtn = document.getElementById("fp-next");
+
+            if (fpTrack && fpPrevBtn && fpNextBtn) {
+                // Scroll amount logic (width of one card + gap)
+                const getScrollAmount = () => {
+                    const card = fpTrack.querySelector('.fp-card');
+                    if (card) {
+                        return card.offsetWidth + 20; // 20 is the gap
+                    }
+                    return 340; // Fallback
+                };
+
+                fpPrevBtn.addEventListener("click", () => {
+                    fpTrack.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+                });
+
+                fpNextBtn.addEventListener("click", () => {
+                    fpTrack.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+                });
+            }
+
+            // Flip Card Logic
+            const flipBtns = document.querySelectorAll('.fp-flip-btn');
+            const flipBackBtns = document.querySelectorAll('.fp-flip-back-btn');
+
+            flipBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const card = e.target.closest('.fp-card');
+                    if (card) {
+                        card.classList.add('is-flipped');
+                    }
+                });
+            });
+
+            flipBackBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const card = e.target.closest('.fp-card');
+                    if (card) {
+                        card.classList.remove('is-flipped');
+                    }
+                });
+            });
+
             // Toggle Menus and Panels
             menuBtn.addEventListener("click", () => {
                 chatMenuDropdown.classList.toggle("show");
@@ -1426,6 +2527,17 @@
             // Load history on initialization
             loadCurrentSession();
         });
+
+        function toggleNews(card) {
+            // Close other expanded cards
+            document.querySelectorAll('.news-side .news-card.expanded').forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('expanded');
+                }
+            });
+            // Toggle current card
+            card.classList.toggle('expanded');
+        }
     </script>
 </body>
 

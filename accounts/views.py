@@ -33,11 +33,18 @@ def landing_page_view(request):
     try:
         # Fetch active programs
         active_programs = Program.objects.filter(is_active=True)
+        # Fetch latest active announcements for Student News
+        from home.models import Announcement
+        announcements = Announcement.objects.filter(is_active=True).order_by('-created_at')[:5]
     except Exception:
         # Fallback if migration hasn't run yet or other error
         active_programs = []
+        announcements = []
     
-    return render(request, 'accounts/landing_page.html', {'active_programs': active_programs})
+    return render(request, 'accounts/landing_page.html', {
+        'active_programs': active_programs,
+        'announcements': announcements
+    })
 
 
 def login_view(request):
@@ -1642,3 +1649,129 @@ def chatbot_response(request):
     except Exception as e:
         print(f"Chatbot View Error: {str(e)}")
         return JsonResponse({'success': False, 'error': 'An internal error occurred.'}, status=500)
+
+
+# -------------------------------------------------------------
+# Announcement Management Views
+# -------------------------------------------------------------
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_announcements(request):
+    """Fetch all announcements for the admin dashboard."""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        from home.models import Announcement
+        announcements = Announcement.objects.all().order_by('-created_at')
+        
+        data = []
+        for ann in announcements:
+            data.append({
+                'id': ann.announcement_id,
+                'title': ann.title,
+                'content': ann.content,
+                'image_url': ann.image.url if ann.image else None,
+                'is_active': ann.is_active,
+                'created_at': ann.created_at.strftime('%Y-%m-%d %H:%M')
+            })
+        
+        return JsonResponse({'announcements': data})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["GET"])
+def get_announcement(request, announcement_id):
+    """Fetch a single announcement."""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        from home.models import Announcement
+        ann = get_object_or_404(Announcement, pk=announcement_id)
+        
+        return JsonResponse({
+            'announcement': {
+                'id': ann.announcement_id,
+                'title': ann.title,
+                'content': ann.content,
+                'image_url': ann.image.url if ann.image else None,
+                'is_active': ann.is_active,
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@csrf_exempt
+def handle_announcement(request):
+    """Create or update an announcement."""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+    
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
+    
+    try:
+        from home.models import Announcement
+        ann_id = request.POST.get('announcement_id')
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        is_active = request.POST.get('is_active') == 'on' or request.POST.get('is_active') == 'true'
+        image = request.FILES.get('image')
+        
+        if ann_id:
+            # Update
+            ann = get_object_or_404(Announcement, pk=ann_id)
+            ann.title = title
+            ann.content = content
+            ann.is_active = is_active
+            if image:
+                ann.image = image
+            ann.save()
+            action_text = f"Updated announcement '{title}'"
+        else:
+            # Create
+            ann = Announcement.objects.create(
+                title=title,
+                content=content,
+                is_active=is_active,
+                image=image
+            )
+            action_text = f"Created announcement '{title}'"
+            
+        # Log action
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=action_text)
+        
+        return JsonResponse({'success': True, 'message': 'Announcement saved successfully.'})
+    except Exception as e:
+        print(f"Announcement View Error: {str(e)}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@csrf_exempt
+@require_http_methods(["DELETE", "POST"])
+def delete_announcement(request, announcement_id):
+    """Delete an announcement."""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+    
+    try:
+        from home.models import Announcement
+        ann = get_object_or_404(Announcement, pk=announcement_id)
+        title = ann.title
+        ann.delete()
+        
+        # Log action
+        current_admin = Admin.objects.get(admin_id=admin_id)
+        AdminLog.objects.create(admin=current_admin, action=f"Deleted announcement '{title}'")
+        
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+

@@ -8,7 +8,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -83,62 +85,92 @@
       </div>
       <nav class="sd-sidebar-nav">
 
-        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="dashboard">
+        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          data-tab="dashboard">
           <i class="fas fa-chart-line"></i> Dashboard
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="student-registrations">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
+          data-tab="student-registrations">
           <i class="fas fa-user-plus"></i> Student Registration
-          <span class="nav-badge" id="badge-registrations" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+          <span class="nav-badge" id="badge-registrations"
+            style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="student-applications">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
+          data-tab="student-applications">
           <i class="fas fa-file-alt"></i> Program Applications
-          <span class="nav-badge" id="badge-applications" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+          <span class="nav-badge" id="badge-applications"
+            style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="notifications">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
+          data-tab="notifications">
           <i class="fas fa-bell"></i> Notifications
-          <span class="nav-badge" id="badge-notifications" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+          <span class="nav-badge" id="badge-notifications"
+            style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="students">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
+          data-tab="announcements">
+          <i class="fas fa-bullhorn"></i> Announcements
+        </a>
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          data-tab="students">
           <i class="fas fa-users-cog"></i> Student Management
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="admins">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          data-tab="admins">
           <i class="fas fa-user-shield"></i> Admins
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="reports">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          data-tab="reports">
           <i class="fas fa-chart-bar"></i> Reports
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" data-tab="programs">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          data-tab="programs">
           <i class="fas fa-graduation-cap"></i> Programs
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative" data-tab="inbox">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
+          data-tab="inbox">
           <i class="fas fa-inbox"></i> Inbox / Support
-          <span class="nav-badge" id="badge-inbox" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+          <span class="nav-badge" id="badge-inbox"
+            style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
       </nav>
-      
+
       <div class="sd-sidebar-footer relative">
-        <div class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden" onclick="toggleProfileDropdown(event)">
-          <div class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></div>
-          
+        <div
+          class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden"
+          onclick="toggleProfileDropdown(event)">
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0">
+          </div>
+
           <div class="relative z-10 flex items-center justify-between">
             <div class="flex items-center gap-3 overflow-hidden">
-              <div class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
+              <div
+                class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
                 <i class="fas fa-user-shield"></i>
               </div>
               <div class="profile-info flex-1 overflow-hidden">
-                <div class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">{{ admin.admin_name }}</div>
-                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">Admin Account</div>
+                <div
+                  class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">
+                  {{ admin.admin_name }}</div>
+                <div
+                  class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">
+                  Admin Account</div>
               </div>
             </div>
-            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300" id="profile-chevron"></i>
+            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300"
+              id="profile-chevron"></i>
           </div>
         </div>
 
         <!-- Logout Dropdown -->
-        <div class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50" id="profile-dropdown">
+        <div
+          class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50"
+          id="profile-dropdown">
           <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
             {% csrf_token %}
-            <button type="submit" class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+            <button type="submit"
+              class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
               <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
             </button>
           </form>
@@ -160,517 +192,753 @@
           </button>
         </div>
       </header>
-      
+
       <!-- Main Content Area -->
       <main class="sd-content">
-      <!-- Dashboard Tab -->
-      <div id="dashboard" class="tab-content active animate-fade-in">
-        <div class="welcome-header animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex justify-between items-center">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Dashboard Overview</h1>
-            <p class="text-gray-500 dark:text-gray-400">Welcome to your admin dashboard. Use the sidebar to navigate between different sections.</p>
-          </div>
-          <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95 bg-brand-primary text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2" onclick="switchTab('programs')">
-            <i class="fas fa-plus"></i> New Program
-          </button>
-        </div>
-
-        <!-- Statistics Cards -->
-        <div class="kpi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-gradient-to-br from-brand-primary to-green-600 text-white p-6 rounded-xl" style="animation-delay: 100ms;">
-            <div class="flex justify-between items-start mb-4">
-              <div class="kpi-title font-medium text-white/90">Total Students</div>
-              <i class="fas fa-users text-2xl text-white/80"></i>
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active animate-fade-in">
+          <div
+            class="welcome-header animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex justify-between items-center">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Dashboard Overview</h1>
+              <p class="text-gray-500 dark:text-gray-400">Welcome to your admin dashboard. Use the sidebar to navigate
+                between different sections.</p>
             </div>
-            <div class="kpi-value text-4xl font-bold" id="total-students">Loading...</div>
-          </div>
-
-          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 200ms;">
-            <div class="flex justify-between items-start mb-4">
-              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Active Popups</div>
-              <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i class="fas fa-bell"></i></div>
-            </div>
-            <div class="kpi-value kpi-primary text-3xl font-bold text-gray-800 dark:text-white" id="active-popups">Loading...</div>
-          </div>
-
-          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 300ms;">
-            <div class="flex justify-between items-start mb-4">
-              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Pending Applications</div>
-              <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center"><i class="fas fa-clock"></i></div>
-            </div>
-            <div class="kpi-value kpi-warning text-3xl font-bold text-gray-800 dark:text-white" id="pending-applications">Loading...</div>
-          </div>
-
-          <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700" style="animation-delay: 400ms;">
-            <div class="flex justify-between items-start mb-4">
-              <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Total Programs</div>
-              <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-graduation-cap"></i></div>
-            </div>
-            <div class="kpi-value kpi-success text-3xl font-bold text-gray-800 dark:text-white" id="total-programs">Loading...</div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <!-- Chart Section -->
-          <div class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-            <div class="card-header flex justify-between items-center mb-4">
-              <h3 class="text-lg font-bold text-gray-800 dark:text-white">Application Trends</h3>
-              <div class="chart-controls">
-                <select id="chart-period" onchange="updateChart()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                  <option value="7">Last 7 Days</option>
-                  <option value="30" selected>Last 30 Days</option>
-                  <option value="90">Last 90 Days</option>
-                </select>
-              </div>
-            </div>
-            <div class="chart-container relative h-64 w-full">
-              <canvas id="applicationsChart"></canvas>
-            </div>
-          </div>
-
-          <!-- Student Statistics Bar Chart -->
-          <div class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-            <div class="card-header flex justify-between items-center mb-4">
-              <h3 class="text-lg font-bold text-gray-800 dark:text-white">Student Statistics</h3>
-              <div class="chart-controls">
-                <select id="student-chart-type" onchange="updateStudentChart()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                  <option value="status" selected>By Status</option>
-                  <option value="program">By Program</option>
-                  <option value="monthly">Monthly Registrations</option>
-                </select>
-              </div>
-            </div>
-            <div class="chart-container relative h-64 w-full">
-              <canvas id="studentChart"></canvas>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Admin Logs Card -->
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full mb-8">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Admin Logs</h3>
-            <div class="admin-log-filters">
-              <select id="admin-logs-sort" onchange="sortAdminLogs()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                <option value="newest" selected>Newest First</option>
-                <option value="oldest">Oldest First</option>
-                <option value="admin_asc">Admin Name (A-Z)</option>
-                <option value="action_asc">Action (A-Z)</option>
-              </select>
-            </div>
-          </div>
-          <div class="overflow-hidden relative max-h-[300px] rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-y-auto w-full">
-            <table class="data-table w-full text-left border-collapse" id="adminLogsTable">
-              <thead class="sticky top-0 bg-gray-100 dark:bg-gray-700 z-10 w-full shadow-sm">
-                <tr class="border-b border-gray-200 dark:border-gray-600">
-                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Time</th>
-                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Admin</th>
-                  <th class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">Action</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 bg-white dark:bg-gray-800 w-full">
-                {% for log in admin_logs %}
-                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full">
-                  <td class="p-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ log.timestamp|date:"M d, Y" }} <br> {{ log.timestamp|date:"H:i" }}</td>
-                  <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium">{% if log.admin.full_name %}{{ log.admin.full_name }}{% else %}{{ log.admin.admin_name }}{% endif %}</td>
-                  <td class="p-3 text-sm text-gray-600 dark:text-gray-300">{{ log.action }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="3" class="p-4 text-center text-gray-500">No admin logs available.</td></tr>
-                {% endfor %}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Student Account Registration Tab -->
-      <div id="student-registrations" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Account Registration</h3>
-            <div class="application-filters">
-              <select id="registration-filter" onchange="filterRegistrations()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                <option value="all">All Registrations</option>
-                <option value="pending">Pending</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="application-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="registration-list">
-            <!-- Student registrations will be loaded here via JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Student Applications Tab -->
-      <div id="student-applications" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Program Applications</h3>
-            <div class="application-filters">
-              <select id="program-application-filter" onchange="filterProgramApplications()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                <option value="all">All Applications</option>
-                <option value="submitted">Submitted</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="application-list grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6" id="program-application-list">
-            <!-- Program applications will be loaded here via JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Notification Center Tab -->
-      <div id="notifications" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Notification Center</h3>
-            <button class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white font-medium px-4 py-2 rounded-lg shadow-sm flex items-center gap-2" onclick="openPopupModal()">
-              <i class="fas fa-plus"></i> Create New Popup
+            <button
+              class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95 bg-brand-primary text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2"
+              onclick="switchTab('programs')">
+              <i class="fas fa-plus"></i> New Program
             </button>
           </div>
 
-          <div class="popup-filters mb-6">
-            <select id="popup-filter" onchange="filterPopups()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:max-w-xs p-2.5">
-              <option value="all">All Popups</option>
-              <option value="active">Active Only</option>
-              <option value="inactive">Inactive Only</option>
-              <option value="info">Information</option>
-              <option value="warning">Warning</option>
-              <option value="success">Success</option>
-              <option value="error">Error</option>
-            </select>
-          </div>
+          <!-- Statistics Cards -->
+          <div class="kpi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div
+              class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-gradient-to-br from-brand-primary to-green-600 text-white p-6 rounded-xl"
+              style="animation-delay: 100ms;">
+              <div class="flex justify-between items-start mb-4">
+                <div class="kpi-title font-medium text-white/90">Total Students</div>
+                <i class="fas fa-users text-2xl text-white/80"></i>
+              </div>
+              <div class="kpi-value text-4xl font-bold" id="total-students">Loading...</div>
+            </div>
 
-          <div class="popup-list grid gap-4 lg:grid-cols-2" id="popup-list">
-            <!-- Popups will be loaded here via JavaScript -->
-          </div>
-        </div>
-      </div>
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700"
+              style="animation-delay: 200ms;">
+              <div class="flex justify-between items-start mb-4">
+                <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Active Popups</div>
+                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i
+                    class="fas fa-bell"></i></div>
+              </div>
+              <div class="kpi-value kpi-primary text-3xl font-bold text-gray-800 dark:text-white" id="active-popups">
+                Loading...</div>
+            </div>
 
-      <!-- Students Tab -->
-      <div id="students" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Management</h3>
-            <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
-                class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-              <select id="student-status-filter" onchange="filterStudents()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
-                <option value="all">All Students</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-              </select>
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700"
+              style="animation-delay: 300ms;">
+              <div class="flex justify-between items-start mb-4">
+                <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Pending Applications</div>
+                <div class="w-10 h-10 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center"><i
+                    class="fas fa-clock"></i></div>
+              </div>
+              <div class="kpi-value kpi-warning text-3xl font-bold text-gray-800 dark:text-white"
+                id="pending-applications">Loading...</div>
+            </div>
+
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700"
+              style="animation-delay: 400ms;">
+              <div class="flex justify-between items-start mb-4">
+                <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Total Programs</div>
+                <div class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i
+                    class="fas fa-graduation-cap"></i></div>
+              </div>
+              <div class="kpi-value kpi-success text-3xl font-bold text-gray-800 dark:text-white" id="total-programs">
+                Loading...</div>
             </div>
           </div>
 
-          <div class="student-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="student-list">
-            <!-- Students will be loaded here via JavaScript -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Inbox / Support Tab -->
-      <div id="inbox" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Inbox / Support Tickets</h3>
-            <div class="application-filters flex gap-3 items-center w-full md:w-auto mt-4 md:mt-0" style="margin: 0;">
-              <button class="btn btn-sm btn-outline px-3 py-2 text-sm text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2" onclick="loadAdminMessages()">
-                <i class="fas fa-sync-alt"></i> Refresh
-              </button>
-              <select id="inbox-filter" onchange="filterAdminMessages()" class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
-                <option value="all">All Messages</option>
-                <option value="unread">Unread Only</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
-            <table class="data-table w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
-                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
-                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Student</th>
-                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</th>
-                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Date</th>
-                  <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody id="admin-inbox-list" class="divide-y divide-gray-100 dark:divide-gray-700">
-                <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- Admins Tab -->
-      <div id="admins" class="tab-content animate-fade-in">
-        <div class="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
-          
-          <!-- Create Admin Card -->
-          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Create New Admin</h3>
-            <div class="settings-section">
-              <form id="create-admin-form" onsubmit="createAdmin(event)" class="space-y-4">
-                <div class="form-group flex flex-col md:flex-row gap-4">
-                  <div class="flex-1">
-                    <label for="new_admin_username" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
-                    <input type="text" id="new_admin_username" name="new_admin_username" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                  </div>
-                  <div class="flex-1">
-                    <label for="new_admin_fullname" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                    <input type="text" id="new_admin_fullname" name="new_admin_fullname" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                  </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Chart Section -->
+            <div
+              class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+              <div class="card-header flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Application Trends</h3>
+                <div class="chart-controls">
+                  <select id="chart-period" onchange="updateChart()"
+                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                  </select>
                 </div>
-                <div class="form-group flex flex-col md:flex-row gap-4">
-                   <div class="flex-1">
-                     <label for="new_admin_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                     <input type="password" id="new_admin_password" name="new_admin_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                   </div>
-                   <div class="flex-1">
-                     <label for="new_admin_confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
-                     <input type="password" id="new_admin_confirm_password" name="new_admin_confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                   </div>
+              </div>
+              <div class="chart-container relative h-64 w-full">
+                <canvas id="applicationsChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Student Statistics Bar Chart -->
+            <div
+              class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+              <div class="card-header flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Student Statistics</h3>
+                <div class="chart-controls">
+                  <select id="student-chart-type" onchange="updateStudentChart()"
+                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                    <option value="status" selected>By Status</option>
+                    <option value="program">By Program</option>
+                    <option value="monthly">Monthly Registrations</option>
+                  </select>
                 </div>
-                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create Admin</button>
-              </form>
+              </div>
+              <div class="chart-container relative h-64 w-full">
+                <canvas id="studentChart"></canvas>
+              </div>
             </div>
           </div>
-          
-          <!-- Change Password Card -->
-          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Change Password</h3>
-            <div class="settings-section">
-              <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
-                <div class="form-group flex flex-col md:flex-row gap-4">
-                  <div class="flex-1">
-                    <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-                    <input type="password" id="new_password" name="new_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                  </div>
-                  <div class="flex-1">
-                    <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New Password</label>
-                    <input type="password" id="confirm_password" name="confirm_password" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Update Password</button>
-              </form>
+
+          <!-- Admin Logs Card -->
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full mb-8">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Admin Logs</h3>
+              <div class="admin-log-filters">
+                <select id="admin-logs-sort" onchange="sortAdminLogs()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="newest" selected>Newest First</option>
+                  <option value="oldest">Oldest First</option>
+                  <option value="admin_asc">Admin Name (A-Z)</option>
+                  <option value="action_asc">Action (A-Z)</option>
+                </select>
+              </div>
             </div>
-          </div>
-          
-          <!-- Admin List Card -->
-          <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin List</h3>
-            <div class="overflow-x-auto overflow-y-auto max-h-[300px] relative rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
-              <table class="data-table w-full text-left border-collapse">
-                <thead class="sticky top-0 bg-gray-50 dark:bg-gray-700/50 z-10 shadow-sm">
-                  <tr class="border-b border-gray-200 dark:border-gray-700">
-                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">Username</th>
-                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">Full Name</th>
+            <div
+              class="overflow-hidden relative max-h-[300px] rounded-lg border border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 overflow-y-auto w-full">
+              <table class="data-table w-full text-left border-collapse" id="adminLogsTable">
+                <thead class="sticky top-0 bg-gray-100 dark:bg-gray-700 z-10 w-full shadow-sm">
+                  <tr class="border-b border-gray-200 dark:border-gray-600">
+                    <th
+                      class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">
+                      Time</th>
+                    <th
+                      class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">
+                      Admin</th>
+                    <th
+                      class="p-3 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50">
+                      Action</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                  {% for a in admins_list %}
-                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300 font-medium">{{ a.admin_name }}</td>
-                    <td class="p-4 text-sm text-gray-600 dark:text-gray-300">{% if a.full_name %}{{ a.full_name }}{% else %}<span class="text-gray-400 italic">No name set</span>{% endif %}</td>
+                <tbody class="divide-y divide-gray-200 dark:divide-gray-700/50 bg-white dark:bg-gray-800 w-full">
+                  {% for log in admin_logs %}
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors w-full">
+                    <td class="p-3 text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{{ log.timestamp|date:"M
+                      d, Y" }} <br> {{ log.timestamp|date:"H:i" }}</td>
+                    <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium">{% if log.admin.full_name %}{{
+                      log.admin.full_name }}{% else %}{{ log.admin.admin_name }}{% endif %}</td>
+                    <td class="p-3 text-sm text-gray-600 dark:text-gray-300">{{ log.action }}</td>
                   </tr>
                   {% empty %}
-                  <tr><td colspan="2" class="p-4 text-center text-gray-500">No admins found.</td></tr>
+                  <tr>
+                    <td colspan="3" class="p-4 text-center text-gray-500">No admin logs available.</td>
+                  </tr>
                   {% endfor %}
                 </tbody>
               </table>
             </div>
           </div>
-          
+
         </div>
-      </div>
 
-      <!-- Programs Tab Content -->
-      <div id="programs" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Program Management</h3>
-            <button class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200" onclick="showCreateProgram()">
-              <i class="fas fa-plus"></i> Create New Program
-            </button>
-          </div>
-
-          <div id="createProgramForm" class="program-form-wrapper bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 mb-8 max-w-3xl" style="display: none;">
-            <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-              <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">New Program Details</h4>
-              <button type="button" class="text-gray-500 hover:text-gray-800 dark:hover:text-white" onclick="hideCreateProgram()"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <form class="program-form space-y-4" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="form-group">
-                <label for="p_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Name</label>
-                <input id="p_name" name="program_name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+        <!-- Student Account Registration Tab -->
+        <div id="student-registrations" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Account Registration</h3>
+              <div class="application-filters">
+                <select id="registration-filter" onchange="filterRegistrations()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="all">All Registrations</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label for="p_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Type</label>
-                <select id="p_type" name="program_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700" required>
-                  <option value="Financial Assistance">Financial Assistance</option>
-                  <option value="Scholarship">Scholarship</option>
-                  <option value="Other">Other</option>
+            <div class="application-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="registration-list">
+              <!-- Student registrations will be loaded here via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Applications Tab -->
+        <div id="student-applications" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Program Applications</h3>
+              <div class="application-filters">
+                <select id="program-application-filter" onchange="filterProgramApplications()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="all">All Applications</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="application-list grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
+              id="program-application-list">
+              <!-- Program applications will be loaded here via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Notification Center Tab -->
+        <div id="notifications" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Notification Center</h3>
+              <button
+                class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white font-medium px-4 py-2 rounded-lg shadow-sm flex items-center gap-2"
+                onclick="openPopupModal()">
+                <i class="fas fa-plus"></i> Create New Popup
+              </button>
+            </div>
+
+            <div class="popup-filters mb-6">
+              <select id="popup-filter" onchange="filterPopups()"
+                class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:max-w-xs p-2.5">
+                <option value="all">All Popups</option>
+                <option value="active">Active Only</option>
+                <option value="inactive">Inactive Only</option>
+                <option value="info">Information</option>
+                <option value="warning">Warning</option>
+                <option value="success">Success</option>
+                <option value="error">Error</option>
+              </select>
+            </div>
+
+            <div class="popup-list grid gap-4 lg:grid-cols-2" id="popup-list">
+              <!-- Popups will be loaded here via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Announcements Tab -->
+        <div id="announcements" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Announcement Management</h3>
+              <button
+                class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white font-medium px-4 py-2 rounded-lg shadow-sm flex items-center gap-2"
+                onclick="openAnnouncementModal()">
+                <i class="fas fa-plus"></i> Create New Announcement
+              </button>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
+              <table class="data-table w-full text-left border-collapse">
+                <thead class="bg-gray-50 dark:bg-gray-700/50">
+                  <tr class="border-b border-gray-200 dark:border-gray-700">
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Title</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Date Created</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="announcement-list-body" class="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tr>
+                    <td colspan="4" class="p-4 text-center text-gray-500">Loading announcements...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Students Tab -->
+        <div id="students" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Management</h3>
+              <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
+                  class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                <select id="student-status-filter" onchange="filterStudents()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
+                  <option value="all">All Students</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="student-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              id="student-list">
+              <!-- Students will be loaded here via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Inbox / Support Tab -->
+        <div id="inbox" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Inbox / Support Tickets</h3>
+              <div class="application-filters flex gap-3 items-center w-full md:w-auto mt-4 md:mt-0" style="margin: 0;">
+                <button
+                  class="btn btn-sm btn-outline px-3 py-2 text-sm text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2"
+                  onclick="loadAdminMessages()">
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <select id="inbox-filter" onchange="filterAdminMessages()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
+                  <option value="all">All Messages</option>
+                  <option value="unread">Unread Only</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700">
+              <table class="data-table w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Status</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Student</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300">Date</th>
+                    <th class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-inbox-list" class="divide-y divide-gray-100 dark:divide-gray-700">
+                  <tr>
+                    <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admins Tab -->
+        <div id="admins" class="tab-content animate-fade-in">
+          <div class="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
+
+            <!-- Create Admin Card -->
+            <div
+              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Create New Admin</h3>
+              <div class="settings-section">
+                <form id="create-admin-form" onsubmit="createAdmin(event)" class="space-y-4">
+                  <div class="form-group flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                      <label for="new_admin_username"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                      <input type="text" id="new_admin_username" name="new_admin_username"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        required>
+                    </div>
+                    <div class="flex-1">
+                      <label for="new_admin_fullname"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                      <input type="text" id="new_admin_fullname" name="new_admin_fullname"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                    </div>
+                  </div>
+                  <div class="form-group flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                      <label for="new_admin_password"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                      <input type="password" id="new_admin_password" name="new_admin_password"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        required>
+                    </div>
+                    <div class="flex-1">
+                      <label for="new_admin_confirm_password"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Confirm
+                        Password</label>
+                      <input type="password" id="new_admin_confirm_password" name="new_admin_confirm_password"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        required>
+                    </div>
+                  </div>
+                  <button type="submit"
+                    class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create
+                    Admin</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Change Password Card -->
+            <div
+              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Change Password</h3>
+              <div class="settings-section">
+                <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
+                  <div class="form-group flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                      <label for="new_password"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                      <input type="password" id="new_password" name="new_password"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        required>
+                    </div>
+                    <div class="flex-1">
+                      <label for="confirm_password"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New
+                        Password</label>
+                      <input type="password" id="confirm_password" name="confirm_password"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        required>
+                    </div>
+                  </div>
+                  <button type="submit"
+                    class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Update
+                    Password</button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Admin List Card -->
+            <div
+              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin List</h3>
+              <div
+                class="overflow-x-auto overflow-y-auto max-h-[300px] relative rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
+                <table class="data-table w-full text-left border-collapse">
+                  <thead class="sticky top-0 bg-gray-50 dark:bg-gray-700/50 z-10 shadow-sm">
+                    <tr class="border-b border-gray-200 dark:border-gray-700">
+                      <th
+                        class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">
+                        Username</th>
+                      <th
+                        class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">
+                        Full Name</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                    {% for a in admins_list %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <td class="p-4 text-sm text-gray-600 dark:text-gray-300 font-medium">{{ a.admin_name }}</td>
+                      <td class="p-4 text-sm text-gray-600 dark:text-gray-300">{% if a.full_name %}{{ a.full_name }}{%
+                        else %}<span class="text-gray-400 italic">No name set</span>{% endif %}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="2" class="p-4 text-center text-gray-500">No admins found.</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Programs Tab Content -->
+        <div id="programs" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Program Management</h3>
+              <button
+                class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200"
+                onclick="showCreateProgram()">
+                <i class="fas fa-plus"></i> Create New Program
+              </button>
+            </div>
+
+            <div id="createProgramForm"
+              class="program-form-wrapper bg-gray-50 dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 mb-8 max-w-3xl"
+              style="display: none;">
+              <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-200">New Program Details</h4>
+                <button type="button" class="text-gray-500 hover:text-gray-800 dark:hover:text-white"
+                  onclick="hideCreateProgram()"><i class="fas fa-times text-xl"></i></button>
+              </div>
+              <form class="program-form space-y-4" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label for="p_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program
+                    Name</label>
+                  <input id="p_name" name="program_name" type="text"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                    required>
+                </div>
+
+                <div class="form-group">
+                  <label for="p_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program
+                    Type</label>
+                  <select id="p_type" name="program_type"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700"
+                    required>
+                    <option value="Financial Assistance">Financial Assistance</option>
+                    <option value="Scholarship">Scholarship</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="p_req"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+                  <textarea id="p_req" name="requirements" rows="3"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+                </div>
+
+                <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="p_start" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start
+                      Date</label>
+                    <input id="p_start" name="application_start_date" type="date"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                      required>
+                  </div>
+                  <div>
+                    <label for="p_end" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End
+                      Date</label>
+                    <input id="p_end" name="application_end_date" type="date"
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                      required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="p_img"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image</label>
+                  <input id="p_img" name="program_image" type="file" accept="image/*"
+                    class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
+                </div>
+
+                <div class="form-actions pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                  <button type="button"
+                    class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition duration-300 border border-gray-300 dark:border-gray-600"
+                    onclick="hideCreateProgram()">Cancel</button>
+                  <button type="submit"
+                    class="btn btn-primary bg-brand-primary text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create
+                    Program</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="programs-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Programs will load here -->
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content animate-fade-in">
+          <div
+            class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <div class="card-header flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
+            </div>
+
+            <div class="report-filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
+              <div class="form-group w-full mb-0">
+                <label for="report-type"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Report Type</label>
+                <select id="report-type"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                  onchange="toggleReportFilters()">
+                  <option value="students">Students</option>
+                  <option value="applications">Program Applications</option>
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="p_req" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
-                <textarea id="p_req" name="requirements" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+              <div class="form-group w-full mb-0">
+                <label for="report-start-date"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
+                <input type="date" id="report-start-date"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
               </div>
 
-              <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label for="p_start" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-                  <input id="p_start" name="application_start_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                </div>
-                <div>
-                  <label for="p_end" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-                  <input id="p_end" name="application_end_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
-                </div>
+              <div class="form-group w-full mb-0">
+                <label for="report-end-date"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
+                <input type="date" id="report-end-date"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
               </div>
 
-              <div class="form-group">
-                <label for="p_img" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image</label>
-                <input id="p_img" name="program_image" type="file" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
+              <div class="form-group w-full mb-0">
+                <label for="report-status"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
+                <select id="report-status"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                  <option value="all">All Statuses</option>
+                  <option value="active">Active</option>
+                  <option value="pending">Pending</option>
+                  <option value="rejected">Rejected</option>
+                  <option value="submitted">Submitted (Applications Only)</option>
+                  <option value="approved">Approved (Applications Only)</option>
+                </select>
               </div>
 
-              <div class="form-actions pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-                <button type="button" class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="hideCreateProgram()">Cancel</button>
-                <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create Program</button>
+              <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
+                <label for="report-program"
+                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program</label>
+                <select id="report-program"
+                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                  <option value="all">All Programs</option>
+                  {% for program in programs %}
+                  <option value="{{ program.program_id }}">{{ program.program_name }}</option>
+                  {% endfor %}
+                </select>
               </div>
-            </form>
-          </div>
 
-          <div class="programs-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Programs will load here -->
+              <div class="form-actions w-full flex flex-wrap gap-2 lg:col-span-auto" style="margin-bottom: 0;">
+                <button
+                  class="btn btn-primary bg-brand-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto"
+                  onclick="generateReport()">Generate</button>
+                <button
+                  class="btn btn-success bg-green-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex-1 md:flex-none"
+                  onclick="exportReport('csv')">CSV</button>
+                <button
+                  class="btn btn-info bg-cyan-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex-1 md:flex-none"
+                  onclick="exportReport('word')">Word</button>
+              </div>
+            </div>
+
+            <div class="report-results overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700 mt-6">
+              <table class="data-table w-full text-left border-collapse" id="report-table" style="display: none;">
+                <thead>
+                  <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
+                    <!-- Headers will be populated by JS -->
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
+                  <!-- Data will be populated by JS -->
+                </tbody>
+              </table>
+              <p id="no-data-message" class="text-center text-gray-500 dark:text-gray-400 py-8" style="display: none;">
+                No data found for the selected criteria.</p>
+            </div>
           </div>
         </div>
-      </div>
-
-
-      <!-- Reports Tab -->
-      <div id="reports" class="tab-content animate-fade-in">
-        <div class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-          <div class="card-header flex justify-between items-center mb-6">
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
-          </div>
-
-          <div class="report-filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
-            <div class="form-group w-full mb-0">
-              <label for="report-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Report Type</label>
-              <select id="report-type" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" onchange="toggleReportFilters()">
-                <option value="students">Students</option>
-                <option value="applications">Program Applications</option>
-              </select>
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-start-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-              <input type="date" id="report-start-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-end-date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-              <input type="date" id="report-end-date" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-            </div>
-
-            <div class="form-group w-full mb-0">
-              <label for="report-status" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-              <select id="report-status" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-                <option value="submitted">Submitted (Applications Only)</option>
-                <option value="approved">Approved (Applications Only)</option>
-              </select>
-            </div>
-
-            <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
-              <label for="report-program" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program</label>
-              <select id="report-program" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                <option value="all">All Programs</option>
-                {% for program in programs %}
-                <option value="{{ program.program_id }}">{{ program.program_name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="form-actions w-full flex flex-wrap gap-2 lg:col-span-auto" style="margin-bottom: 0;">
-              <button class="btn btn-primary bg-brand-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto" onclick="generateReport()">Generate</button>
-              <button class="btn btn-success bg-green-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('csv')">CSV</button>
-              <button class="btn btn-info bg-cyan-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex-1 md:flex-none" onclick="exportReport('word')">Word</button>
-            </div>
-          </div>
-
-          <div class="report-results overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-700 mt-6">
-            <table class="data-table w-full text-left border-collapse" id="report-table" style="display: none;">
-              <thead>
-                <tr class="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
-                  <!-- Headers will be populated by JS -->
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                <!-- Data will be populated by JS -->
-              </tbody>
-            </table>
-            <p id="no-data-message" class="text-center text-gray-500 dark:text-gray-400 py-8" style="display: none;">No data found for the selected criteria.</p>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
   <!-- Admin Reply Modal -->
-  <div id="admin-reply-modal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
-    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto relative">
-      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+  <div id="admin-reply-modal" class="modal"
+    style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div
+      class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto relative">
+      <div
+        class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white m-0">Reply to Ticket</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer transition-colors" onclick="closeAdminReplyModal()">&times;</span>
+        <span
+          class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer transition-colors"
+          onclick="closeAdminReplyModal()">&times;</span>
       </div>
-      
+
       <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg mb-6 border border-gray-100 dark:border-gray-700">
         <div class="flex gap-4 items-start">
-          <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg flex-shrink-0" id="admin-reply-avatar">S</div>
+          <div
+            class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-lg flex-shrink-0"
+            id="admin-reply-avatar">S</div>
           <div class="flex-1 min-w-0">
             <div class="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-              <strong class="text-gray-900 dark:text-white font-semibold truncate" id="admin-reply-sender">Student Name</strong>
+              <strong class="text-gray-900 dark:text-white font-semibold truncate" id="admin-reply-sender">Student
+                Name</strong>
               <small class="text-gray-500 dark:text-gray-400 text-xs" id="admin-reply-date">Date Time</small>
             </div>
-            <strong class="text-gray-700 dark:text-gray-200 block mb-2 text-sm" id="admin-reply-subject">Subject</strong>
-            <p class="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap leading-relaxed m-0" id="admin-reply-body">Message body...</p>
+            <strong class="text-gray-700 dark:text-gray-200 block mb-2 text-sm"
+              id="admin-reply-subject">Subject</strong>
+            <p class="text-gray-600 dark:text-gray-300 text-sm whitespace-pre-wrap leading-relaxed m-0"
+              id="admin-reply-body">Message body...</p>
           </div>
         </div>
       </div>
-      
+
       <form id="admin-reply-form" onsubmit="handleAdminReplySubmit(event)">
         <input type="hidden" id="admin-reply-student-id">
         <div id="admin-reply-msg" style="display: none;" class="mb-4 p-3 rounded-lg text-sm font-medium"></div>
-        
+
         <div class="form-group mb-6">
           <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Your Reply</label>
-          <textarea id="admin-reply-text" rows="5" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm resize-y" required placeholder="Type your reply here..."></textarea>
+          <textarea id="admin-reply-text" rows="5"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm resize-y"
+            required placeholder="Type your reply here..."></textarea>
         </div>
-        
+
         <div class="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <button type="button" class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closeAdminReplyModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200 flex items-center gap-2" id="adminReplyBtn">
-             <i class="fas fa-paper-plane"></i> Send Reply
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeAdminReplyModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200 flex items-center gap-2"
+            id="adminReplyBtn">
+            <i class="fas fa-paper-plane"></i> Send Reply
           </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Announcement Modal -->
+  <div id="announcement-modal" class="modal"
+    style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div
+      class="modal-content !max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="announcement-modal-title">Create New
+          Announcement</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeAnnouncementModal()">&times;</span>
+      </div>
+      <form id="announcement-form" class="space-y-4" enctype="multipart/form-data">
+        <input type="hidden" id="announcement-id" name="announcement_id">
+        <div class="form-group">
+          <label for="announcement-title"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title:</label>
+          <input type="text" id="announcement-title" name="title"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="announcement-content"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Content:</label>
+          <textarea id="announcement-content" name="content" rows="4"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="announcement-image"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Image:</label>
+          <input type="file" id="announcement-image" name="image" accept="image/*"
+            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 text-sm">
+          <div id="announcement-image-preview" class="mt-2 hidden">
+            <img src="" alt="Preview" class="h-20 w-auto rounded border">
+          </div>
+        </div>
+        <div class="form-group flex items-center gap-2 mt-2">
+          <input type="checkbox" id="announcement-active" name="is_active"
+            class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:focus:ring-brand-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            checked>
+          <label for="announcement-active" class="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
+        </div>
+        <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeAnnouncementModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save
+            Announcement</button>
         </div>
       </form>
     </div>
@@ -679,23 +947,33 @@
   <!-- Popup Modal -->
   <div id="popup-modal" class="modal" style="display: none;">
     <div class="modal-content !max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
-      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="modal-title">Create New Popup</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closePopupModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closePopupModal()">&times;</span>
       </div>
       <form id="popup-form" class="space-y-4">
         <input type="hidden" id="popup-id" name="popup_id">
         <div class="form-group">
-          <label for="popup-title" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title:</label>
-          <input type="text" id="popup-title" name="title" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+          <label for="popup-title"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title:</label>
+          <input type="text" id="popup-title" name="title"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
         </div>
         <div class="form-group">
-          <label for="popup-message" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Message:</label>
-          <textarea id="popup-message" name="message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required></textarea>
+          <label for="popup-message"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Message:</label>
+          <textarea id="popup-message" name="message" rows="4"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required></textarea>
         </div>
         <div class="form-group">
-          <label for="popup-type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Type:</label>
-          <select id="popup-type" name="popup_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+          <label for="popup-type"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Type:</label>
+          <select id="popup-type" name="popup_type"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             <option value="info">Information</option>
             <option value="warning">Warning</option>
             <option value="success">Success</option>
@@ -703,16 +981,24 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="popup-expires" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Expires At (optional):</label>
-          <input type="datetime-local" id="popup-expires" name="expires_at" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm block">
+          <label for="popup-expires" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Expires
+            At (optional):</label>
+          <input type="datetime-local" id="popup-expires" name="expires_at"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm block">
         </div>
         <div class="form-group flex items-center gap-2 mt-2">
-          <input type="checkbox" id="popup-active" name="is_active" class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:focus:ring-brand-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" checked>
+          <input type="checkbox" id="popup-active" name="is_active"
+            class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:focus:ring-brand-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            checked>
           <label for="popup-active" class="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
         </div>
         <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
-          <button type="button" class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closePopupModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save Popup</button>
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closePopupModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save
+            Popup</button>
         </div>
       </form>
     </div>
@@ -723,7 +1009,7 @@
       event.stopPropagation();
       const dropdown = document.getElementById('profile-dropdown');
       const chevron = document.getElementById('profile-chevron');
-      if(dropdown && chevron) {
+      if (dropdown && chevron) {
         dropdown.classList.toggle('hidden');
         dropdown.classList.toggle('flex');
         chevron.classList.toggle('rotate-180');
@@ -808,6 +1094,8 @@
             loadPrograms();
           } else if (targetId === 'students') {
             loadStudents();
+          } else if (targetId === 'announcements') {
+            loadAnnouncements();
           }
         });
       });
@@ -1097,7 +1385,7 @@
 
     function createAdmin(event) {
       event.preventDefault();
-      
+
       const new_admin_username = document.getElementById('new_admin_username').value;
       const new_admin_fullname = document.getElementById('new_admin_fullname').value;
       const new_admin_password = document.getElementById('new_admin_password').value;
@@ -1126,23 +1414,23 @@
           confirm_password: new_admin_confirm_password
         })
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('Admin created successfully!');
-          window.location.reload();
-        } else {
-          alert('Error: ' + data.error);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred during admin creation.');
-      })
-      .finally(() => {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-      });
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Admin created successfully!');
+            window.location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred during admin creation.');
+        })
+        .finally(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        });
     }
 
     function changeAdminPassword(event) {
@@ -1466,13 +1754,13 @@
     function createApplicationElement(application) {
       const div = document.createElement('div');
       div.className = `application-item application-${application.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
-      
+
       const statusColors = {
         'approved': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
         'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
         'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
       };
-      
+
       const statusClass = statusColors[application.status.toLowerCase()] || statusColors['pending'];
 
       div.innerHTML = `
@@ -1595,22 +1883,22 @@
       const select = document.getElementById('admin-logs-sort');
       const table = document.getElementById('adminLogsTable');
       if (!select || !table) return;
-      
+
       const tbody = table.querySelector('tbody');
       // Get all valid rows (skip the empty placeholder row if it has the "No admin logs" text)
       const rows = Array.from(tbody.querySelectorAll('tr')).filter(row => row.cells.length === 3 && row.cells[0].colSpan !== 3);
-      
+
       if (rows.length === 0) return;
-      
+
       const sortValue = select.value;
-      
+
       rows.sort((a, b) => {
         if (sortValue === 'newest' || sortValue === 'oldest') {
           // Parse dates from the first cell
           // Cell content looks like: "Feb 21, 2026 \n 15:25"
           const dateA = new Date(a.cells[0].innerText.replace('\n', ' '));
           const dateB = new Date(b.cells[0].innerText.replace('\n', ' '));
-          
+
           if (sortValue === 'newest') return dateB - dateA;
           if (sortValue === 'oldest') return dateA - dateB;
         } else if (sortValue === 'admin_asc') {
@@ -1623,7 +1911,7 @@
           return textA.localeCompare(textB);
         }
       });
-      
+
       // Re-append rows in sorted order
       rows.forEach(row => tbody.appendChild(row));
     }
@@ -1668,14 +1956,14 @@
     function createProgramApplicationElement(application) {
       const div = document.createElement('div');
       div.className = `application-item application-${application.requirement_status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
-      
+
       const statusColors = {
         'approved': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
         'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
         'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200',
         'submitted': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border-blue-200',
       };
-      
+
       const statusClass = statusColors[application.requirement_status.toLowerCase()] || statusColors['pending'];
 
       div.innerHTML = `
@@ -2130,7 +2418,8 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3>Inbox & Support Tickets</h3>
         <div style="display: flex; gap: 10px;">
-          <select id="inbox-filter" onchange="filterAdminMessages()" style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: 'Roboto', sans-serif;">
+          <select id="inbox-filter" onchange="filterAdminMessages()"
+            style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: 'Roboto', sans-serif;">
             <option value="all">All Messages</option>
             <option value="unread">Unread Only</option>
           </select>
@@ -2150,17 +2439,19 @@
           </thead>
           <tbody id="admin-inbox-list">
             <!-- Messages will be injected here -->
-            <tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>
+            <tr>
+              <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td>
+            </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-</div>
-<!-- End of Main Content -->
+  </div>
+  <!-- End of Main Content -->
 
-<!-- Removed duplicate admin-reply-modal and popup-modal -->
+  <!-- Removed duplicate admin-reply-modal and popup-modal -->
   <script>
     // Popup Management Functions
     function loadPopups() {
@@ -2327,14 +2618,14 @@
 
       const isActive = student.status === 'active';
       const isInactive = student.status === 'inactive';
-      
+
       const statusColors = {
         'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
         'inactive': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200',
         'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
         'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
       };
-      
+
       const statusClass = statusColors[student.status.toLowerCase()] || statusColors['pending'];
 
       div.innerHTML = `
@@ -2383,15 +2674,15 @@
       const filter = document.getElementById('inbox-filter').value;
       const list = document.getElementById('admin-inbox-list');
       list.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td></tr>';
-      
+
       try {
         const res = await fetch('/api/messages/');
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           adminMessages = data.messages;
           let filteredMessages = adminMessages;
-          
+
           if (filter === 'unread') {
             filteredMessages = adminMessages.filter(m => !m.is_read && m.sender_type === 'student');
           }
@@ -2409,20 +2700,20 @@
           filteredMessages.forEach(msg => {
             const dateStr = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const isUnread = !msg.is_read && msg.sender_type === 'student';
-            const statusBadge = isUnread 
+            const statusBadge = isUnread
               ? `<span style="background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: bold;">New</span>`
               : `<span style="background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: bold;">Read</span>`;
-            
+
             const tr = document.createElement('tr');
             tr.style.cursor = 'pointer';
             tr.style.borderBottom = '1px solid #f1f5f9';
             tr.onmouseover = () => tr.style.backgroundColor = '#f8fafc';
             tr.onmouseout = () => tr.style.backgroundColor = 'transparent';
-            
+
             // Note: student_name is used here, but they are all technically "sender" or "target" based on type
             const studentNameDisplay = msg.sender_type === 'student' ? msg.sender_name : msg.target_student_name;
-            const directionIcon = msg.sender_type === 'admin' 
-              ? '<i class="fas fa-reply" style="color: #64748b; margin-right: 5px;" title="Replied"></i>' 
+            const directionIcon = msg.sender_type === 'admin'
+              ? '<i class="fas fa-reply" style="color: #64748b; margin-right: 5px;" title="Replied"></i>'
               : '';
 
             tr.innerHTML = `
@@ -2454,14 +2745,14 @@
       if (!msg) return;
 
       const studentName = msg.sender_type === 'student' ? msg.sender_name : msg.target_student_name;
-      
+
       document.getElementById('admin-reply-subject').textContent = msg.subject;
       document.getElementById('admin-reply-sender').textContent = studentName;
       document.getElementById('admin-reply-avatar').textContent = studentName.charAt(0).toUpperCase();
       document.getElementById('admin-reply-date').textContent = new Date(msg.created_at).toLocaleString();
       document.getElementById('admin-reply-body').textContent = msg.body;
       document.getElementById('admin-reply-student-id').value = msg.target_student_id;
-      
+
       document.getElementById('admin-reply-msg').style.display = 'none';
       document.getElementById('admin-reply-text').value = '';
 
@@ -2488,11 +2779,11 @@
 
     async function handleAdminReplySubmit(e) {
       e.preventDefault();
-      
+
       const msgAlert = document.getElementById('admin-reply-msg');
       const submitBtn = document.getElementById('adminReplyBtn');
       msgAlert.style.display = 'none';
-      
+
       const studentId = document.getElementById('admin-reply-student-id').value;
       const originalSubject = document.getElementById('admin-reply-subject').textContent;
       const subject = originalSubject.startsWith('Re: ') ? originalSubject : 'Re: ' + originalSubject;
@@ -2512,14 +2803,14 @@
           credentials: 'same-origin'
         });
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           msgAlert.textContent = 'Reply sent successfully!';
           msgAlert.style.display = 'block';
           msgAlert.style.backgroundColor = '#d1fae5';
           msgAlert.style.color = '#065f46';
           msgAlert.style.border = '1px solid #34d399';
-          
+
           setTimeout(() => {
             closeAdminReplyModal();
             loadAdminMessages(); // Refresh inbox list
@@ -2547,15 +2838,15 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Setup tabs
       document.querySelectorAll('.nav-link, .nav-item').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
           // Check if this is exactly the inbox tab getting clicked
           if (this.dataset.tab === 'inbox') {
-             loadAdminMessages();
+            loadAdminMessages();
           }
         });
       });
       // Initial load
-      setTimeout(() => loadAdminMessages(), 1000); 
+      setTimeout(() => loadAdminMessages(), 1000);
     });
 
     function toggleStudentStatus(studentId, currentStatus) {
@@ -2645,7 +2936,7 @@
       const typeSelect = document.getElementById('edit_student_type');
       const container = document.getElementById('edit_program_yr_container');
       const input = document.getElementById('edit_student_program');
-      
+
       if (typeSelect.value === 'Undergraduate') {
         container.style.display = 'block';
         input.setAttribute('required', 'required');
@@ -2714,11 +3005,12 @@
       });
     }
   </script>
-      </main>
-    </div>
+  </main>
+  </div>
   </div>
 
-  <footer style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
+  <footer
+    style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
     © 2024 Lander. All rights reserved.
   </footer>
 
@@ -2727,12 +3019,15 @@
   <!-- Application Details Modal -->
   <div id="application-modal" class="modal" style="display: none;">
     <div class="modal-content !max-w-3xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 my-8 relative">
-      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+      <div
+        class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="app-modal-title">Application Details</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeApplicationModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeApplicationModal()">&times;</span>
       </div>
       <div class="modal-body space-y-6">
-        <div class="app-detail-grid grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-100 dark:border-gray-700">
+        <div
+          class="app-detail-grid grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 dark:bg-gray-700/50 p-5 rounded-lg border border-gray-100 dark:border-gray-700">
           <div class="detail-row flex flex-col gap-1">
             <span class="detail-label text-xs font-semibold text-gray-500 uppercase tracking-wider">Student</span>
             <span class="detail-value text-gray-900 dark:text-white font-medium" id="app-modal-student"></span>
@@ -2756,14 +3051,19 @@
         </div>
 
         <div>
-          <h4 class="modal-section-title text-base font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2"><i class="fas fa-file-alt text-brand-primary"></i> Documents</h4>
+          <h4
+            class="modal-section-title text-base font-semibold text-gray-800 dark:text-white mb-3 flex items-center gap-2">
+            <i class="fas fa-file-alt text-brand-primary"></i> Documents
+          </h4>
           <div id="app-modal-document" class="space-y-4"></div>
         </div>
 
 
       </div>
       <div class="modal-footer mt-8 pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end">
-        <button class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300" onclick="closeApplicationModal()">Close</button>
+        <button
+          class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+          onclick="closeApplicationModal()">Close</button>
       </div>
     </div>
   </div>
@@ -2771,20 +3071,29 @@
   <!-- Remarks Modal -->
   <div id="remarks-modal" class="modal" style="display: none;">
     <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
-      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="remarks-modal-title">Application Remarks</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeRemarksModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeRemarksModal()">&times;</span>
       </div>
       <div class="modal-body">
         <form id="remarks-form">
           <div class="form-group mb-6">
-            <label for="remarks-editor" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Remarks / Comments</label>
-            <div id="remarks-editor-container" class="bg-white dark:bg-gray-900 text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg pb-[3rem]"></div>
+            <label for="remarks-editor"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Remarks / Comments</label>
+            <div id="remarks-editor-container"
+              class="bg-white dark:bg-gray-900 text-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg pb-[3rem]">
+            </div>
             <input type="hidden" name="remarks" id="remarks-hidden-input">
           </div>
           <div class="modal-footer flex justify-end gap-3 pt-6 mt-[2rem] border-t border-gray-100 dark:border-gray-700">
-            <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="closeRemarksModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary px-5 py-2.5 rounded-lg font-medium shadow transition-colors duration-200 bg-brand-primary text-white hover:bg-brand-secondary" id="remarks-submit-btn">Submit</button>
+            <button type="button"
+              class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600"
+              onclick="closeRemarksModal()">Cancel</button>
+            <button type="submit"
+              class="btn btn-primary px-5 py-2.5 rounded-lg font-medium shadow transition-colors duration-200 bg-brand-primary text-white hover:bg-brand-secondary"
+              id="remarks-submit-btn">Submit</button>
           </div>
         </form>
       </div>
@@ -2868,23 +3177,32 @@
   </script>
   <!-- Edit Program Modal -->
   <div id="edit-program-modal" class="modal" style="display: none;">
-    <div class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-      <div class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
+    <div
+      class="modal-content !max-w-2xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div
+        class="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-100 dark:border-gray-700">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="edit-program-title">Edit Program</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeEditProgramModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeEditProgramModal()">&times;</span>
       </div>
       <div class="modal-body">
         <form id="edit-program-form" class="space-y-4">
           <input type="hidden" name="program_id" id="edit_program_id">
 
           <div class="form-group">
-            <label for="edit_program_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Name</label>
-            <input type="text" id="edit_program_name" name="program_name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm" required>
+            <label for="edit_program_name"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Name</label>
+            <input type="text" id="edit_program_name" name="program_name"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+              required>
           </div>
 
           <div class="form-group">
-            <label for="edit_program_type" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Type</label>
-            <select id="edit_program_type" name="program_type" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700" required>
+            <label for="edit_program_type"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program Type</label>
+            <select id="edit_program_type" name="program_type"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm bg-white dark:bg-gray-700"
+              required>
               <option value="Financial Assistance">Financial Assistance</option>
               <option value="Scholarship">Scholarship</option>
               <option value="Other">Other</option>
@@ -2892,29 +3210,42 @@
           </div>
 
           <div class="form-group">
-            <label for="edit_requirements" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
-            <textarea id="edit_requirements" name="requirements" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+            <label for="edit_requirements"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
+            <textarea id="edit_requirements" name="requirements" rows="4"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
           </div>
 
           <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label for="edit_application_start_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-              <input id="edit_application_start_date" name="application_start_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+              <label for="edit_application_start_date"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
+              <input id="edit_application_start_date" name="application_start_date" type="date"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             </div>
             <div>
-              <label for="edit_application_end_date" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-              <input id="edit_application_end_date" name="application_end_date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+              <label for="edit_application_end_date"
+                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
+              <input id="edit_application_end_date" name="application_end_date" type="date"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="edit_program_image" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image (Leave empty to keep current)</label>
-            <input type="file" id="edit_program_image" name="program_image" accept="image/*" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
+            <label for="edit_program_image"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Background Image (Leave empty to
+              keep current)</label>
+            <input type="file" id="edit_program_image" name="program_image" accept="image/*"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-secondary">
           </div>
 
           <div class="modal-footer flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
-            <button type="button" class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600" onclick="closeEditProgramModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save Changes</button>
+            <button type="button"
+              class="btn btn-secondary px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300 border border-gray-300 dark:border-gray-600"
+              onclick="closeEditProgramModal()">Cancel</button>
+            <button type="submit"
+              class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save
+              Changes</button>
           </div>
         </form>
       </div>
@@ -3106,6 +3437,163 @@
       </div>
     </div>
   </div>
+  <script>
+    // --- Announcement Management ---
+    function loadAnnouncements() {
+      const listBody = document.getElementById('announcement-list-body');
+      listBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">Loading announcements...</td></tr>';
+
+      fetch('/api/admin/announcements/')
+        .then(response => response.json())
+        .then(data => {
+          if (data.announcements) {
+            renderAnnouncements(data.announcements);
+          } else {
+            listBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-red-500">Error: ${data.error || 'Failed to load'}</td></tr>`;
+          }
+        })
+        .catch(err => {
+          listBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-500">Error fetching data</td></tr>';
+        });
+    }
+
+    function renderAnnouncements(announcements) {
+      const listBody = document.getElementById('announcement-list-body');
+      if (announcements.length === 0) {
+        listBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">No announcements found.</td></tr>';
+        return;
+      }
+
+      listBody.innerHTML = announcements.map(ann => `
+        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+          <td class="p-4">
+            <span class="px-2 py-1 rounded-full text-xs font-bold ${ann.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}">
+              ${ann.is_active ? 'Active' : 'Draft'}
+            </span>
+          </td>
+          <td class="p-4">
+            <div class="flex items-center gap-3">
+              ${ann.image_url ? `<img src="${ann.image_url}" class="w-10 h-10 rounded object-cover shadow-sm">` : `<div class="w-10 h-10 rounded bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-400"><i class="fas fa-bullhorn"></i></div>`}
+              <div>
+                <div class="text-sm font-bold text-gray-900 dark:text-white">${ann.title}</div>
+                <div class="text-xs text-gray-500 truncate max-w-xs">${ann.content}</div>
+              </div>
+            </div>
+          </td>
+          <td class="p-4 text-sm text-gray-500">${ann.created_at}</td>
+          <td class="p-4 text-center">
+            <div class="flex justify-center gap-2">
+              <button onclick="openAnnouncementModal(${ann.id})" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteAnnouncement(${ann.id})" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function openAnnouncementModal(annId = null) {
+      const modal = document.getElementById('announcement-modal');
+      const form = document.getElementById('announcement-form');
+      const titleEl = document.getElementById('announcement-modal-title');
+      const preview = document.getElementById('announcement-image-preview');
+
+      form.reset();
+      preview.classList.add('hidden');
+      document.getElementById('announcement-id').value = '';
+
+      if (annId) {
+        titleEl.textContent = 'Edit Announcement';
+        fetch(`/api/admin/announcements/${annId}/`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.announcement) {
+              const ann = data.announcement;
+              document.getElementById('announcement-id').value = ann.id;
+              document.getElementById('announcement-title').value = ann.title;
+              document.getElementById('announcement-content').value = ann.content;
+              document.getElementById('announcement-active').checked = ann.is_active;
+
+              if (ann.image_url) {
+                preview.querySelector('img').src = ann.image_url;
+                preview.classList.remove('hidden');
+              }
+            }
+          });
+      } else {
+        titleEl.textContent = 'Create New Announcement';
+      }
+
+      modal.style.display = 'flex';
+    }
+
+    function closeAnnouncementModal() {
+      document.getElementById('announcement-modal').style.display = 'none';
+    }
+
+    document.getElementById('announcement-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch('/api/admin/announcements/handle/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken')
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            closeAnnouncementModal();
+            loadAnnouncements();
+            // Optionally refresh dashboard stats if summary counts are added
+          } else {
+            alert('Error saving announcement: ' + data.error);
+          }
+        })
+        .catch(err => {
+          alert('An unexpected error occurred.');
+        });
+    });
+
+    function deleteAnnouncement(annId) {
+      if (!confirm('Are you sure you want to delete this announcement?')) return;
+
+      fetch(`/api/admin/announcements/${annId}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': getCookie('csrftoken'),
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            loadAnnouncements();
+          } else {
+            alert('Error deleting: ' + data.error);
+          }
+        });
+    }
+
+    // Image preview handler
+    document.getElementById('announcement-image').addEventListener('change', function (e) {
+      const preview = document.getElementById('announcement-image-preview');
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (re) {
+          preview.querySelector('img').src = re.target.result;
+          preview.classList.remove('hidden');
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
 </body>
 
 </html>

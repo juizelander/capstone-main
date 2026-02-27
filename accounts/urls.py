@@ -62,4 +62,10 @@ urlpatterns = [
     
     # Chatbot API
     path('api/chatbot/', views.chatbot_response, name='chatbot_response'),
+    
+    # Announcement management endpoints
+    path('api/admin/announcements/', views.get_announcements, name='get_announcements'),
+    path('api/admin/announcements/<int:announcement_id>/', views.get_announcement, name='get_announcement'),
+    path('api/admin/announcements/handle/', views.handle_announcement, name='handle_announcement'),
+    path('api/admin/announcements/<int:announcement_id>/delete/', views.delete_announcement, name='delete_announcement'),
 ]

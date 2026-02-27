@@ -96,3 +96,22 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.admin_name
+
+
+# -------------------------
+# ANNOUNCEMENTS TABLE
+# -------------------------
+class Announcement(models.Model):
+    announcement_id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    image = models.ImageField(upload_to='announcements/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        ordering = ['-created_at']
