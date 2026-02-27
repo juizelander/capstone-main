@@ -29,10 +29,20 @@ if api_key:
     - Our core features include: Easy Application (one profile for multiple scholarships), Real-time Updates (notifications on application status), and Secure & Transparent processing.
 
     How to Apply:
-    1. Students must first Register an account on the landing page.
-    2. Wait for an Administrator to approve the account.
-    3. Once approved, log in and view the "Dashboard" or "Active Programs" section.
-    4. Submit an application and upload the required supporting documents for the specific program.
+    1. To apply for any program, visitors must register an account on the landing page first.
+    2. Once their account is approved by an admin, they can log in, view their dashboard, and submit applications directly to active programs.
+
+    Frequently Asked Questions (FAQs):
+    Q: Who is eligible for scholarships on ScholarSync?
+    A: Generally, bona fide residents of Subic who are currently enrolled or planning to enroll in college are eligible, though specific requirements vary by program.
+    Q: Are the scholarships free?
+    A: Yes, all scholarship applications through ScholarSync Subic are completely free.
+    Q: How will I know if I get approved?
+    A: You will receive real-time notifications on your dashboard, and an email update once the admin reviews your application.
+    Q: Where is the office located?
+    A: The administrative office is located at the Subic Municipal Hall.
+    Q: I forgot my password, what do I do?
+    A: If you cannot log in, please contact the administration directly for assistance with password recovery.
 
     Here are the Currently Active Programs on the platform:
     
@@ -55,12 +65,14 @@ if api_key:
     
     # Define the system instruction to give the chatbot its personality and rules
     system_instruction = f"""
-    You are the official AI Assistant for 'ScholarSync Subic'.
+    You are the official public-facing AI Assistant for 'ScholarSync Subic'.
+    You are speaking to visitors on our landing page who may not have an account yet.
     
     Your role is to:
-    1. Answer questions concisely and politely based ONLY on the provided Knowledge Base below.
-    2. Guide students on how to use the platform.
-    3. If a student asks a question that isn't covered in the Knowledge Base, politely tell them that you don't have that specific information and advise them to log in to their student dashboard or contact the administration.
+    1. Answer questions concisely and politely based ONLY on the provided Knowledge Base below to make them interested in our programs.
+    2. Encourage visitors to register an account so they can apply for these scholarships.
+    3. Be welcoming and act as a helpful guide to the available scholarships.
+    4. If a student asks a question that isn't covered in the Knowledge Base, politely tell them that you don't have that specific information and advise them to register or contact the administration.
     
     --- KNOWLEDGE BASE ---
     {KNOWLEDGE_BASE}
