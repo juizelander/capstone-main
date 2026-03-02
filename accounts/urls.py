@@ -70,6 +70,13 @@ urlpatterns = [
     
     # Student Voucher and Admin Receipt
     path('student/voucher/<int:application_id>/', views.student_voucher_view, name='student_voucher'),
-    path('admin-receipt/<int:application_id>/', views.admin_receipt_view, name='admin_receipt'),
-    path('api/admin/students/<int:student_id>/documents/', views.admin_get_student_documents, name='admin_get_student_documents'),
+    
+    # Chatbot API
+    path('api/chatbot/', views.chatbot_response, name='chatbot_response'),
+    
+    # Announcement management endpoints
+    path('api/admin/announcements/', views.get_announcements, name='get_announcements'),
+    path('api/admin/announcements/<int:announcement_id>/', views.get_announcement, name='get_announcement'),
+    path('api/admin/announcements/handle/', views.handle_announcement, name='handle_announcement'),
+    path('api/admin/announcements/<int:announcement_id>/delete/', views.delete_announcement, name='delete_announcement'),
 ]
