@@ -14,8 +14,8 @@ from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
 from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument, Message, AdminLog
-from django.db import models
 from home.models import Program, Application
+from capstone.chatbot import validate_document
 from django.http import HttpResponse
 import csv
 import os
@@ -120,6 +120,15 @@ def register_view(request):
         sex = request.POST.get('sex')
         current_school = request.POST.get('current_school')
         documents = request.FILES.getlist('document')
+        
+        # AI Document Pre-Screening
+        for i, doc in enumerate(documents):
+            # Check if it's an image (Gemini Vision needs images)
+            if doc.content_type.startswith('image/'):
+                validation = validate_document(doc, "Document")
+                if not validation['is_valid']:
+                    messages.error(request, f"Document #{i+1} rejected: {validation['reason']}")
+                    return render(request, 'accounts/register.html')
         
         if student_type != 'Undergraduate':
             program_and_yr = None
@@ -275,6 +284,17 @@ def create_student_application(request):
 
         # Handle multiple supporting documents (new uploads)
         documents = request.FILES.getlist('supporting_docs')
+        
+        # AI Document Pre-Screening
+        for i, doc in enumerate(documents):
+            if doc.content_type.startswith('image/'):
+                validation = validate_document(doc, "Supporting Document")
+                if not validation['is_valid']:
+                    return JsonResponse({
+                        'success': False, 
+                        'error': f"Supporting Document #{i+1} rejected: {validation['reason']}"
+                    }, status=400)
+        
         for doc in documents:
             ApplicationDocument.objects.create(application=app, file=doc)
 
@@ -2210,7 +2230,16 @@ def upload_student_document(request):
         
         if not document_name or not file:
              return JsonResponse({'success': False, 'error': 'Document name and file are required'}, status=400)
-             
+
+        # AI Document Pre-Screening
+        if file.content_type.startswith('image/'):
+            validation = validate_document(file, document_name)
+            if not validation['is_valid']:
+                return JsonResponse({
+                    'success': False, 
+                    'error': f"AI Pre-Screening failed: {validation['reason']}"
+                }, status=400)
+        
         doc = StudentDocument.objects.create(
             student=student,
             document_name=document_name,
@@ -2408,3 +2437,68 @@ def delete_announcement(request, announcement_id):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
+
+def admin_analytics_data(request):
+    """Serve JSON data for dashboard analytics and GIS mapping."""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+
+    try:
+        from django.db.models import Count
+        from django.db.models.functions import TruncMonth
+        from .models import Student
+        from home.models import Program, Application
+
+        # 1. Barangay Distribution
+        barangay_stats = list(Student.objects.values('barangay').annotate(count=Count('student_id')).order_by('-count'))
+        
+        # 2. Status Distribution
+        status_stats = list(Student.objects.values('status').annotate(count=Count('student_id')).order_by('-count'))
+        
+        # 3. Program Distribution (Applications)
+        program_stats = list(Application.objects.values('program__program_name').annotate(count=Count('app_id')).order_by('-count'))
+        
+        # 4. Registration Trend (Last 12 Months)
+        # Handle cases where created_at might be null temporarily
+        trend_data = list(Student.objects.exclude(created_at__isnull=True)
+                         .annotate(month=TruncMonth('created_at'))
+                         .values('month')
+                         .annotate(count=Count('student_id'))
+                         .order_by('month'))
+        
+        # Convert datetime objects to string for JSON serialization
+        for item in trend_data:
+            if item['month']:
+                item['month'] = item['month'].strftime('%Y-%m')
+
+        # 5. Barangay Coordinate Mapping (for GIS)
+        barangay_coords = {
+            'Aningway-Sacatihan': [14.9213, 120.2456],
+            'Asinan (Poblacion)': [14.8817, 120.2311],
+            'Asinan Proper': [14.8845, 120.2280],
+            'Baraca-Camachile (Poblacion)': [14.8800, 120.2350],
+            'Batiawan': [14.9500, 120.2100],
+            'Calapacuan': [14.8690, 120.2460],
+            'Calapandayan (Poblacion)': [14.8750, 120.2380],
+            'Cawag': [14.8988, 120.1982],
+            'Ilwas (Poblacion)': [14.8860, 120.2250],
+            'Mangan-Vaca': [14.8880, 120.2450],
+            'Matain': [14.8600, 120.2600],
+            'Naugsol': [14.9100, 120.2100],
+            'Pamatawan': [14.9050, 120.2550],
+            'San Isidro': [14.8950, 120.2650],
+            'Santo Tomas': [14.9350, 120.2350],
+            'Wawandue (Poblacion)': [14.8780, 120.2280],
+        }
+
+        return JsonResponse({
+            'success': True,
+            'barangay_stats': barangay_stats,
+            'status_stats': status_stats,
+            'program_stats': program_stats,
+            'trend_data': trend_data,
+            'barangay_coords': barangay_coords
+        })
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

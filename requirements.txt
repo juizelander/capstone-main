@@ -65,3 +65,4 @@ websockets==15.0.1
 whitenoise==6.11.0
 dj3-cloudinary-storage==0.0.6
 cloudinary==1.36.0
+google-generativeai

@@ -1,6 +1,9 @@
 import os
 import google.generativeai as genai
 from django.conf import settings
+from PIL import Image
+import io
+import json
 
 # Initialize the Gemini API client
 # We try to get the API key from Django settings, or fallback to environment variables
@@ -43,6 +46,16 @@ if api_key:
     A: The administrative office is located at the Subic Municipal Hall.
     Q: I forgot my password, what do I do?
     A: If you cannot log in, please contact the administration directly for assistance with password recovery.
+    Q: Can I apply for more than one scholarship?
+    A: Yes! You can apply for as many active programs as you are eligible for using your single student profile.
+    Q: What if my documents are incomplete?
+    A: Your application will remain in a 'Pending' or 'Incomplete' status. Our admins will notify you via the dashboard or email about what is missing.
+    Q: How do I track my application status?
+    A: Just log in to your Student Dashboard. You'll see the status of every program you've applied for in real-time.
+    Q: Is there an age limit for the scholarships?
+    A: Every program has different rules. Most are for college students, but please check the specific 'View Details' section for each scholarship once you register.
+    Q: Can I use ScholarSync on my phone?
+    A: Yes! Our website is fully mobile-responsive, so you can apply and check updates anywhere using your smartphone.
 
     Here are the Currently Active Programs on the platform:
     
@@ -68,6 +81,10 @@ if api_key:
     You are the official public-facing AI Assistant for 'ScholarSync Subic'.
     You are speaking to visitors on our landing page who may not have an account yet.
     
+    LANGUAGE SUPPORT:
+    - You must be able to understand and respond in English, Tagalog, and Taglish (a mix of both).
+    - Always respond using the same language the user is using. If they ask in Tagalog, answer in Tagalog. If they use Taglish, you may use Taglish to be more relatable.
+    
     Your role is to:
     1. Answer questions concisely and politely based ONLY on the provided Knowledge Base below to make them interested in our programs.
     2. Encourage visitors to register an account so they can apply for these scholarships.
@@ -79,7 +96,7 @@ if api_key:
     """
 
     model = genai.GenerativeModel(
-        model_name="gemini-2.5-flash",
+        model_name="gemini-flash-latest",
         generation_config=generation_config,
         system_instruction=system_instruction
     )
@@ -105,3 +122,56 @@ def get_chatbot_response(user_message):
     except Exception as e:
         print(f"Gemini API Error: {str(e)}")
         return "I'm having a little trouble connecting right now. Please try again later!"
+
+def validate_document(file_obj, expected_type="Document"):
+    """
+    Uses Gemini Vision to validate the quality and type of an uploaded document.
+    Returns a dictionary: {'is_valid': bool, 'reason': str}
+    """
+    if not api_key or not model:
+        # Fallback if API is not configured
+        return {'is_valid': True, 'reason': 'AI validation skipped (not configured)'}
+
+    try:
+        # Open the image using PIL
+        img = Image.open(file_obj)
+        
+        # Determine the prompt based on expected type
+        prompt = f"""
+        Analyze this uploaded image for a scholarship application.
+        The student says this is a: {expected_type}.
+        
+        Your task:
+        1. Check if the image is clear, readable, and not overly blurry.
+        2. Verify if the content of the image matches a '{expected_type}' (e.g., Birth Certificate, Transcript of Records, Voter's Certificate, or School ID).
+        3. If it looks like a completely different document (e.g., a selfie, a landscape, or a random object), mark it as invalid.
+        
+        Respond ONLY in a strict JSON format:
+        {{
+            "is_valid": true/false,
+            "reason": "A brief explanation in English or Taglish if it is invalid (e.g., 'The image is too blurry' or 'This does not look like a Birth Certificate')"
+        }}
+        """
+        
+        # Use the same model but with the vision prompt
+        # Note: gemini-flash-latest supports multimodal input
+        response = model.generate_content([prompt, img])
+        
+        # Clean up the response text (sometimes Gemini adds ```json ... ```)
+        cleaned_text = response.text.strip()
+        if '```json' in cleaned_text:
+            cleaned_text = cleaned_text.split('```json')[1].split('```')[0].strip()
+        elif '```' in cleaned_text:
+            cleaned_text = cleaned_text.split('```')[1].strip()
+            
+        result = json.loads(cleaned_text)
+        return {
+            'is_valid': result.get('is_valid', True),
+            'reason': result.get('reason', 'Document accepted.')
+        }
+        
+    except Exception as e:
+        print(f"AI Document Validation Error: {str(e)}")
+        # If AI fails for technical reasons, we fallback to manual review (True) 
+        # to not block students completely, but log the error.
+        return {'is_valid': True, 'reason': 'AI validation unavailable, pending manual review.'}

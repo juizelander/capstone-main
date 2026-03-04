@@ -79,4 +79,7 @@ urlpatterns = [
     path('api/admin/announcements/<int:announcement_id>/', views.get_announcement, name='get_announcement'),
     path('api/admin/announcements/handle/', views.handle_announcement, name='handle_announcement'),
     path('api/admin/announcements/<int:announcement_id>/delete/', views.delete_announcement, name='delete_announcement'),
+    
+    # Advanced Analytics & GIS
+    path('api/admin/analytics/data/', views.admin_analytics_data, name='admin_analytics_data'),
 ]

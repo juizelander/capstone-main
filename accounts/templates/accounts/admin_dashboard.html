@@ -16,6 +16,36 @@
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
+  <!-- Leaflet GIS Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    #barangay-map {
+      height: 500px;
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      z-index: 10;
+    }
+
+    .map-legend {
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      line-height: 1.5;
+    }
+
+    .map-legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+      border-radius: 2px;
+    }
+  </style>
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -350,6 +380,67 @@
             </div>
           </div>
 
+          <!-- Advanced Analytics & GIS Section (Embedded) -->
+          <div class="mt-12 mb-8 animate-slide-up">
+              <div class="flex items-center gap-3 mb-6">
+                  <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+                      <i class="fas fa-chart-pie text-xl"></i>
+                  </div>
+                  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Scholarship Insights & GIS Distribution</h2>
+              </div>
+              
+              <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+                  <!-- GIS Map Card -->
+                  <div class="xl:col-span-2 card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                      <div class="flex justify-between items-center mb-4">
+                          <h3 class="font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                              <i class="fas fa-map-marked-alt text-brand-primary"></i> 
+                              Applicant Geographic Distribution (Subic)
+                          </h3>
+                          <span class="text-xs text-gray-400">Real-time heat map by Barangay</span>
+                      </div>
+                      <div id="barangay-map" style="height: 500px; width: 100%; border-radius: 12px; z-index: 1;"></div>
+                  </div>
+  
+                  <!-- Secondary Stats Column -->
+                  <div class="flex flex-col gap-6">
+                      <!-- Barangay Table/List Card -->
+                      <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex-1 overflow-hidden flex flex-col">
+                          <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                              <i class="fas fa-list-ol text-brand-secondary"></i> Top Barangays
+                          </h3>
+                          <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 420px;">
+                              <div class="flex justify-center items-center h-40 text-gray-400">
+                                  <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading data...
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+  
+              <!-- Analytics Charts Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Program Popularity -->
+                  <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                      <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                          <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
+                      </h3>
+                      <div style="height: 300px;">
+                          <canvas id="programStatsChart"></canvas>
+                      </div>
+                  </div>
+  
+                  <!-- Registration Trends -->
+                  <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                      <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                          <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
+                      </h3>
+                      <div style="height: 300px;">
+                          <canvas id="registrationTrendChart"></canvas>
+                      </div>
+                  </div>
+              </div>
+          </div>
         </div>
 
         <!-- Student Account Registration Tab -->
@@ -1535,6 +1626,9 @@
           updateBadge('badge-applications', data.pending_program_applications);
           updateBadge('badge-notifications', data.active_popups);
           updateBadge('badge-inbox', data.unread_messages);
+
+          // Load secondary analytics
+          loadAnalyticsData();
         })
         .catch(error => {
           console.error('Error loading stats:', error);
@@ -1556,6 +1650,144 @@
     // Chart functionality
     let applicationsChart = null;
     let studentChart = null;
+    let programStatsChartObj = null;
+    let registrationTrendChartObj = null;
+    let gisMap = null;
+    let mapMarkers = [];
+
+    function loadAnalyticsData() {
+        console.log('Fetching analytics and GIS data...');
+        fetch('/api/admin/analytics/data/', { credentials: 'same-origin' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    renderGisMap(data.barangay_coords, data.barangay_stats);
+                    renderAnalyticsCharts(data.program_stats, data.trend_data);
+                    renderBarangayList(data.barangay_stats);
+                }
+            })
+            .catch(err => console.error('Analytics Error:', err));
+    }
+
+    function renderGisMap(coords, stats) {
+        if (!gisMap) {
+            // Initialize map centered on Subic
+            gisMap = L.map('barangay-map').setView([14.8872, 120.2442], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(gisMap);
+        }
+
+        // Clear old markers
+        mapMarkers.forEach(m => gisMap.removeLayer(m));
+        mapMarkers = [];
+
+        // Add markers based on stats
+        stats.forEach(stat => {
+            const pos = coords[stat.barangay];
+            if (pos) {
+                const radius = Math.min(Math.max(stat.count * 5, 10), 50); // Scale radius
+                const marker = L.circleMarker(pos, {
+                    radius: radius,
+                    fillColor: "#10B981",
+                    color: "#059669",
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.6
+                }).addTo(gisMap);
+                
+                marker.bindPopup(`<strong>${stat.barangay}</strong><br>Applicants: ${stat.count}`);
+                mapMarkers.push(marker);
+            }
+        });
+        
+        // Auto-refresh map layout after a short delay to ensure container size is correct
+        setTimeout(() => gisMap.invalidateSize(), 500);
+    }
+
+    function renderBarangayList(stats) {
+        const container = document.getElementById('barangay-list-container');
+        if (!container) return;
+        
+        if (stats.length === 0) {
+            container.innerHTML = '<p class="text-gray-400 text-center py-4">No geographic data available.</p>';
+            return;
+        }
+
+        let html = '<div class="space-y-3">';
+        stats.forEach((stat, index) => {
+            const percentage = (index === 0) ? 100 : Math.round((stat.count / stats[0].count) * 100);
+            html += `
+                <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-sm text-gray-700 dark:text-gray-200">${stat.barangay}</span>
+                        <span class="text-xs font-bold text-brand-primary">${stat.count}</span>
+                    </div>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                        <div class="bg-brand-primary h-1.5 rounded-full" style="width: ${percentage}%"></div>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function renderAnalyticsCharts(programStats, trendData) {
+        // 1. Program Popularity (Doughnut)
+        const progCtx = document.getElementById('programStatsChart').getContext('2d');
+        if (programStatsChartObj) programStatsChartObj.destroy();
+        
+        programStatsChartObj = new Chart(progCtx, {
+            type: 'doughnut',
+            data: {
+                labels: programStats.map(s => s.program__program_name || 'General'),
+                datasets: [{
+                    data: programStats.map(s => s.count),
+                    backgroundColor: ['#10B981', '#F59E0B', '#3B82F6', '#6366F1', '#EC4899', '#8B5CF6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 11 } } }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // 2. Registration Trends (Line)
+        const trendCtx = document.getElementById('registrationTrendChart').getContext('2d');
+        if (registrationTrendChartObj) registrationTrendChartObj.destroy();
+        
+        registrationTrendChartObj = new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: trendData.map(d => d.month),
+                datasets: [{
+                    label: 'New Registrations',
+                    data: trendData.map(d => d.count),
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#10B981'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { display: false } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
 
     function initChart() {
       const ctx = document.getElementById('applicationsChart').getContext('2d');

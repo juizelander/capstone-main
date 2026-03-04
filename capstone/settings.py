@@ -154,3 +154,6 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'scholarsyncsubic@gmail.com'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'nayk pvny sskt pkjp')
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'scholarsyncsubic@gmail.com')
 
+
+# Gemini AI Configuration
+GEMINI_API_KEY = 'AIzaSyCn8iw_Y5Dugt34SjJnwnMSUwtFqNgCooU'
