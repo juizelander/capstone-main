@@ -199,7 +199,7 @@ def approve_student(request, student_id):
 def admin_dashboard(request):
     admin_id = request.session.get('user_id')
     if not admin_id:
-        return redirect('login')
+        return redirect('accounts:login')
     admin = Admin.objects.get(admin_id=admin_id)    
     programs = Program.objects.all()
     
@@ -217,7 +217,7 @@ def admin_dashboard(request):
 def student_dashboard(request):
     student_id = request.session.get('user_id')
     if not student_id:
-        return redirect('login')
+        return redirect('accounts:login')
     student = get_object_or_404(Student, pk=student_id)
     return render(request, 'accounts/student_dashboard.html', {'student': student})
 

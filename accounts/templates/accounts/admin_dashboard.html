@@ -121,7 +121,7 @@
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
           data-tab="student-registrations">
-          <i class="fas fa-user-plus"></i> Student Registration
+          <i class="fas fa-user-plus"></i> Applicant Registration
           <span class="nav-badge" id="badge-registrations"
             style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
@@ -143,7 +143,7 @@
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           data-tab="students">
-          <i class="fas fa-users-cog"></i> Student Management
+          <i class="fas fa-users-cog"></i> Applicant Management
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           data-tab="admins">
@@ -247,7 +247,7 @@
               class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-gradient-to-br from-brand-primary to-green-600 text-white p-6 rounded-xl"
               style="animation-delay: 100ms;">
               <div class="flex justify-between items-start mb-4">
-                <div class="kpi-title font-medium text-white/90">Total Students</div>
+                <div class="kpi-title font-medium text-white/90">Total Applicants</div>
                 <i class="fas fa-users text-2xl text-white/80"></i>
               </div>
               <div class="kpi-value text-4xl font-bold" id="total-students">Loading...</div>
@@ -382,64 +382,68 @@
 
           <!-- Advanced Analytics & GIS Section (Embedded) -->
           <div class="mt-12 mb-8 animate-slide-up">
-              <div class="flex items-center gap-3 mb-6">
-                  <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-                      <i class="fas fa-chart-pie text-xl"></i>
-                  </div>
-                  <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Scholarship Insights & GIS Distribution</h2>
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary">
+                <i class="fas fa-chart-pie text-xl"></i>
               </div>
-              
-              <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
-                  <!-- GIS Map Card -->
-                  <div class="xl:col-span-2 card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                      <div class="flex justify-between items-center mb-4">
-                          <h3 class="font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                              <i class="fas fa-map-marked-alt text-brand-primary"></i> 
-                              Applicant Geographic Distribution (Subic)
-                          </h3>
-                          <span class="text-xs text-gray-400">Real-time heat map by Barangay</span>
-                      </div>
-                      <div id="barangay-map" style="height: 500px; width: 100%; border-radius: 12px; z-index: 1;"></div>
-                  </div>
-  
-                  <!-- Secondary Stats Column -->
-                  <div class="flex flex-col gap-6">
-                      <!-- Barangay Table/List Card -->
-                      <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex-1 overflow-hidden flex flex-col">
-                          <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                              <i class="fas fa-list-ol text-brand-secondary"></i> Top Barangays
-                          </h3>
-                          <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 420px;">
-                              <div class="flex justify-center items-center h-40 text-gray-400">
-                                  <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading data...
-                              </div>
-                          </div>
-                      </div>
-                  </div>
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Scholarship Insights & GIS Distribution</h2>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+              <!-- GIS Map Card -->
+              <div
+                class="xl:col-span-2 card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-4">
+                  <h3 class="font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
+                    <i class="fas fa-map-marked-alt text-brand-primary"></i>
+                    Applicant Geographic Distribution (Subic)
+                  </h3>
+                  <span class="text-xs text-gray-400">Real-time heat map by Barangay</span>
+                </div>
+                <div id="barangay-map" style="height: 500px; width: 100%; border-radius: 12px; z-index: 1;"></div>
               </div>
-  
-              <!-- Analytics Charts Grid -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <!-- Program Popularity -->
-                  <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                      <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                          <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
-                      </h3>
-                      <div style="height: 300px;">
-                          <canvas id="programStatsChart"></canvas>
-                      </div>
+
+              <!-- Secondary Stats Column -->
+              <div class="flex flex-col gap-6">
+                <!-- Barangay Table/List Card -->
+                <div
+                  class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex-1 overflow-hidden flex flex-col">
+                  <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                    <i class="fas fa-list-ol text-brand-secondary"></i> Top Barangays
+                  </h3>
+                  <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 420px;">
+                    <div class="flex justify-center items-center h-40 text-gray-400">
+                      <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading data...
+                    </div>
                   </div>
-  
-                  <!-- Registration Trends -->
-                  <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                      <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                          <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
-                      </h3>
-                      <div style="height: 300px;">
-                          <canvas id="registrationTrendChart"></canvas>
-                      </div>
-                  </div>
+                </div>
               </div>
+            </div>
+
+            <!-- Analytics Charts Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Program Popularity -->
+              <div
+                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                  <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
+                </h3>
+                <div style="height: 300px;">
+                  <canvas id="programStatsChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Registration Trends -->
+              <div
+                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                  <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
+                </h3>
+                <div style="height: 300px;">
+                  <canvas id="registrationTrendChart"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -557,10 +561,10 @@
 
         <!-- Students Tab -->
         <div id="students" class="tab-content animate-fade-in">
-          <div
+          <div id="student-list-card"
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Management</h3>
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white">Applicant Management</h3>
               <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
                   class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
@@ -580,6 +584,191 @@
               <!-- Students will be loaded here via JavaScript -->
             </div>
           </div>
+
+          <!-- ====== Student Profile Section (inline, no card, no modal) ====== -->
+          <div id="student-profile-section" style="display:none;"
+            class="bg-white dark:bg-gray-800 p-6 md:p-10 shadow-sm border border-gray-100 dark:border-gray-700 w-full min-h-[calc(100vh-120px)] rounded-2xl transition-colors duration-200">
+
+            <!-- Navigation row: Back + counter + arrows -->
+            <div class="flex items-center justify-between mb-8 max-w-5xl mx-auto w-full">
+              <button onclick="goBackToStudentList()"
+                class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back
+              </button>
+              <div class="flex items-center gap-3">
+                <button onclick="navigateStudent(-1)"
+                  class="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Prev
+                </button>
+                <span id="sp-nav-label" class="text-sm font-medium text-gray-400 min-w-[60px] text-center"></span>
+                <button onclick="navigateStudent(1)"
+                  class="flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-brand-primary dark:hover:text-brand-primary transition-colors border border-gray-200 dark:border-gray-700 rounded-lg">
+                  Next
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Profile body: avatar col + info col -->
+            <div class="flex flex-col lg:flex-row gap-10 max-w-5xl mx-auto w-full">
+
+              <!-- Left: Avatar + status + actions -->
+              <div class="flex flex-col items-center lg:items-start gap-4 lg:w-56 shrink-0">
+                <div id="sp-avatar" class="w-28 h-28 rounded-full overflow-hidden shadow-lg"></div>
+                <div class="text-center lg:text-left">
+                  <h2 id="sp-name" class="text-2xl font-extrabold text-gray-900 dark:text-white"></h2>
+                  <p id="sp-username" class="text-sm text-gray-400 mt-0.5"></p>
+                </div>
+                <span id="sp-status"
+                  class="px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider"></span>
+                <div class="flex flex-col gap-2 w-full mt-2">
+                  <button id="sp-print-btn" onclick="printStudentProfile()"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-print"></i> Print Profile
+                  </button>
+                  <button id="sp-download-btn" onclick="downloadStudentProfile()"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-download"></i> Download Profile
+                  </button>
+                  <button id="sp-message-btn"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 transition flex items-center justify-center gap-2">
+                    <i class="fas fa-envelope"></i> Message
+                  </button>
+                  <button id="sp-toggle-btn"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-white bg-brand-primary hover:opacity-90 transition"></button>
+                  <button id="sp-delete-btn"
+                    class="w-full py-2 px-4 rounded-lg text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition">Delete
+                    Student</button>
+                </div>
+              </div>
+
+              <!-- Right: Details + Documents -->
+              <div class="flex-1 min-w-0">
+
+                <!-- Info fields -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-10 gap-y-6 mb-10">
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</p>
+                    <p id="sp-email" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Contact</p>
+                    <p id="sp-contact" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Sex</p>
+                    <p id="sp-sex" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Birthday</p>
+                    <p id="sp-birthday" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Student Type</p>
+                    <p id="sp-student-type" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Program / Year</p>
+                    <p id="sp-program" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Barangay</p>
+                    <p id="sp-barangay" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                  <div class="sm:col-span-2 xl:col-span-2">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Address</p>
+                    <p id="sp-address" class="text-gray-800 dark:text-gray-100 font-medium"></p>
+                  </div>
+                </div>
+
+                <!-- Academic History -->
+                <div class="mb-10">
+                  <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-graduation-cap text-brand-primary"></i> Academic History
+                  </h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6">
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Elementary</p>
+                      <p id="sp-elem" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Junior High School</p>
+                      <p id="sp-jhs" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Senior High School</p>
+                      <p id="sp-shs" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">College</p>
+                      <p id="sp-college" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Family Background -->
+                <div class="mb-10">
+                  <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-users text-brand-primary"></i> Family Background
+                  </h4>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-10 gap-y-6">
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Parent Name</p>
+                      <p id="sp-parent" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Guardian Name</p>
+                      <p id="sp-guardian" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Guardian Contact</p>
+                      <p id="sp-guardian-contact" class="text-gray-800 dark:text-gray-100 font-medium text-sm"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Achievements -->
+                <div class="mb-10">
+                  <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                    <i class="fas fa-trophy text-brand-primary"></i> Achievements & Extracurriculars
+                  </h4>
+                  <p id="sp-achievements"
+                    class="text-sm text-gray-800 dark:text-gray-300 whitespace-pre-wrap leading-relaxed bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
+                  </p>
+                </div>
+
+                <!-- Documents checklist -->
+                <div>
+                  <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-brand-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Uploaded Documents
+                  </h4>
+                  <div id="sp-documents" class="flex flex-col gap-2"></div>
+                </div>
+
+                <!-- Footer for generated on print/pdf -->
+                <div
+                  class="mt-12 pt-6 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-400 font-medium tracking-wide">
+                  <span id="sp-generated-date"></span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!-- ====== End Profile Section ====== -->
+
         </div>
 
         <!-- Inbox / Support Tab -->
@@ -619,6 +808,70 @@
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <!-- Batch Messaging Section -->
+            <div class="border-t-2 border-dashed border-gray-200 dark:border-gray-700 pt-8 mt-4">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div>
+                  <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
+                    <i class="fas fa-users text-brand-primary"></i> Batch Messaging
+                  </h3>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Send a message to multiple students
+                    simultaneously.</p>
+                </div>
+              </div>
+
+              <div
+                class="bg-gray-50 dark:bg-gray-800/50 p-5 rounded-xl border border-gray-100 dark:border-gray-700 flex flex-col gap-4">
+                <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300">1. Filter Recipients</h4>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div class="form-group">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Status</label>
+                    <select id="batch-status-filter"
+                      class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                      <option value="all">All Statuses</option>
+                      <option value="active">Active</option>
+                      <option value="pending">Pending</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Program</label>
+                    <select id="batch-program-filter"
+                      class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                      <option value="all">All Programs</option>
+                      {% for p in programs %}
+                      <option value="{{ p.program_name }}">{{ p.program_name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Student Type</label>
+                    <select id="batch-type-filter"
+                      class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+                      <option value="all">All Types</option>
+                      <option value="High School">High School</option>
+                      <option value="College">College</option>
+                      <option value="Board Exam">Board Exam</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3 mt-2">
+                  <button type="button"
+                    class="btn btn-primary bg-brand-primary hover:bg-brand-secondary text-white px-5 py-2.5 rounded-lg font-medium shadow transition-colors duration-200 flex items-center gap-2"
+                    onclick="openBatchComposeModal('email')">
+                    <i class="fas fa-envelope"></i> Batch Email
+                  </button>
+                  <button type="button"
+                    class="btn bg-gray-600 hover:bg-gray-700 text-white px-5 py-2.5 rounded-lg font-medium shadow transition-colors duration-200 flex items-center gap-2"
+                    onclick="openBatchComposeModal('system')">
+                    <i class="fas fa-comment-dots"></i> Batch System Message
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -839,68 +1092,182 @@
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
             </div>
 
-            <div class="report-filters grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6 items-end">
-              <div class="form-group w-full mb-0">
-                <label for="report-type"
-                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Report Type</label>
-                <select id="report-type"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                  onchange="toggleReportFilters()">
-                  <option value="students">Students</option>
-                  <option value="applications">Program Applications</option>
-                </select>
+            <div
+              class="report-filters-container bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 mb-8 shadow-sm">
+
+              <!-- Search Control Rows -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-5 items-end">
+                <div class="form-group w-full mb-0">
+                  <label for="report-type"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Report Type</label>
+                  <select id="report-type"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow"
+                    onchange="toggleReportFilters()">
+                    <option value="students">Students</option>
+                    <option value="applications">Program Applications</option>
+                  </select>
+                </div>
+
+                <div class="form-group w-full mb-0">
+                  <label for="report-status"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Status Category</label>
+                  <select id="report-status"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                    <option value="all">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="submitted">Submitted (Applications)</option>
+                    <option value="approved">Approved (Applications)</option>
+                  </select>
+                </div>
+
+                <div class="form-group w-full mb-0">
+                  <label for="report-start-date"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
+                  <input type="date" id="report-start-date"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                </div>
+
+                <div class="form-group w-full mb-0">
+                  <label for="report-end-date"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">End Date</label>
+                  <input type="date" id="report-end-date"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                </div>
               </div>
 
-              <div class="form-group w-full mb-0">
-                <label for="report-start-date"
-                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start Date</label>
-                <input type="date" id="report-start-date"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 items-end">
+                <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
+                  <label for="report-program"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Program Selection</label>
+                  <select id="report-program"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                    <option value="all">All Programs</option>
+                    {% for program in programs %}
+                    <option value="{{ program.program_id }}">{{ program.program_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <div class="form-group w-full flex-1 mb-0">
+                  <label for="report-barangay"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Barangay Match</label>
+                  <select id="report-barangay"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                    <option value="all">All Barangays</option>
+                    <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
+                    <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
+                    <option value="Asinan Proper">Asinan Proper</option>
+                    <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
+                    <option value="Batiawan">Batiawan</option>
+                    <option value="Calapacuan">Calapacuan</option>
+                    <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
+                    <option value="Cawag">Cawag</option>
+                    <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
+                    <option value="Mangan-Vaca">Mangan-Vaca</option>
+                    <option value="Matain">Matain</option>
+                    <option value="Naugsol">Naugsol</option>
+                    <option value="Pamatawan">Pamatawan</option>
+                    <option value="San Isidro">San Isidro</option>
+                    <option value="Santo Tomas">Santo Tomas</option>
+                    <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
+                  </select>
+                </div>
+
+                <div class="form-group w-full flex-1 mb-0">
+                  <label for="report-school"
+                    class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">School Match</label>
+                  <input type="text" id="report-school" placeholder="e.g. Subic National High School"
+                    class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm shadow-sm transition-shadow">
+                </div>
               </div>
 
-              <div class="form-group w-full mb-0">
-                <label for="report-end-date"
-                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-                <input type="date" id="report-end-date"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+              <!-- Fields Container -->
+              <div
+                class="form-group w-full mb-6 bg-gray-50 dark:bg-gray-700/40 p-5 rounded-xl border border-gray-200 dark:border-gray-600 shadow-inner">
+                <label class="block text-sm font-bold text-gray-800 dark:text-white mb-4"><i
+                    class="fas fa-list-check text-brand-primary mr-2"></i>Fields to Include in Data Export</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="id" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">ID</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow"
+                    id="label-rf-username">
+                    <input type="checkbox" name="report-fields" value="username" checked id="rf-username"
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Username</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="name" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Name</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow"
+                    id="label-rf-email">
+                    <input type="checkbox" name="report-fields" value="email" checked id="rf-email"
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Email</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="program" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Program</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="status" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Status</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="date" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Date</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="barangay" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">Barangay</span>
+                  </label>
+                  <label
+                    class="inline-flex items-center p-2 rounded-lg hover:bg-white dark:hover:bg-gray-600 transition-colors cursor-pointer border border-transparent hover:border-gray-300 dark:hover:border-gray-500 shadow-sm hover:shadow">
+                    <input type="checkbox" name="report-fields" value="school" checked
+                      class="form-checkbox h-4 w-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:bg-gray-600 dark:border-gray-500">
+                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300 font-medium">School</span>
+                  </label>
+                </div>
               </div>
 
-              <div class="form-group w-full mb-0">
-                <label for="report-status"
-                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Status</label>
-                <select id="report-status"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                  <option value="all">All Statuses</option>
-                  <option value="active">Active</option>
-                  <option value="pending">Pending</option>
-                  <option value="rejected">Rejected</option>
-                  <option value="submitted">Submitted (Applications Only)</option>
-                  <option value="approved">Approved (Applications Only)</option>
-                </select>
-              </div>
-
-              <div class="form-group w-full mb-0" id="report-program-filter" style="display: none;">
-                <label for="report-program"
-                  class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Program</label>
-                <select id="report-program"
-                  class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                  <option value="all">All Programs</option>
-                  {% for program in programs %}
-                  <option value="{{ program.program_id }}">{{ program.program_name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-
-              <div class="form-actions w-full flex flex-wrap gap-2 lg:col-span-auto" style="margin-bottom: 0;">
+              <div
+                class="form-actions w-full flex flex-wrap gap-4 pt-4 border-t border-gray-100 dark:border-gray-700 lg:justify-end">
                 <button
-                  class="btn btn-primary bg-brand-primary text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto"
-                  onclick="generateReport()">Generate</button>
+                  class="btn btn-primary bg-brand-primary text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-brand-secondary transition-colors w-full sm:w-auto flex items-center justify-center gap-2"
+                  onclick="generateReport()">
+                  <i class="fas fa-table text-lg"></i>
+                  Generate Table
+                </button>
                 <button
-                  class="btn btn-success bg-green-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex-1 md:flex-none"
-                  onclick="exportReport('csv')">CSV</button>
+                  class="btn btn-success bg-green-500 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-green-600 transition-colors w-full sm:w-auto flex items-center justify-center gap-2 flex-1 md:flex-none"
+                  onclick="exportReport('csv')">
+                  <i class="fas fa-file-csv text-lg"></i>
+                  Export CSV
+                </button>
                 <button
-                  class="btn btn-info bg-cyan-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex-1 md:flex-none"
-                  onclick="exportReport('word')">Word</button>
+                  class="btn btn-info bg-cyan-500 text-white px-6 py-3 rounded-xl text-sm font-semibold shadow hover:bg-cyan-600 transition-colors w-full sm:w-auto flex items-center justify-center gap-2 flex-1 md:flex-none"
+                  onclick="exportReport('word')">
+                  <i class="fas fa-file-word text-lg"></i>
+                  Export Word
+                </button>
               </div>
             </div>
 
@@ -1208,28 +1575,23 @@
       const programFilter = document.getElementById('report-program-filter');
       const statusSelect = document.getElementById('report-status');
 
-      // Show/Hide Program filter
       if (type === 'applications') {
         programFilter.style.display = 'block';
-
-        // Update status options for applications
         statusSelect.innerHTML = `
-                <option value="all">All Statuses</option>
-                <option value="submitted">Submitted</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-            `;
+          <option value="all">All Statuses</option>
+          <option value="submitted">Submitted (Applications)</option>
+          <option value="approved">Approved (Applications)</option>
+          <option value="rejected">Rejected</option>
+        `;
       } else {
         programFilter.style.display = 'none';
-
-        // Update status options for students
         statusSelect.innerHTML = `
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="pending">Pending</option>
-                <option value="rejected">Rejected</option>
-                <option value="inactive">Inactive</option>
-            `;
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="rejected">Rejected</option>
+          <option value="inactive">Inactive</option>
+        `;
       }
     }
 
@@ -1239,34 +1601,44 @@
       const endDate = document.getElementById('report-end-date').value;
       const status = document.getElementById('report-status').value;
       const program = document.getElementById('report-program').value;
+      const barangay = document.getElementById('report-barangay').value;
+      const school = document.getElementById('report-school').value;
 
       let queryParams = new URLSearchParams({
         type: type,
         start_date: startDate,
         end_date: endDate,
-        status: status
+        status: status,
+        barangay: barangay,
+        school: school
       });
 
       if (type === 'applications') {
         queryParams.append('program', program);
       }
 
+      // Add field selection
+      const fields = Array.from(document.querySelectorAll('input[name="report-fields"]:checked')).map(cb => cb.value);
+      if (fields.length > 0) {
+        queryParams.append('fields', fields.join(','));
+      }
+
       fetch(`/api/admin/reports/?${queryParams.toString()}`)
         .then(response => response.json())
         .then(data => {
           if (data.error) {
-            alert('Error generating report: ' + data.error);
+            Swal.fire('Error', 'Error generating report: ' + data.error, 'error');
             return;
           }
-          renderReportTable(data.data, type);
+          renderReportTable(data.data, type, fields);
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while generating the report.');
+          Swal.fire('Error', 'An error occurred while generating the report.', 'error');
         });
     }
 
-    function renderReportTable(data, type) {
+    function renderReportTable(data, type, selectedFields) {
       const table = document.getElementById('report-table');
       const thead = table.querySelector('thead tr');
       const tbody = table.querySelector('tbody');
@@ -1284,54 +1656,69 @@
       table.style.display = 'table';
       noDataMsg.style.display = 'none';
 
+      if (!selectedFields || selectedFields.length === 0) {
+        selectedFields = ['id', 'username', 'name', 'email', 'program', 'status', 'date', 'barangay', 'school'];
+      }
+
       // Set Headers
       let headers = [];
       if (type === 'students') {
-        headers = ['ID', 'Username', 'First Name', 'Last Name', 'Email', 'Program', 'Status', 'Date Joined'];
+        if (selectedFields.includes('id')) headers.push('Student ID');
+        if (selectedFields.includes('username')) headers.push('Username');
+        if (selectedFields.includes('name')) headers.push('Name');
+        if (selectedFields.includes('email')) headers.push('Email');
+        if (selectedFields.includes('program')) headers.push('Program');
+        if (selectedFields.includes('barangay')) headers.push('Barangay');
+        if (selectedFields.includes('school')) headers.push('School');
+        if (selectedFields.includes('status')) headers.push('Status');
+        if (selectedFields.includes('date')) headers.push('Date Joined');
       } else {
-        headers = ['App ID', 'Student', 'Program', 'Status', 'Date Submitted'];
+        if (selectedFields.includes('id')) headers.push('App ID');
+        if (selectedFields.includes('name')) headers.push('Student');
+        if (selectedFields.includes('program')) headers.push('Program');
+        if (selectedFields.includes('barangay')) headers.push('Barangay');
+        if (selectedFields.includes('school')) headers.push('School');
+        if (selectedFields.includes('status')) headers.push('Status');
+        if (selectedFields.includes('date')) headers.push('Date Submitted');
       }
 
       headers.forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;
-        th.style.padding = '12px';
-        th.style.textAlign = 'left';
-        th.style.fontWeight = '600';
+        th.className = "p-4 text-sm font-semibold text-gray-700 dark:text-gray-300";
         thead.appendChild(th);
       });
 
       // Set Rows
       data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.style.borderBottom = '1px solid #e9ecef';
+        tr.className = "divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700";
 
         let cells = [];
         if (type === 'students') {
-          cells = [
-            row.id,
-            row.username,
-            row.first_name,
-            row.last_name,
-            row.email,
-            row.program,
-            `<span class="badge badge-${row.status.toLowerCase()}">${row.status}</span>`,
-            row.created_at
-          ];
+          if (selectedFields.includes('id')) cells.push(row.id);
+          if (selectedFields.includes('username')) cells.push(row.username);
+          if (selectedFields.includes('name')) cells.push(`${row.first_name} ${row.last_name}`);
+          if (selectedFields.includes('email')) cells.push(row.email);
+          if (selectedFields.includes('program')) cells.push(row.program);
+          if (selectedFields.includes('barangay')) cells.push(row.barangay || 'N/A');
+          if (selectedFields.includes('school')) cells.push(row.school || 'N/A');
+          if (selectedFields.includes('status')) cells.push(`<span class="px-2.5 py-1 text-xs font-semibold rounded-full border bg-brand-primary/10 text-brand-primary uppercase tracking-wider">${row.status}</span>`);
+          if (selectedFields.includes('date')) cells.push(row.created_at);
         } else {
-          cells = [
-            row.id,
-            row.student,
-            row.program,
-            `<span class="badge badge-${row.status.toLowerCase()}">${row.status}</span>`,
-            row.created_at
-          ];
+          if (selectedFields.includes('id')) cells.push(row.id);
+          if (selectedFields.includes('name')) cells.push(row.student);
+          if (selectedFields.includes('program')) cells.push(row.program);
+          if (selectedFields.includes('barangay')) cells.push(row.barangay || 'N/A');
+          if (selectedFields.includes('school')) cells.push(row.school || 'N/A');
+          if (selectedFields.includes('status')) cells.push(`<span class="px-2.5 py-1 text-xs font-semibold rounded-full border bg-brand-primary/10 text-brand-primary uppercase tracking-wider">${row.status}</span>`);
+          if (selectedFields.includes('date')) cells.push(row.created_at);
         }
 
         cells.forEach(cellContent => {
           const td = document.createElement('td');
-          td.innerHTML = cellContent; // Use innerHTML for badge spans
-          td.style.padding = '12px';
+          td.innerHTML = cellContent;
+          td.className = "p-4 text-sm text-gray-700 dark:text-gray-300";
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -1344,12 +1731,16 @@
       const endDate = document.getElementById('report-end-date').value;
       const status = document.getElementById('report-status').value;
       const program = document.getElementById('report-program').value;
+      const barangay = document.getElementById('report-barangay').value;
+      const school = document.getElementById('report-school').value;
 
       let queryParams = new URLSearchParams({
         type: type,
         start_date: startDate,
         end_date: endDate,
         status: status,
+        barangay: barangay,
+        school: school,
         export: format
       });
 
@@ -1357,8 +1748,347 @@
         queryParams.append('program', program);
       }
 
-      // Trigger download
+      const fields = Array.from(document.querySelectorAll('input[name="report-fields"]:checked')).map(cb => cb.value);
+      if (fields.length > 0) {
+        queryParams.append('fields', fields.join(','));
+      }
+
       window.location.href = `/api/admin/reports/?${queryParams.toString()}`;
+    }
+
+    // Student Management Functions
+    currentStudents = [];
+
+    function loadStudents() {
+      fetch('/api/admin/student-applications/', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin'
+      })
+        .then(response => response.json())
+        .then(data => {
+          const list = document.getElementById('student-list');
+          if (!list) return;
+          list.innerHTML = '';
+          if (!data.applications || data.applications.length === 0) {
+            list.innerHTML = '<p class="text-center py-8 text-gray-500">No students found.</p>';
+            return;
+          }
+          currentStudents = data.applications;
+          data.applications.forEach(student => {
+            const el = createStudentElement(student);
+            list.appendChild(el);
+          });
+        })
+        .catch(err => console.error('Error loading students:', err));
+    }
+
+    function createStudentElement(student) {
+      const div = document.createElement('div');
+      div.className = `student-item student-${student.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
+      div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
+      div.dataset.status = student.status;
+
+      const isActive = student.status === 'active';
+      const statusColors = {
+        'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
+        'inactive': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200',
+        'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
+        'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
+      };
+      const statusClass = statusColors[student.status.toLowerCase()] || statusColors['pending'];
+
+      div.innerHTML = `
+        <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
+            <div class="flex-1 min-w-0 pr-2">
+                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${student.first_name} ${student.last_name}">${student.first_name} ${student.last_name}</h4> 
+                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${student.username}</span>
+            </div>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${student.status}</span>
+        </div>
+        <div class="flex flex-col gap-2 flex-1 text-sm">
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Program</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.program_and_yr}">${student.program_and_yr || 'N/A'}</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.email}">${student.email || 'N/A'}</span>
+            </div>
+        </div>
+        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
+            <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='viewStudentProfile(${student.id})'>
+                <i class="fas fa-eye mr-1"></i> View
+            </button>
+            <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
+                    onclick="toggleStudentStatus(${student.id}, '${student.status}')">
+                ${isActive ? 'Deactivate' : 'Activate'}
+            </button>
+        </div>
+      `;
+      return div;
+    }
+
+    let _spCurrentIndex = 0;
+    function _spGetVisible() {
+      const search = (document.getElementById('student-search').value || '').toLowerCase();
+      const status = document.getElementById('student-status-filter').value;
+      return currentStudents.filter(s =>
+        (s.first_name + ' ' + s.last_name + ' ' + s.username).toLowerCase().includes(search) &&
+        (status === 'all' || s.status === status)
+      );
+    }
+
+    function viewStudentProfile(studentId) {
+      const visible = _spGetVisible();
+      const idx = visible.findIndex(s => s.id === studentId);
+      _renderStudentProfile(idx < 0 ? 0 : idx, visible);
+    }
+
+    function _renderStudentProfile(index, students) {
+      if (!students || !students.length) return;
+      _spCurrentIndex = index;
+      const s = students[index];
+      document.getElementById('student-list-card').style.display = 'none';
+      const section = document.getElementById('student-profile-section');
+      section.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('sp-nav-label').textContent = `${index + 1} of ${students.length}`;
+
+      const avatarEl = document.getElementById('sp-avatar');
+      avatarEl.style.background = s.sex?.toLowerCase() === 'male' ? 'linear-gradient(135deg,#bfdbfe,#3b82f6)' : 'linear-gradient(135deg,#fbcfe8,#ec4899)';
+      avatarEl.innerHTML = `<div class="w-full h-full flex items-center justify-center text-white text-3xl font-bold">${s.first_name[0]}${s.last_name[0]}</div>`;
+
+      document.getElementById('sp-name').textContent = `${s.first_name} ${s.last_name}`;
+      document.getElementById('sp-username').textContent = `@${s.username}`;
+      document.getElementById('sp-status').textContent = s.status;
+      document.getElementById('sp-email').textContent = s.email || 'N/A';
+      document.getElementById('sp-contact').textContent = s.contact_num || 'N/A';
+      document.getElementById('sp-sex').textContent = s.sex || 'N/A';
+      document.getElementById('sp-birthday').textContent = s.birthday || 'N/A';
+      document.getElementById('sp-student-type').textContent = s.student_type || 'N/A';
+      document.getElementById('sp-program').textContent = s.program_and_yr || 'N/A';
+      document.getElementById('sp-barangay').textContent = s.barangay || 'N/A';
+      document.getElementById('sp-address').textContent = s.address || 'N/A';
+
+      document.getElementById('sp-elem').textContent = s.elem_school || 'N/A';
+      document.getElementById('sp-jhs').textContent = s.jhs_school || 'N/A';
+      document.getElementById('sp-shs').textContent = s.shs_school || 'N/A';
+      document.getElementById('sp-college').textContent = s.college_school || 'N/A';
+      document.getElementById('sp-parent').textContent = s.parent_name || 'N/A';
+      document.getElementById('sp-guardian').textContent = s.guardian_name || 'N/A';
+      document.getElementById('sp-guardian-contact').textContent = s.guardian_contact || 'N/A';
+      document.getElementById('sp-achievements').textContent = s.achievements || 'None registered.';
+
+      const isActive = s.status === 'active';
+      const toggleBtn = document.getElementById('sp-toggle-btn');
+      toggleBtn.textContent = isActive ? 'Deactivate' : 'Activate';
+      toggleBtn.className = `w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition ${isActive ? 'bg-orange-500 hover:bg-orange-600' : 'bg-brand-primary hover:opacity-90'}`;
+      toggleBtn.onclick = () => toggleStudentStatus(s.id, s.status);
+
+      document.getElementById('sp-delete-btn').onclick = () => deleteStudent(s.id);
+      document.getElementById('sp-message-btn').onclick = () => {
+        const m = document.getElementById('message-choice-modal');
+        m.dataset.studentId = s.id;
+        m.dataset.studentName = s.first_name + ' ' + s.last_name;
+        m.dataset.studentEmail = s.email || '';
+        m.style.display = 'flex';
+      };
+      _loadStudentDocs(s.id);
+    }
+
+    function goBackToStudentList() {
+      document.getElementById('student-profile-section').style.display = 'none';
+      document.getElementById('student-list-card').style.display = 'block';
+    }
+
+    function navigateStudent(dir) {
+      const visible = _spGetVisible();
+      const next = Math.max(0, Math.min(_spCurrentIndex + dir, visible.length - 1));
+      _renderStudentProfile(next, visible);
+    }
+
+    function toggleStudentStatus(id, currentStatus) {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      fetch(`/api/admin/students/${id}/toggle-status/`, {
+        method: 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire('Success', `Student is now ${newStatus}`, 'success');
+            loadStudents();
+            if (document.getElementById('student-profile-section').style.display === 'block') {
+              setTimeout(() => viewStudentProfile(id), 500);
+            }
+          }
+        });
+    }
+
+    function deleteStudent(id) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${id}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Deleted!', 'Student has been deleted.', 'success');
+                goBackToStudentList();
+                loadStudents();
+              }
+            });
+        }
+      });
+    }
+
+    // Messaging Functions
+    function closeMessageChoiceModal() {
+      document.getElementById('message-choice-modal').style.display = 'none';
+    }
+
+    function openComposeModal(mode) {
+      const choiceModal = document.getElementById('message-choice-modal');
+      choiceModal.style.display = 'none';
+
+      const sId = choiceModal.dataset.studentId;
+      const sName = choiceModal.dataset.studentName;
+      const sEmail = choiceModal.dataset.studentEmail;
+
+      const composeModal = document.getElementById('compose-message-modal');
+      document.getElementById('compose-mode').value = mode;
+      document.getElementById('compose-student-id').value = sId;
+      document.getElementById('compose-recipient-display').textContent = `${sName} ${mode === 'email' ? '(<' + sEmail + '>)' : ''}`;
+
+      const titleSpan = document.getElementById('compose-modal-title');
+      if (mode === 'email') {
+        titleSpan.innerHTML = '<i class="fas fa-envelope text-brand-primary"></i> Compose Email';
+        document.getElementById('compose-attachment-group').style.display = 'block';
+      } else {
+        titleSpan.innerHTML = '<i class="fas fa-comment-dots text-brand-primary"></i> Direct System Message';
+        document.getElementById('compose-attachment-group').style.display = 'none';
+      }
+
+      document.getElementById('compose-subject').value = '';
+      if (composeQuill) composeQuill.setText('');
+      document.getElementById('compose-attachment').value = '';
+      document.getElementById('compose-attachment-name').classList.add('hidden');
+
+      composeModal.style.display = 'block';
+    }
+
+    function closeComposeModal() {
+      document.getElementById('compose-message-modal').style.display = 'none';
+    }
+
+    function openBatchComposeModal(mode) {
+      const statusFilter = document.getElementById('batch-status-filter').value;
+      const programFilter = document.getElementById('batch-program-filter').value;
+      const typeFilter = document.getElementById('batch-type-filter').value;
+      const barangayFilter = document.getElementById('batch-barangay-filter') ? document.getElementById('batch-barangay-filter').value : 'all';
+      const schoolFilter = document.getElementById('batch-school-filter') ? document.getElementById('batch-school-filter').value : '';
+
+      let summaryFilters = `Status: ${statusFilter}, Program: ${programFilter}, Type: ${typeFilter}`;
+
+      const composeModal = document.getElementById('compose-message-modal');
+      document.getElementById('compose-mode').value = mode === 'email' ? 'batch_email' : 'batch_system';
+      document.getElementById('compose-student-id').value = JSON.stringify({ status: statusFilter, program: programFilter, student_type: typeFilter, barangay: barangayFilter, school: schoolFilter });
+      document.getElementById('compose-recipient-display').innerHTML = `<strong>Batch:</strong> All students matching [${summaryFilters}]`;
+
+      const titleSpan = document.getElementById('compose-modal-title');
+      if (mode === 'email') {
+        titleSpan.innerHTML = '<i class="fas fa-envelope-open-text text-brand-primary"></i> Compose Mass Email';
+        document.getElementById('compose-attachment-group').style.display = 'block';
+      } else {
+        titleSpan.innerHTML = '<i class="fas fa-bullhorn text-brand-primary"></i> Compose Mass System Message';
+        document.getElementById('compose-attachment-group').style.display = 'none';
+      }
+
+      document.getElementById('compose-subject').value = '';
+      if (composeQuill) composeQuill.setText('');
+      document.getElementById('compose-attachment').value = '';
+      document.getElementById('compose-attachment-name').classList.add('hidden');
+
+      composeModal.style.display = 'block';
+    }
+
+    async function sendComposedMessage() {
+      const mode = document.getElementById('compose-mode').value;
+      const studentIdOrFilters = document.getElementById('compose-student-id').value;
+      const subject = document.getElementById('compose-subject').value.trim();
+      const body = composeQuill ? composeQuill.root.innerHTML : '';
+      const textLength = composeQuill ? composeQuill.getText().trim().length : 0;
+
+      if (!subject || textLength === 0) {
+        Swal.fire('Error', 'Please fill out both subject and message.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('compose-send-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      btn.disabled = true;
+
+      try {
+        let endpoint = '';
+        let formData = new FormData();
+
+        if (mode === 'email' || mode === 'system') {
+          endpoint = mode === 'email' ? '/api/admin/messages/send-email/' : '/api/admin/messages/send-system/';
+          formData.append('student_id', studentIdOrFilters);
+        } else if (mode === 'batch_email' || mode === 'batch_system') {
+          endpoint = '/api/admin/messages/send-batch/';
+          const filters = JSON.parse(studentIdOrFilters);
+          formData.append('mode', mode === 'batch_email' ? 'email' : 'system');
+          formData.append('status', filters.status);
+          formData.append('program', filters.program);
+          formData.append('student_type', filters.student_type);
+          formData.append('barangay', filters.barangay);
+          formData.append('school', filters.school);
+        }
+
+        formData.append('subject', subject);
+        formData.append('body', body);
+
+        if (mode === 'email' || mode === 'batch_email') {
+          const fileInput = document.getElementById('compose-attachment');
+          if (fileInput.files.length > 0) {
+            formData.append('attachment', fileInput.files[0]);
+          }
+        }
+
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCookie('csrftoken') },
+          body: formData
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          Swal.fire('Success', 'Message sent successfully!', 'success').then(() => {
+            closeComposeModal();
+          });
+        } else {
+          Swal.fire('Error', 'Error: ' + (data.error || 'Failed to send message.'), 'error');
+        }
+      } catch (error) {
+        console.error('Error sending message:', error);
+        Swal.fire('Error', 'Network error. Please try again.', 'error');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     }
 
     // Program form toggle functions
@@ -1656,68 +2386,68 @@
     let mapMarkers = [];
 
     function loadAnalyticsData() {
-        console.log('Fetching analytics and GIS data...');
-        fetch('/api/admin/analytics/data/', { credentials: 'same-origin' })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    renderGisMap(data.barangay_coords, data.barangay_stats);
-                    renderAnalyticsCharts(data.program_stats, data.trend_data);
-                    renderBarangayList(data.barangay_stats);
-                }
-            })
-            .catch(err => console.error('Analytics Error:', err));
+      console.log('Fetching analytics and GIS data...');
+      fetch('/api/admin/analytics/data/', { credentials: 'same-origin' })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            renderGisMap(data.barangay_coords, data.barangay_stats);
+            renderAnalyticsCharts(data.program_stats, data.trend_data);
+            renderBarangayList(data.barangay_stats);
+          }
+        })
+        .catch(err => console.error('Analytics Error:', err));
     }
 
     function renderGisMap(coords, stats) {
-        if (!gisMap) {
-            // Initialize map centered on Subic
-            gisMap = L.map('barangay-map').setView([14.8872, 120.2442], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(gisMap);
+      if (!gisMap) {
+        // Initialize map centered on Subic
+        gisMap = L.map('barangay-map').setView([14.8872, 120.2442], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(gisMap);
+      }
+
+      // Clear old markers
+      mapMarkers.forEach(m => gisMap.removeLayer(m));
+      mapMarkers = [];
+
+      // Add markers based on stats
+      stats.forEach(stat => {
+        const pos = coords[stat.barangay];
+        if (pos) {
+          const radius = Math.min(Math.max(stat.count * 5, 10), 50); // Scale radius
+          const marker = L.circleMarker(pos, {
+            radius: radius,
+            fillColor: "#10B981",
+            color: "#059669",
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.6
+          }).addTo(gisMap);
+
+          marker.bindPopup(`<strong>${stat.barangay}</strong><br>Applicants: ${stat.count}`);
+          mapMarkers.push(marker);
         }
+      });
 
-        // Clear old markers
-        mapMarkers.forEach(m => gisMap.removeLayer(m));
-        mapMarkers = [];
-
-        // Add markers based on stats
-        stats.forEach(stat => {
-            const pos = coords[stat.barangay];
-            if (pos) {
-                const radius = Math.min(Math.max(stat.count * 5, 10), 50); // Scale radius
-                const marker = L.circleMarker(pos, {
-                    radius: radius,
-                    fillColor: "#10B981",
-                    color: "#059669",
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.6
-                }).addTo(gisMap);
-                
-                marker.bindPopup(`<strong>${stat.barangay}</strong><br>Applicants: ${stat.count}`);
-                mapMarkers.push(marker);
-            }
-        });
-        
-        // Auto-refresh map layout after a short delay to ensure container size is correct
-        setTimeout(() => gisMap.invalidateSize(), 500);
+      // Auto-refresh map layout after a short delay to ensure container size is correct
+      setTimeout(() => gisMap.invalidateSize(), 500);
     }
 
     function renderBarangayList(stats) {
-        const container = document.getElementById('barangay-list-container');
-        if (!container) return;
-        
-        if (stats.length === 0) {
-            container.innerHTML = '<p class="text-gray-400 text-center py-4">No geographic data available.</p>';
-            return;
-        }
+      const container = document.getElementById('barangay-list-container');
+      if (!container) return;
 
-        let html = '<div class="space-y-3">';
-        stats.forEach((stat, index) => {
-            const percentage = (index === 0) ? 100 : Math.round((stat.count / stats[0].count) * 100);
-            html += `
+      if (stats.length === 0) {
+        container.innerHTML = '<p class="text-gray-400 text-center py-4">No geographic data available.</p>';
+        return;
+      }
+
+      let html = '<div class="space-y-3">';
+      stats.forEach((stat, index) => {
+        const percentage = (index === 0) ? 100 : Math.round((stat.count / stats[0].count) * 100);
+        html += `
                 <div class="p-3 rounded-lg bg-gray-50 dark:bg-gray-700/30 border border-gray-100 dark:border-gray-700">
                     <div class="flex justify-between items-center mb-1">
                         <span class="font-semibold text-sm text-gray-700 dark:text-gray-200">${stat.barangay}</span>
@@ -1728,65 +2458,65 @@
                     </div>
                 </div>
             `;
-        });
-        html += '</div>';
-        container.innerHTML = html;
+      });
+      html += '</div>';
+      container.innerHTML = html;
     }
 
     function renderAnalyticsCharts(programStats, trendData) {
-        // 1. Program Popularity (Doughnut)
-        const progCtx = document.getElementById('programStatsChart').getContext('2d');
-        if (programStatsChartObj) programStatsChartObj.destroy();
-        
-        programStatsChartObj = new Chart(progCtx, {
-            type: 'doughnut',
-            data: {
-                labels: programStats.map(s => s.program__program_name || 'General'),
-                datasets: [{
-                    data: programStats.map(s => s.count),
-                    backgroundColor: ['#10B981', '#F59E0B', '#3B82F6', '#6366F1', '#EC4899', '#8B5CF6'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 11 } } }
-                },
-                cutout: '70%'
-            }
-        });
+      // 1. Program Popularity (Doughnut)
+      const progCtx = document.getElementById('programStatsChart').getContext('2d');
+      if (programStatsChartObj) programStatsChartObj.destroy();
 
-        // 2. Registration Trends (Line)
-        const trendCtx = document.getElementById('registrationTrendChart').getContext('2d');
-        if (registrationTrendChartObj) registrationTrendChartObj.destroy();
-        
-        registrationTrendChartObj = new Chart(trendCtx, {
-            type: 'line',
-            data: {
-                labels: trendData.map(d => d.month),
-                datasets: [{
-                    label: 'New Registrations',
-                    data: trendData.map(d => d.count),
-                    borderColor: '#10B981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#10B981'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { display: false } },
-                    x: { grid: { display: false } }
-                }
-            }
-        });
+      programStatsChartObj = new Chart(progCtx, {
+        type: 'doughnut',
+        data: {
+          labels: programStats.map(s => s.program__program_name || 'General'),
+          datasets: [{
+            data: programStats.map(s => s.count),
+            backgroundColor: ['#10B981', '#F59E0B', '#3B82F6', '#6366F1', '#EC4899', '#8B5CF6'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 12, usePointStyle: true, font: { size: 11 } } }
+          },
+          cutout: '70%'
+        }
+      });
+
+      // 2. Registration Trends (Line)
+      const trendCtx = document.getElementById('registrationTrendChart').getContext('2d');
+      if (registrationTrendChartObj) registrationTrendChartObj.destroy();
+
+      registrationTrendChartObj = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: trendData.map(d => d.month),
+          datasets: [{
+            label: 'New Registrations',
+            data: trendData.map(d => d.count),
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: '#10B981'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, grid: { display: false } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
     }
 
     function initChart() {
@@ -2352,6 +3082,7 @@
     }
 
     var quill;
+    var composeQuill;
     document.addEventListener('DOMContentLoaded', function () {
       quill = new Quill('#remarks-editor-container', {
         theme: 'snow',
@@ -2374,7 +3105,41 @@
           ]
         }
       });
+
+      // Initialize Compose Editor (Quill for messaging modal)
+      const composeContainer = document.getElementById('compose-editor-container');
+      if (composeContainer) {
+        composeQuill = new Quill(composeContainer, {
+          theme: 'snow',
+          placeholder: 'Write your message here...',
+          modules: {
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              ['blockquote', 'code-block', 'link'],
+              [{ 'header': 1 }, { 'header': 2 }],
+              [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+              [{ 'color': [] }, { 'background': [] }],
+              ['clean']
+            ]
+          }
+        });
+      }
+
+      // Handle Attachment Display
+      const attachmentInput = document.getElementById('compose-attachment');
+      const attachmentName = document.getElementById('compose-attachment-name');
+      if (attachmentInput && attachmentName) {
+        attachmentInput.addEventListener('change', function () {
+          if (this.files && this.files.length > 0) {
+            attachmentName.textContent = this.files[0].name;
+            attachmentName.classList.remove('hidden');
+          } else {
+            attachmentName.classList.add('hidden');
+          }
+        });
+      }
     });
+
 
     function closeRemarksModal() {
       document.getElementById('remarks-modal').style.display = 'none';
@@ -3826,6 +4591,101 @@
       }
     });
   </script>
-</body>
+  <!-- Message Choice Modal -->
+  <div id="message-choice-modal"
+    class="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6 w-full h-full"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);">
+    <div
+      class="relative bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-2xl flex flex-col w-full max-w-sm mx-auto animate-slide-up overflow-hidden text-center">
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Send Message</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">How would you like to message this student?</p>
+
+      <div class="flex flex-col gap-3">
+        <button
+          class="w-full py-3 px-4 bg-brand-primary hover:bg-brand-secondary text-white rounded-lg font-medium transition flex items-center justify-center gap-2"
+          onclick="openComposeModal('email')">
+          <i class="fas fa-envelope"></i> Message via Email
+        </button>
+        <button
+          class="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white rounded-lg font-medium transition flex items-center justify-center gap-2 border border-gray-200 dark:border-gray-600"
+          onclick="openComposeModal('system')">
+          <i class="fas fa-comment-dots"></i> Message via System
+        </button>
+        <button class="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          onclick="document.getElementById('message-choice-modal').style.display='none'">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose Message Modal -->
+  <div id="compose-message-modal"
+    class="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6 w-full h-full"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px);">
+    <div
+      class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-4xl max-h-[90vh] mx-auto animate-slide-up overflow-hidden">
+
+      <div class="flex justify-between items-center mb-4 border-b border-gray-100 dark:border-gray-700 pb-3">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2" id="compose-modal-title">
+          <i class="fas fa-paper-plane text-brand-primary"></i> Compose Message
+        </h3>
+        <button class="text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors"
+          onclick="closeComposeModal()">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div class="overflow-y-auto custom-scrollbar flex-1 pr-2">
+        <form id="compose-message-form" class="space-y-4">
+          <input type="hidden" id="compose-mode" value=""> <!-- 'email', 'system', 'batch_email', 'batch_system' -->
+          <input type="hidden" id="compose-student-id" value="">
+
+          <div
+            class="form-group grid grid-cols-[80px_1fr] items-center gap-2 border-b border-gray-100 dark:border-gray-700 pb-3">
+            <label class="text-sm font-semibold text-gray-500 dark:text-gray-400">To:</label>
+            <div id="compose-recipient-display" class="font-medium text-gray-800 dark:text-gray-200">Student Name</div>
+          </div>
+
+          <div class="form-group grid grid-cols-[80px_1fr] items-center gap-2">
+            <label for="compose-subject" class="text-sm font-semibold text-gray-500 dark:text-gray-400">Subject:</label>
+            <input type="text" id="compose-subject"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm outline-none"
+              placeholder="Enter subject line..." required>
+          </div>
+
+          <div class="form-group flex flex-col gap-1 h-[300px]">
+            <label class="text-sm font-semibold text-gray-500 dark:text-gray-400 hidden">Message:</label>
+            <!-- Quill Editor Container -->
+            <div id="compose-editor-container"
+              class="h-full rounded-b-lg border border-t-0 border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200">
+            </div>
+          </div>
+
+          <div class="form-group mt-12 pt-2" id="compose-attachment-group">
+            <label for="compose-attachment"
+              class="flex items-center gap-2 cursor-pointer text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors w-max">
+              <i class="fas fa-paperclip"></i> Attach File (Image/PDF)
+            </label>
+            <input type="file" id="compose-attachment" class="hidden" accept="image/*,.pdf">
+            <div id="compose-attachment-name" class="text-xs text-gray-500 mt-1 hidden max-w-xs truncate"></div>
+          </div>
+        </form>
+      </div>
+
+      <div class="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700 flex justify-end gap-3">
+        <button type="button"
+          class="px-5 py-2 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+          onclick="closeComposeModal()">Cancel</button>
+        <button type="button"
+          class="px-6 py-2 rounded-lg font-medium text-white bg-brand-primary hover:bg-brand-secondary transition duration-300 shadow-sm flex items-center gap-2"
+          id="compose-send-btn" onclick="sendComposedMessage()">
+          <i class="fas fa-paper-plane"></i> Send
+        </button>
+      </div>
+
+    </div>
+  </div>
+
 
 </html>
