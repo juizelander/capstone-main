@@ -6,6 +6,7 @@ class Admin(models.Model):
     admin_id = models.AutoField(primary_key=True)
     admin_name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=200, blank=True, null=True)
+    role = models.CharField(max_length=100, blank=True, null=True)
     password = models.CharField(max_length=100)
 
     def __str__(self):

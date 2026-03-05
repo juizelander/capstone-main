@@ -903,6 +903,15 @@
                   </div>
                   <div class="form-group flex flex-col md:flex-row gap-4">
                     <div class="flex-1">
+                      <label for="new_admin_role"
+                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Role/Position</label>
+                      <input type="text" id="new_admin_role" name="new_admin_role"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+                        placeholder="e.g. Scholarship Coordinator">
+                    </div>
+                  </div>
+                  <div class="form-group flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
                       <label for="new_admin_password"
                         class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
                       <input type="password" id="new_admin_password" name="new_admin_password"
@@ -970,6 +979,9 @@
                       <th
                         class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">
                         Full Name</th>
+                      <th
+                        class="p-4 text-sm font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-700/50">
+                        Role</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
@@ -978,10 +990,12 @@
                       <td class="p-4 text-sm text-gray-600 dark:text-gray-300 font-medium">{{ a.admin_name }}</td>
                       <td class="p-4 text-sm text-gray-600 dark:text-gray-300">{% if a.full_name %}{{ a.full_name }}{%
                         else %}<span class="text-gray-400 italic">No name set</span>{% endif %}</td>
+                      <td class="p-4 text-sm text-gray-600 dark:text-gray-300">{% if a.role %}{{ a.role }}{%
+                        else %}<span class="text-gray-400 italic">-</span>{% endif %}</td>
                     </tr>
                     {% empty %}
                     <tr>
-                      <td colspan="2" class="p-4 text-center text-gray-500">No admins found.</td>
+                      <td colspan="3" class="p-4 text-center text-gray-500">No admins found.</td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -1592,6 +1606,17 @@
           <option value="rejected">Rejected</option>
           <option value="inactive">Inactive</option>
         `;
+        document.getElementById('label-rf-username').style.display = '';
+        document.getElementById('label-rf-email').style.display = '';
+
+        // Update status options for students
+        statusSelect.innerHTML = `
+                <option value="all">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="pending">Pending</option>
+                <option value="rejected">Rejected</option>
+                <option value="inactive">Inactive</option>
+            `;
       }
     }
 
@@ -1617,7 +1642,6 @@
         queryParams.append('program', program);
       }
 
-      // Add field selection
       const fields = Array.from(document.querySelectorAll('input[name="report-fields"]:checked')).map(cb => cb.value);
       if (fields.length > 0) {
         queryParams.append('fields', fields.join(','));
@@ -1685,14 +1709,16 @@
       headers.forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;
-        th.className = "p-4 text-sm font-semibold text-gray-700 dark:text-gray-300";
+        th.style.padding = '12px';
+        th.style.textAlign = 'left';
+        th.style.fontWeight = '600';
         thead.appendChild(th);
       });
 
       // Set Rows
       data.forEach(row => {
         const tr = document.createElement('tr');
-        tr.className = "divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700";
+        tr.style.borderBottom = '1px solid #e9ecef';
 
         let cells = [];
         if (type === 'students') {
@@ -1703,7 +1729,7 @@
           if (selectedFields.includes('program')) cells.push(row.program);
           if (selectedFields.includes('barangay')) cells.push(row.barangay || 'N/A');
           if (selectedFields.includes('school')) cells.push(row.school || 'N/A');
-          if (selectedFields.includes('status')) cells.push(`<span class="px-2.5 py-1 text-xs font-semibold rounded-full border bg-brand-primary/10 text-brand-primary uppercase tracking-wider">${row.status}</span>`);
+          if (selectedFields.includes('status')) cells.push(`<span class="badge badge-${row.status.toLowerCase()}">${row.status}</span>`);
           if (selectedFields.includes('date')) cells.push(row.created_at);
         } else {
           if (selectedFields.includes('id')) cells.push(row.id);
@@ -1711,14 +1737,14 @@
           if (selectedFields.includes('program')) cells.push(row.program);
           if (selectedFields.includes('barangay')) cells.push(row.barangay || 'N/A');
           if (selectedFields.includes('school')) cells.push(row.school || 'N/A');
-          if (selectedFields.includes('status')) cells.push(`<span class="px-2.5 py-1 text-xs font-semibold rounded-full border bg-brand-primary/10 text-brand-primary uppercase tracking-wider">${row.status}</span>`);
+          if (selectedFields.includes('status')) cells.push(`<span class="badge badge-${row.status.toLowerCase()}">${row.status}</span>`);
           if (selectedFields.includes('date')) cells.push(row.created_at);
         }
 
         cells.forEach(cellContent => {
           const td = document.createElement('td');
-          td.innerHTML = cellContent;
-          td.className = "p-4 text-sm text-gray-700 dark:text-gray-300";
+          td.innerHTML = cellContent; // Use innerHTML for badge spans
+          td.style.padding = '12px';
           tr.appendChild(td);
         });
         tbody.appendChild(tr);
@@ -1753,28 +1779,36 @@
         queryParams.append('fields', fields.join(','));
       }
 
+      // Trigger download
       window.location.href = `/api/admin/reports/?${queryParams.toString()}`;
     }
 
-    // Student Management Functions
-    currentStudents = [];
+    // Student Management Functions — master branch (complete)
+    let currentStudents = [];
 
     function loadStudents() {
-      fetch('/api/admin/student-applications/', {
+      console.log('Loading students...');
+      fetch('/api/admin/student-applications/', { // Reusing this endpoint as it returns all students
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         credentials: 'same-origin'
       })
         .then(response => response.json())
         .then(data => {
           const list = document.getElementById('student-list');
           if (!list) return;
+
           list.innerHTML = '';
+
           if (!data.applications || data.applications.length === 0) {
-            list.innerHTML = '<p class="text-center py-8 text-gray-500">No students found.</p>';
+            list.innerHTML = '<p class="no-data">No students found.</p>';
             return;
           }
+
           currentStudents = data.applications;
+
           data.applications.forEach(student => {
             const el = createStudentElement(student);
             list.appendChild(el);
@@ -1790,12 +1824,14 @@
       div.dataset.status = student.status;
 
       const isActive = student.status === 'active';
+
       const statusColors = {
         'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
         'inactive': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200',
         'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
         'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
       };
+
       const statusClass = statusColors[student.status.toLowerCase()] || statusColors['pending'];
 
       div.innerHTML = `
@@ -1815,21 +1851,32 @@
                 <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</span>
                 <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.email}">${student.email || 'N/A'}</span>
             </div>
+            <div class="flex flex-col">
+                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact</span>
+                <span class="text-gray-800 dark:text-gray-200 truncate">${student.contact_num || 'N/A'}</span>
+            </div>
         </div>
+        
         <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
             <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='viewStudentProfile(${student.id})'>
                 <i class="fas fa-eye mr-1"></i> View
+            </button>
+            <button class="flex-1 text-center py-1.5 px-2 bg-gray-50 text-gray-600 hover:bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400 border border-gray-200 dark:border-gray-800 rounded text-xs font-medium transition-colors" onclick='openEditStudentModal(${student.id})'>
+                <i class="fas fa-edit mr-1"></i> Edit
             </button>
             <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
                     onclick="toggleStudentStatus(${student.id}, '${student.status}')">
                 ${isActive ? 'Deactivate' : 'Activate'}
             </button>
+            <button class="flex-1 text-center py-1.5 px-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 rounded text-xs font-medium transition-colors" onclick="deleteStudent(${student.id})">
+                <i class="fas fa-trash mr-1"></i> Del
+            </button>
         </div>
       `;
       return div;
     }
-
     let _spCurrentIndex = 0;
+
     function _spGetVisible() {
       const search = (document.getElementById('student-search').value || '').toLowerCase();
       const status = document.getElementById('student-status-filter').value;
@@ -1839,29 +1886,141 @@
       );
     }
 
+    function renewStudent(studentId) {
+      Swal.fire({
+        title: 'Renew Account?',
+        text: "This will extend the account expiry for another 6 months.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3b82f6',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, renew it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${studentId}/renew/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Renewed!', 'Account has been renewed.', 'success');
+                loadStudents();
+                setTimeout(() => viewStudentProfile(studentId), 500);
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
+              }
+            });
+        }
+      });
+    }
+
     function viewStudentProfile(studentId) {
       const visible = _spGetVisible();
       const idx = visible.findIndex(s => s.id === studentId);
       _renderStudentProfile(idx < 0 ? 0 : idx, visible);
     }
 
+    // Called from Applicant Registration cards — switches to Students tab and opens the profile
+    function viewStudentFromRegistration(studentId) {
+      // Manually activate the Students tab
+      document.querySelectorAll('.nav-link, .nav-item').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      const studentsNav = document.querySelector('[data-tab="students"]');
+      if (studentsNav) studentsNav.classList.add('active');
+      const studentsContent = document.getElementById('students');
+      if (studentsContent) studentsContent.classList.add('active');
+
+      // Clear current students so polling knows when new data arrives
+      currentStudents = [];
+      loadStudents();
+
+      // Poll until students are loaded, then open the profile
+      const tryOpen = (attempts) => {
+        if (currentStudents.length > 0) {
+          viewStudentProfile(studentId);
+        } else if (attempts > 0) {
+          setTimeout(() => tryOpen(attempts - 1), 300);
+        }
+      };
+      setTimeout(() => tryOpen(20), 200);
+    }
+
+    function navigateStudent(dir) {
+      const visible = _spGetVisible();
+      const next = Math.max(0, Math.min(_spCurrentIndex + dir, visible.length - 1));
+      _renderStudentProfile(next, visible);
+    }
+
+    function goBackToStudentList() {
+      document.getElementById('student-profile-section').style.display = 'none';
+      document.getElementById('student-list-card').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function _renderStudentProfile(index, students) {
       if (!students || !students.length) return;
       _spCurrentIndex = index;
       const s = students[index];
+
+      // Hide list card, show profile section (like Apply view)
       document.getElementById('student-list-card').style.display = 'none';
       const section = document.getElementById('student-profile-section');
       section.style.display = 'block';
+      section.style.removeProperty('border-top');
+      section.style.removeProperty('margin-top');
+      section.style.removeProperty('padding-top');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       document.getElementById('sp-nav-label').textContent = `${index + 1} of ${students.length}`;
 
+      // Sex-based SVG avatar
+      const isMale = s.sex && s.sex.toLowerCase() === 'male';
+      const isFemale = s.sex && s.sex.toLowerCase() === 'female';
       const avatarEl = document.getElementById('sp-avatar');
-      avatarEl.style.background = s.sex?.toLowerCase() === 'male' ? 'linear-gradient(135deg,#bfdbfe,#3b82f6)' : 'linear-gradient(135deg,#fbcfe8,#ec4899)';
-      avatarEl.innerHTML = `<div class="w-full h-full flex items-center justify-center text-white text-3xl font-bold">${s.first_name[0]}${s.last_name[0]}</div>`;
+      if (isMale) {
+        avatarEl.style.background = 'linear-gradient(135deg,#bfdbfe,#3b82f6)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#93c5fd"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#3b82f6"/><circle cx="50" cy="38" r="17" fill="#fde68a"/><path d="M33 36 Q50 21 67 36" stroke="#92400e" stroke-width="3" fill="none"/></svg>`;
+      } else if (isFemale) {
+        avatarEl.style.background = 'linear-gradient(135deg,#fbcfe8,#ec4899)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#f9a8d4"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#ec4899"/><circle cx="50" cy="38" r="17" fill="#fde68a"/><path d="M30 28 Q50 8 70 28 Q68 17 50 14 Q32 17 30 28Z" fill="#92400e"/><path d="M29 30 Q19 38 28 48" stroke="#92400e" stroke-width="4" fill="none"/><path d="M71 30 Q81 38 72 48" stroke="#92400e" stroke-width="4" fill="none"/></svg>`;
+      } else {
+        avatarEl.style.background = 'linear-gradient(135deg,#e5e7eb,#6b7280)';
+        avatarEl.innerHTML = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full"><circle cx="50" cy="38" r="22" fill="#d1d5db"/><ellipse cx="50" cy="96" rx="35" ry="28" fill="#6b7280"/><circle cx="50" cy="38" r="17" fill="#fde68a"/></svg>`;
+      }
 
-      document.getElementById('sp-name').textContent = `${s.first_name} ${s.last_name}`;
+      const statusColors = {
+        active: 'bg-green-100 text-green-700 border-green-300',
+        inactive: 'bg-gray-100 text-gray-600 border-gray-300',
+        pending: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+        rejected: 'bg-red-100 text-red-700 border-red-300'
+      };
+
+      const mname = s.mname ? ` ${s.mname} ` : ' ';
+      document.getElementById('sp-name').textContent = `${s.first_name}${mname}${s.last_name}`;
       document.getElementById('sp-username').textContent = `@${s.username}`;
-      document.getElementById('sp-status').textContent = s.status;
+
+      const now = new Date();
+      let expiryInfo = '';
+      if (s.approved_at) {
+        const approvedAt = new Date(s.approved_at);
+        const expiryDate = new Date(approvedAt.getTime() + (180 * 24 * 60 * 60 * 1000));
+        const daysLeft = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
+
+        let expiryColor = 'text-gray-500';
+        if (daysLeft < 30) expiryColor = 'text-red-500 font-bold';
+        else if (daysLeft < 60) expiryColor = 'text-orange-500 font-bold';
+
+        expiryInfo = `<span class="ml-4 ${expiryColor}">Expiring: ${expiryDate.toLocaleDateString()} (${daysLeft > 0 ? daysLeft + ' days left' : 'Expired'})</span>`;
+      }
+      document.getElementById('sp-generated-date').innerHTML = `Generated on: ${now.toLocaleDateString()} ${now.toLocaleTimeString()} ${expiryInfo}`;
+
+      const statusEl = document.getElementById('sp-status');
+      statusEl.textContent = s.status || 'N/A';
+      statusEl.className = `px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-wider ${statusColors[s.status] || statusColors.pending}`;
       document.getElementById('sp-email').textContent = s.email || 'N/A';
       document.getElementById('sp-contact').textContent = s.contact_num || 'N/A';
       document.getElementById('sp-sex').textContent = s.sex || 'N/A';
@@ -1871,84 +2030,328 @@
       document.getElementById('sp-barangay').textContent = s.barangay || 'N/A';
       document.getElementById('sp-address').textContent = s.address || 'N/A';
 
-      document.getElementById('sp-elem').textContent = s.elem_school || 'N/A';
-      document.getElementById('sp-jhs').textContent = s.jhs_school || 'N/A';
-      document.getElementById('sp-shs').textContent = s.shs_school || 'N/A';
-      document.getElementById('sp-college').textContent = s.college_school || 'N/A';
+      // Extended Profile Fields
+      document.getElementById('sp-elem').textContent = s.elem_school ? `${s.elem_school} (${s.elem_year || 'N/A'})` : 'N/A';
+      document.getElementById('sp-jhs').textContent = s.jhs_school ? `${s.jhs_school} (${s.jhs_year || 'N/A'})` : 'N/A';
+      document.getElementById('sp-shs').textContent = s.shs_school ? `${s.shs_school} (${s.shs_year || 'N/A'})` : 'N/A';
+      document.getElementById('sp-college').textContent = s.college_school ? `${s.college_school} (${s.college_year || 'N/A'})` : 'N/A';
+
       document.getElementById('sp-parent').textContent = s.parent_name || 'N/A';
       document.getElementById('sp-guardian').textContent = s.guardian_name || 'N/A';
       document.getElementById('sp-guardian-contact').textContent = s.guardian_contact || 'N/A';
       document.getElementById('sp-achievements').textContent = s.achievements || 'None registered.';
 
       const isActive = s.status === 'active';
+      const isPending = s.status === 'pending';
       const toggleBtn = document.getElementById('sp-toggle-btn');
-      toggleBtn.textContent = isActive ? 'Deactivate' : 'Activate';
-      toggleBtn.className = `w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition ${isActive ? 'bg-orange-500 hover:bg-orange-600' : 'bg-brand-primary hover:opacity-90'}`;
-      toggleBtn.onclick = () => toggleStudentStatus(s.id, s.status);
+
+      if (isPending) {
+        // Pending students cannot be manually activated — they must first be approved via Applicant Registration
+        toggleBtn.textContent = 'Activate';
+        toggleBtn.disabled = true;
+        toggleBtn.className = 'w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition bg-gray-400 cursor-not-allowed opacity-60';
+        toggleBtn.title = 'Student must be approved in Applicant Registration first.';
+        toggleBtn.onclick = null;
+      } else {
+        toggleBtn.disabled = false;
+        toggleBtn.textContent = isActive ? 'Deactivate' : 'Activate';
+        toggleBtn.className = `w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition ${isActive ? 'bg-orange-500 hover:bg-orange-600' : 'bg-brand-primary hover:opacity-90'}`;
+        toggleBtn.title = '';
+        toggleBtn.onclick = () => toggleStudentStatus(s.id, s.status);
+      }
+
+      let renewBtn = document.getElementById('sp-renew-btn');
+      if (!renewBtn) {
+        renewBtn = document.createElement('button');
+        renewBtn.id = 'sp-renew-btn';
+        toggleBtn.parentNode.insertBefore(renewBtn, toggleBtn.nextSibling);
+      }
+
+      if (s.status === 'active' || s.status === 'inactive') {
+        renewBtn.style.display = 'block';
+        renewBtn.textContent = 'Renew Account';
+        renewBtn.className = 'w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition bg-blue-500 hover:bg-blue-600 mt-2';
+        renewBtn.onclick = () => renewStudent(s.id);
+      } else {
+        renewBtn.style.display = 'none';
+      }
 
       document.getElementById('sp-delete-btn').onclick = () => deleteStudent(s.id);
-      document.getElementById('sp-message-btn').onclick = () => {
-        const m = document.getElementById('message-choice-modal');
-        m.dataset.studentId = s.id;
-        m.dataset.studentName = s.first_name + ' ' + s.last_name;
-        m.dataset.studentEmail = s.email || '';
-        m.style.display = 'flex';
+
+      const msgBtn = document.getElementById('sp-message-btn');
+      msgBtn.onclick = () => {
+        // Store student data in the modal for later use
+        const choiceModal = document.getElementById('message-choice-modal');
+        choiceModal.dataset.studentId = s.id;
+        choiceModal.dataset.studentName = s.first_name + ' ' + s.last_name;
+        choiceModal.dataset.studentEmail = s.email;
+        choiceModal.style.display = 'block';
       };
+
       _loadStudentDocs(s.id);
     }
 
-    function goBackToStudentList() {
-      document.getElementById('student-profile-section').style.display = 'none';
-      document.getElementById('student-list-card').style.display = 'block';
-    }
+    async function _loadStudentDocs(studentId) {
+      const container = document.getElementById('sp-documents');
+      container.innerHTML = '<p class="text-xs text-gray-400">Loading...</p>';
+      try {
+        const res = await fetch(`/api/admin/students/${studentId}/documents/`, { credentials: 'same-origin' });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
 
-    function navigateStudent(dir) {
-      const visible = _spGetVisible();
-      const next = Math.max(0, Math.min(_spCurrentIndex + dir, visible.length - 1));
-      _renderStudentProfile(next, visible);
-    }
+        container.innerHTML = '';
 
-    function toggleStudentStatus(id, currentStatus) {
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-      fetch(`/api/admin/students/${id}/toggle-status/`, {
-        method: 'POST',
-        headers: { 'X-CSRFToken': getCookie('csrftoken'), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            Swal.fire('Success', `Student is now ${newStatus}`, 'success');
-            loadStudents();
-            if (document.getElementById('student-profile-section').style.display === 'block') {
-              setTimeout(() => viewStudentProfile(id), 500);
+        const requiredDocs = data.required_documents || [];
+        const uploadedNames = new Set(data.uploaded_names || []);
+
+        // Build a lookup: document name → uploaded doc object (for view link)
+        const uploadedMap = {};
+        (data.documents || []).forEach(d => { if (d.name) uploadedMap[d.name] = d; });
+
+        if (requiredDocs.length > 0) {
+          // Show all required docs with check/uncheck state
+          requiredDocs.forEach(docName => {
+            const isUploaded = uploadedNames.has(docName);
+            const uploadedDoc = uploadedMap[docName];
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+            row.innerHTML = `
+              <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 ${isUploaded ? 'bg-brand-primary border-brand-primary' : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'}">
+                ${isUploaded ? '<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+              </div>
+              <span class="flex-1 text-sm font-medium ${isUploaded ? 'text-gray-800 dark:text-gray-200' : 'text-gray-400 dark:text-gray-500'}">${docName}</span>
+              ${isUploaded && uploadedDoc ? `<a href="${uploadedDoc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>` : '<span class="text-xs text-gray-300 dark:text-gray-600 shrink-0 ml-2">Not uploaded</span>'}
+            `;
+            container.appendChild(row);
+          });
+          // If there are extra uploaded docs not in the required list, show them too
+          (data.documents || []).forEach(doc => {
+            if (doc.name && !uploadedNames.has(doc.name) === false && !requiredDocs.includes(doc.name)) {
+              const date = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+              const row = document.createElement('div');
+              row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+              row.innerHTML = `
+                <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 bg-brand-primary border-brand-primary">
+                  <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <span class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">${doc.name}</span>
+                <span class="text-xs text-gray-400 shrink-0">${date}</span>
+                <a href="${doc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>
+              `;
+              container.appendChild(row);
             }
-          }
-        });
+          });
+        } else if (data.documents && data.documents.length > 0) {
+          // No required docs list — just show uploaded ones
+          data.documents.forEach(doc => {
+            const date = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const row = document.createElement('div');
+            row.className = 'flex items-center gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700 last:border-0';
+            row.innerHTML = `
+              <div class="w-5 h-5 rounded shrink-0 flex items-center justify-center border-2 bg-brand-primary border-brand-primary">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                </div>
+              <span class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-200">${doc.name || 'Document'}</span>
+              <span class="text-xs text-gray-400 shrink-0">${date}</span>
+              <a href="${doc.url}" target="_blank" class="text-brand-primary text-xs font-semibold hover:underline shrink-0 ml-2">View</a>
+            `;
+            container.appendChild(row);
+          });
+        } else {
+          container.innerHTML = '<p class="text-xs text-gray-400 italic">No documents or program requirements found.</p>';
+        }
+      } catch (e) {
+        container.innerHTML = '<p class="text-xs text-red-400 italic">Could not load documents.</p>';
+      }
     }
 
-    function deleteStudent(id) {
+    function toggleStudentStatus(studentId, currentStatus) {
+      const action = currentStatus === 'active' ? 'deactivate' : 'activate';
       Swal.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        text: `Are you sure you want to ${action} this student?`,
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        confirmButtonText: 'Yes, delete it!'
+        confirmButtonColor: currentStatus === 'active' ? '#f59e0b' : '#10b981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: `Yes, ${action}!`
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(`/api/admin/students/${id}/delete/`, {
+          fetch(`/api/admin/students/${studentId}/toggle/`, {
             method: 'POST',
-            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
           })
             .then(res => res.json())
             .then(data => {
               if (data.success) {
-                Swal.fire('Deleted!', 'Student has been deleted.', 'success');
-                goBackToStudentList();
+                // Reload list to update UI
                 loadStudents();
+                // Optionally update stats
+                loadDashboardStats();
+                Swal.fire('Updated!', `The student has been ${action}d.`, 'success');
+              } else {
+                Swal.fire('Error', 'Error: ' + data.error, 'error');
               }
+            })
+            .catch(err => {
+              console.error('Error toggling student status:', err);
+              Swal.fire('Error', 'An error occurred.', 'error');
             });
+        }
+      });
+    }
+
+    function deleteStudent(studentId) {
+      Swal.fire({
+        title: 'Delete Student?',
+        text: "Are you sure you want to delete this student? This action cannot be undone and will delete all associated applications and documents.",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`/api/admin/students/${studentId}/delete/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Deleted!', data.message, 'success');
+                loadStudents();
+                loadDashboardStats();
+              } else {
+                Swal.fire('Error', 'Error deleting student: ' + data.error, 'error');
+              }
+            })
+            .catch(err => {
+              console.error('Error deleting student:', err);
+              Swal.fire('Error', 'An error occurred while deleting the student.', 'error');
+            });
+        }
+      });
+    }
+
+    function openEditStudentModal(studentId) {
+      const student = currentStudents.find(s => s.id === studentId);
+      if (!student) return;
+
+      document.getElementById('edit_student_id').value = student.id;
+      document.getElementById('edit_student_first_name').value = student.first_name;
+      document.getElementById('edit_student_mname').value = student.mname || '';
+      document.getElementById('edit_student_last_name').value = student.last_name;
+      document.getElementById('edit_student_username').value = student.username;
+      document.getElementById('edit_student_email').value = student.email;
+      document.getElementById('edit_student_contact').value = student.contact_num;
+      document.getElementById('edit_student_barangay').value = student.barangay || '';
+      document.getElementById('edit_student_type').value = student.student_type || '';
+      document.getElementById('edit_student_address').value = student.address || '';
+      document.getElementById('edit_student_program').value = student.program_and_yr || '';
+
+      document.getElementById('edit_student_elem').value = student.elem_school || '';
+      document.getElementById('edit_student_elem_year').value = student.elem_year || '';
+      document.getElementById('edit_student_jhs').value = student.jhs_school || '';
+      document.getElementById('edit_student_jhs_year').value = student.jhs_year || '';
+      document.getElementById('edit_student_shs').value = student.shs_school || '';
+      document.getElementById('edit_student_shs_year').value = student.shs_year || '';
+      document.getElementById('edit_student_college').value = student.college_school || '';
+      document.getElementById('edit_student_college_year').value = student.college_year || '';
+      document.getElementById('edit_student_achievements').value = student.achievements || '';
+      document.getElementById('edit_student_parent').value = student.parent_name || '';
+      document.getElementById('edit_student_guardian').value = student.guardian_name || '';
+      document.getElementById('edit_student_guardian_contact').value = student.guardian_contact || '';
+      handleAdminStudentTypeChange();
+
+      // Handle status select if you want to allow status changes via edit:
+      const statusSelect = document.getElementById('edit_student_status');
+      if (statusSelect) statusSelect.value = student.status;
+
+      document.getElementById('edit-student-modal').style.display = 'block';
+    }
+
+    function closeEditStudentModal() {
+      document.getElementById('edit-student-modal').style.display = 'none';
+    }
+
+    function handleAdminStudentTypeChange() {
+      const typeSelect = document.getElementById('edit_student_type');
+      const container = document.getElementById('edit_program_yr_container');
+      const input = document.getElementById('edit_student_program');
+
+      if (typeSelect.value === 'Undergraduate') {
+        container.style.display = 'block';
+        input.setAttribute('required', 'required');
+      } else {
+        container.style.display = 'none';
+        input.removeAttribute('required');
+        input.value = '';
+      }
+    }
+
+    // Edit Student Form Handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const editStudentForm = document.getElementById('edit-student-form');
+      if (editStudentForm) {
+        editStudentForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const studentId = document.getElementById('edit_student_id').value;
+          const formData = new FormData(this);
+
+          // Convert FormData to JSON object
+          const data = {};
+          formData.forEach((value, key) => data[key] = value);
+
+          fetch(`/api/admin/students/${studentId}/edit/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+            credentials: 'same-origin'
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                Swal.fire('Success', data.message, 'success');
+                closeEditStudentModal();
+                loadStudents();
+              } else {
+                Swal.fire('Error', 'Error updating student: ' + data.error, 'error');
+              }
+            })
+            .catch(err => {
+              console.error('Error updating student:', err);
+              Swal.fire('Error', 'An error occurred while updating the student.', 'error');
+            });
+        });
+      }
+    });
+
+    function filterStudents() {
+      const searchText = document.getElementById('student-search').value.toLowerCase();
+      const statusFilter = document.getElementById('student-status-filter').value;
+      const items = document.querySelectorAll('.student-item');
+
+      items.forEach(item => {
+        const nameMatch = item.dataset.name.includes(searchText);
+        const statusMatch = statusFilter === 'all' || item.dataset.status === statusFilter;
+
+        if (nameMatch && statusMatch) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
         }
       });
     }
@@ -2209,6 +2612,7 @@
 
       const new_admin_username = document.getElementById('new_admin_username').value;
       const new_admin_fullname = document.getElementById('new_admin_fullname').value;
+      const new_admin_role = document.getElementById('new_admin_role').value;
       const new_admin_password = document.getElementById('new_admin_password').value;
       const new_admin_confirm_password = document.getElementById('new_admin_confirm_password').value;
 
@@ -2231,6 +2635,7 @@
         body: JSON.stringify({
           username: new_admin_username,
           full_name: new_admin_fullname,
+          role: new_admin_role,
           password: new_admin_password,
           confirm_password: new_admin_confirm_password
         })
@@ -3409,42 +3814,6 @@
     }
   </script>
 
-  <!-- Inbox / Support Tab -->
-  <div id="inbox" class="tab-content" style="display: none;">
-    <div class="card">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h3>Inbox & Support Tickets</h3>
-        <div style="display: flex; gap: 10px;">
-          <select id="inbox-filter" onchange="filterAdminMessages()"
-            style="padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; font-family: 'Roboto', sans-serif;">
-            <option value="all">All Messages</option>
-            <option value="unread">Unread Only</option>
-          </select>
-          <button class="btn btn-primary" onclick="loadAdminMessages()">Refresh</button>
-        </div>
-      </div>
-      <div class="table-container shadow-sm border border-gray-100 rounded-xl">
-        <table>
-          <thead>
-            <tr style="background-color: #f8fafc;">
-              <th style="width: 50px;">Status</th>
-              <th>Student</th>
-              <th>Subject</th>
-              <th>Date</th>
-              <th style="text-align: center; width: 120px;">Action</th>
-            </tr>
-          </thead>
-          <tbody id="admin-inbox-list">
-            <!-- Messages will be injected here -->
-            <tr>
-              <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">Loading messages...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
   </div>
   <!-- End of Main Content -->
 
@@ -3573,96 +3942,7 @@
       loadPopups();
     }
 
-    let currentStudents = [];
 
-    function loadStudents() {
-      console.log('Loading students...');
-      fetch('/api/admin/student-applications/', { // Reusing this endpoint as it returns all students
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin'
-      })
-        .then(response => response.json())
-        .then(data => {
-          const list = document.getElementById('student-list');
-          if (!list) return;
-
-          list.innerHTML = '';
-
-          if (!data.applications || data.applications.length === 0) {
-            list.innerHTML = '<p class="no-data">No students found.</p>';
-            return;
-          }
-
-          currentStudents = data.applications;
-
-          data.applications.forEach(student => {
-            const el = createStudentElement(student);
-            list.appendChild(el);
-          });
-        })
-        .catch(err => console.error('Error loading students:', err));
-    }
-
-    function createStudentElement(student) {
-      const div = document.createElement('div');
-      div.className = `student-item student-${student.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
-      // Add data attributes for filtering
-      div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
-      div.dataset.status = student.status;
-
-      const isActive = student.status === 'active';
-      const isInactive = student.status === 'inactive';
-
-      const statusColors = {
-        'active': 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border-green-200',
-        'inactive': 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200',
-        'pending': 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 border-yellow-200',
-        'rejected': 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 border-red-200'
-      };
-
-      const statusClass = statusColors[student.status.toLowerCase()] || statusColors['pending'];
-
-      div.innerHTML = `
-        <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
-            <div class="flex-1 min-w-0 pr-2">
-                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${student.first_name} ${student.last_name}">${student.first_name} ${student.last_name}</h4> 
-                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${student.username}</span>
-            </div>
-            <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${student.status}</span>
-        </div>
-        <div class="flex flex-col gap-2 flex-1 text-sm">
-            <div class="flex flex-col">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Program</span>
-                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.program_and_yr}">${student.program_and_yr || 'N/A'}</span>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Email</span>
-                <span class="text-gray-800 dark:text-gray-200 truncate" title="${student.email}">${student.email || 'N/A'}</span>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact</span>
-                <span class="text-gray-800 dark:text-gray-200 truncate">${student.contact_num || 'N/A'}</span>
-            </div>
-        </div>
-        
-        <div class="flex flex-wrap gap-2 pt-3 border-t border-gray-100 dark:border-gray-700 mt-auto">
-            <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='openEditStudentModal(${student.id})'>
-                <i class="fas fa-edit mr-1"></i> Edit
-            </button>
-            <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
-                    onclick="toggleStudentStatus(${student.id}, '${student.status}')">
-                ${isActive ? 'Deactivate' : 'Activate'}
-            </button>
-            <button class="flex-1 text-center py-1.5 px-2 bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800 rounded text-xs font-medium transition-colors" onclick="deleteStudent(${student.id})">
-                <i class="fas fa-trash mr-1"></i> Del
-            </button>
-        </div>
-      `;
-      return div;
-    }
 
     // Inbox & Ticketing System Functions
     let adminMessages = [];
@@ -3846,161 +4126,7 @@
       setTimeout(() => loadAdminMessages(), 1000);
     });
 
-    function toggleStudentStatus(studentId, currentStatus) {
-      const action = currentStatus === 'active' ? 'deactivate' : 'activate';
-      if (!confirm(`Are you sure you want to ${action} this student?`)) return;
 
-      fetch(`/api/admin/students/${studentId}/toggle/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            // Reload list to update UI
-            loadStudents();
-            // Optionally update stats
-            loadDashboardStats();
-          } else {
-            alert('Error: ' + data.error);
-          }
-        })
-        .catch(err => {
-          console.error('Error toggling student status:', err);
-          alert('An error occurred.');
-        });
-    }
-
-    function deleteStudent(studentId) {
-      if (!confirm('Are you sure you want to delete this student? This action cannot be undone and will delete all associated applications and documents.')) return;
-
-      fetch(`/api/admin/students/${studentId}/delete/`, {
-        method: 'POST',
-        headers: {
-          'X-CSRFToken': getCookie('csrftoken'),
-          'Content-Type': 'application/json'
-        },
-        credentials: 'same-origin'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert(data.message);
-            loadStudents();
-            loadDashboardStats();
-          } else {
-            alert('Error deleting student: ' + data.error);
-          }
-        })
-        .catch(err => {
-          console.error('Error deleting student:', err);
-          alert('An error occurred while deleting the student.');
-        });
-    }
-
-    function openEditStudentModal(studentId) {
-      const student = currentStudents.find(s => s.id === studentId);
-      if (!student) return;
-
-      document.getElementById('edit_student_id').value = student.id;
-      document.getElementById('edit_student_first_name').value = student.first_name;
-      document.getElementById('edit_student_last_name').value = student.last_name;
-      document.getElementById('edit_student_username').value = student.username;
-      document.getElementById('edit_student_email').value = student.email;
-      document.getElementById('edit_student_contact').value = student.contact_num;
-      document.getElementById('edit_student_barangay').value = student.barangay || '';
-      document.getElementById('edit_student_type').value = student.student_type || '';
-      document.getElementById('edit_student_address').value = student.address;
-      document.getElementById('edit_student_program').value = student.program_and_yr || '';
-      handleAdminStudentTypeChange();
-
-      // Handle status select if you want to allow status changes via edit:
-      const statusSelect = document.getElementById('edit_student_status');
-      if (statusSelect) statusSelect.value = student.status;
-
-      document.getElementById('edit-student-modal').style.display = 'block';
-    }
-
-    function closeEditStudentModal() {
-      document.getElementById('edit-student-modal').style.display = 'none';
-    }
-
-    function handleAdminStudentTypeChange() {
-      const typeSelect = document.getElementById('edit_student_type');
-      const container = document.getElementById('edit_program_yr_container');
-      const input = document.getElementById('edit_student_program');
-
-      if (typeSelect.value === 'Undergraduate') {
-        container.style.display = 'block';
-        input.setAttribute('required', 'required');
-      } else {
-        container.style.display = 'none';
-        input.removeAttribute('required');
-        input.value = '';
-      }
-    }
-
-    // Edit Student Form Handler
-    document.addEventListener('DOMContentLoaded', () => {
-      const editStudentForm = document.getElementById('edit-student-form');
-      if (editStudentForm) {
-        editStudentForm.addEventListener('submit', function (e) {
-          e.preventDefault();
-
-          const studentId = document.getElementById('edit_student_id').value;
-          const formData = new FormData(this);
-
-          // Convert FormData to JSON object
-          const data = {};
-          formData.forEach((value, key) => data[key] = value);
-
-          fetch(`/api/admin/students/${studentId}/edit/`, {
-            method: 'POST',
-            headers: {
-              'X-CSRFToken': getCookie('csrftoken'),
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-            credentials: 'same-origin'
-          })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                alert(data.message);
-                closeEditStudentModal();
-                loadStudents();
-              } else {
-                alert('Error updating student: ' + data.error);
-              }
-            })
-            .catch(err => {
-              console.error('Error updating student:', err);
-              alert('An error occurred while updating the student.');
-            });
-        });
-      }
-    });
-
-    function filterStudents() {
-      const searchText = document.getElementById('student-search').value.toLowerCase();
-      const statusFilter = document.getElementById('student-status-filter').value;
-      const items = document.querySelectorAll('.student-item');
-
-      items.forEach(item => {
-        const nameMatch = item.dataset.name.includes(searchText);
-        const statusMatch = statusFilter === 'all' || item.dataset.status === statusFilter;
-
-        if (nameMatch && statusMatch) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
-      });
-    }
   </script>
   </main>
   </div>

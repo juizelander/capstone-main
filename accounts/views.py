@@ -425,6 +425,7 @@ def create_admin(request):
         data = json.loads(request.body)
         new_username = data.get('username')
         new_full_name = data.get('full_name', '')
+        new_role = data.get('role', '')
         new_password = data.get('password')
         confirm_password = data.get('confirm_password')
 
@@ -440,6 +441,7 @@ def create_admin(request):
         new_admin = Admin.objects.create(
             admin_name=new_username,
             full_name=new_full_name,
+            role=new_role,
             password=new_password
         )
 
