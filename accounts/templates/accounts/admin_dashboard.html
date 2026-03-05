@@ -15,6 +15,8 @@
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Leaflet GIS Mapping -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -212,8 +214,7 @@
     <div class="sd-main-wrapper">
       <!-- Topbar -->
       <header class="sd-topbar">
-        <div class="topbar-search">
-          <i class="fas fa-search"></i>
+        <div class="topbar-search" style="display: none;">
           <input type="text" placeholder="Search... (⌘F)">
         </div>
         <div class="topbar-actions">
@@ -565,18 +566,48 @@
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Applicant Management</h3>
-              <div class="application-filters flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+              <div class="application-filters grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-3 w-full md:w-auto">
                 <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
                   class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
                 <select id="student-status-filter" onchange="filterStudents()"
                   class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
-                  <option value="all">All Students</option>
+                  <option value="all">All Statuses</option>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                   <option value="pending">Pending</option>
                   <option value="rejected">Rejected</option>
                 </select>
+                <select id="student-barangay-filter" onchange="filterStudents()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full sm:w-auto p-2.5">
+                  <option value="all">All Barangays</option>
+                  <option value="Aningway-Sacatihan">Aningway-Sacatihan</option>
+                  <option value="Asinan (Poblacion)">Asinan (Poblacion)</option>
+                  <option value="Asinan Proper">Asinan Proper</option>
+                  <option value="Baraca-Camachile (Poblacion)">Baraca-Camachile (Poblacion)</option>
+                  <option value="Batiawan">Batiawan</option>
+                  <option value="Calapacuan">Calapacuan</option>
+                  <option value="Calapandayan (Poblacion)">Calapandayan (Poblacion)</option>
+                  <option value="Cawag">Cawag</option>
+                  <option value="Ilwas (Poblacion)">Ilwas (Poblacion)</option>
+                  <option value="Mangan-Vaca">Mangan-Vaca</option>
+                  <option value="Matain">Matain</option>
+                  <option value="Naugsol">Naugsol</option>
+                  <option value="Pamatawan">Pamatawan</option>
+                  <option value="San Isidro">San Isidro</option>
+                  <option value="Santo Tomas">Santo Tomas</option>
+                  <option value="Wawandue (Poblacion)">Wawandue (Poblacion)</option>
+                </select>
+                <button id="bulk-download-zip" onclick="downloadSelectedZIP()" disabled
+                  class="flex items-center justify-center gap-2 bg-brand-primary hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm">
+                  <i class="fas fa-file-archive"></i> Download ZIP
+                </button>
               </div>
+            </div>
+            
+            <div class="flex items-center gap-2 mb-4 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <input type="checkbox" id="select-all-students" onchange="toggleSelectAll(this)" class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                <label for="select-all-students" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Select All Visible</label>
+                <span id="selected-count" class="text-xs text-gray-500 dark:text-gray-400 ml-auto">0 selected</span>
             </div>
 
             <div class="student-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
@@ -1822,6 +1853,7 @@
       div.className = `student-item student-${student.status} bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4`;
       div.dataset.name = (student.first_name + ' ' + student.last_name + ' ' + student.username).toLowerCase();
       div.dataset.status = student.status;
+      div.dataset.barangay = student.barangay || '';
 
       const isActive = student.status === 'active';
 
@@ -1836,9 +1868,12 @@
 
       div.innerHTML = `
         <div class="flex justify-between items-start border-b border-gray-100 dark:border-gray-700 pb-3">
-            <div class="flex-1 min-w-0 pr-2">
-                <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${student.first_name} ${student.last_name}">${student.first_name} ${student.last_name}</h4> 
-                <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${student.username}</span>
+            <div class="flex items-center gap-3 flex-1 min-w-0 pr-2">
+                <input type="checkbox" class="student-checkbox w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary" data-id="${student.id}" onchange="updateSelectedCount()">
+                <div class="min-w-0">
+                    <h4 class="text-base font-bold text-gray-900 dark:text-white truncate" title="${student.first_name} ${student.last_name}">${student.first_name} ${student.last_name}</h4> 
+                    <span class="text-xs text-gray-500 dark:text-gray-400 truncate block">@${student.username}</span>
+                </div>
             </div>
             <span class="px-2.5 py-1 text-xs font-semibold rounded-full border ${statusClass} uppercase tracking-wider">${student.status}</span>
         </div>
@@ -1861,9 +1896,6 @@
             <button class="flex-1 text-center py-1.5 px-2 bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 border border-blue-200 dark:border-blue-800 rounded text-xs font-medium transition-colors" onclick='viewStudentProfile(${student.id})'>
                 <i class="fas fa-eye mr-1"></i> View
             </button>
-            <button class="flex-1 text-center py-1.5 px-2 bg-gray-50 text-gray-600 hover:bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400 border border-gray-200 dark:border-gray-800 rounded text-xs font-medium transition-colors" onclick='openEditStudentModal(${student.id})'>
-                <i class="fas fa-edit mr-1"></i> Edit
-            </button>
             <button class="flex-1 text-center py-1.5 px-2 ${isActive ? 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800' : 'bg-brand-primary/10 text-brand-primary border-brand-primary/20 hover:bg-brand-primary/20 dark:bg-brand-primary/20'} rounded text-xs font-medium transition-colors" 
                     onclick="toggleStudentStatus(${student.id}, '${student.status}')">
                 ${isActive ? 'Deactivate' : 'Activate'}
@@ -1880,10 +1912,73 @@
     function _spGetVisible() {
       const search = (document.getElementById('student-search').value || '').toLowerCase();
       const status = document.getElementById('student-status-filter').value;
+      const barangay = (document.getElementById('student-barangay-filter') ? document.getElementById('student-barangay-filter').value : 'all');
       return currentStudents.filter(s =>
         (s.first_name + ' ' + s.last_name + ' ' + s.username).toLowerCase().includes(search) &&
-        (status === 'all' || s.status === status)
+        (status === 'all' || s.status === status) &&
+        (barangay === 'all' || s.barangay === barangay)
       );
+    }
+
+    function toggleSelectAll(master) {
+        const visibleIds = _spGetVisible().map(s => s.id);
+        const checkboxes = document.querySelectorAll('.student-checkbox');
+        checkboxes.forEach(cb => {
+            if (visibleIds.includes(parseInt(cb.dataset.id))) {
+                cb.checked = master.checked;
+            }
+        });
+        updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+        const checked = document.querySelectorAll('.student-checkbox:checked');
+        const count = checked.length;
+        document.getElementById('selected-count').textContent = `${count} selected`;
+        document.getElementById('bulk-download-zip').disabled = count === 0;
+    }
+
+    async function downloadSelectedZIP() {
+        const checked = document.querySelectorAll('.student-checkbox:checked');
+        const ids = Array.from(checked).map(cb => parseInt(cb.dataset.id));
+        
+        if (ids.length === 0) return;
+
+        const btn = document.getElementById('bulk-download-zip');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating ZIP...';
+
+        try {
+            const response = await fetch('/api/admin/bulk-download-documents/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ student_ids: ids }),
+            });
+
+            if (!response.ok) throw new Error('Download failed');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `Bulk_Documents_${new Date().toISOString().slice(0,10)}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            Swal.fire('Success', 'Bulk download started successfully.', 'success');
+        } catch (err) {
+            console.error(err);
+            Swal.fire('Error', 'Failed to generate ZIP file.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            updateSelectedCount();
+        }
     }
 
     function renewStudent(studentId) {
@@ -2298,6 +2393,37 @@
       }
     }
 
+    function printStudentProfile() {
+      document.body.classList.add('printing-profile');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('printing-profile');
+      }, 1000);
+    }
+
+    function downloadStudentProfile() {
+      // Temporarily style it for PDF printing
+      document.body.classList.add('printing-profile');
+      const element = document.getElementById('student-profile-section');
+
+      // Setup html2pdf options
+      const opt = {
+        margin: 0.5,
+        filename: `Student_Profile_${document.getElementById('sp-name').innerText.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      // Generate PDF
+      html2pdf().set(opt).from(element).save().then(() => {
+        document.body.classList.remove('printing-profile');
+      }).catch(err => {
+        console.error("PDF generation error:", err);
+        document.body.classList.remove('printing-profile');
+      });
+    }
+
     // Edit Student Form Handler
     document.addEventListener('DOMContentLoaded', () => {
       const editStudentForm = document.getElementById('edit-student-form');
@@ -2342,18 +2468,28 @@
     function filterStudents() {
       const searchText = document.getElementById('student-search').value.toLowerCase();
       const statusFilter = document.getElementById('student-status-filter').value;
+      const barangayFilter = document.getElementById('student-barangay-filter').value;
       const items = document.querySelectorAll('.student-item');
 
       items.forEach(item => {
         const nameMatch = item.dataset.name.includes(searchText);
         const statusMatch = statusFilter === 'all' || item.dataset.status === statusFilter;
+        const barangayMatch = barangayFilter === 'all' || item.dataset.barangay === barangayFilter;
 
-        if (nameMatch && statusMatch) {
+        if (nameMatch && statusMatch && barangayMatch) {
           item.style.display = 'block';
         } else {
           item.style.display = 'none';
+          // Uncheck if hidden to avoid accidental bulk actions on hidden items
+          const cb = item.querySelector('.student-checkbox');
+          if (cb) cb.checked = false;
         }
       });
+      
+      // Reset Select All checkbox
+      const master = document.getElementById('select-all-students');
+      if (master) master.checked = false;
+      updateSelectedCount();
     }
 
     // Messaging Functions

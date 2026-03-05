@@ -13,6 +13,13 @@ from datetime import datetime, timedelta
 from django.db.models import Count
 from django.db.models.functions import TruncDay, TruncMonth
 import json
+import io
+import zipfile
+from django.utils.text import slugify
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from .models import Admin, Student, Popup, StudentDocument, ApplicationDocument, Message, AdminLog
 from home.models import Program, Application
 from capstone.chatbot import validate_document
@@ -2174,13 +2181,184 @@ def admin_get_student_documents(request, student_id):
         uploaded_names = {d['name'] for d in uploaded if d['name']}
 
         return JsonResponse({
-            'success': True,
             'documents': uploaded,
             'required_documents': required_set,
             'uploaded_names': list(uploaded_names),
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+def generate_student_profile_pdf(student):
+    """Generate a PDF summary of the student's profile."""
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter)
+    styles = getSampleStyleSheet()
+    
+    # Custom styles
+    title_style = styles['Heading1']
+    subtitle_style = styles['Heading2']
+    
+    elements = []
+    
+    # Title
+    elements.append(Paragraph(f"Student Profile: {student.first_name} {student.last_name}", title_style))
+    elements.append(Spacer(1, 12))
+    
+    # Basic Info
+    data = [
+        ["Username:", f"@{student.username}"],
+        ["Full Name:", f"{student.first_name} {student.mname or ''} {student.last_name}"],
+        ["Email:", student.email],
+        ["Contact:", student.contact_num],
+        ["Sex:", student.sex],
+        ["Birthday:", str(student.bday)],
+        ["Barangay:", student.barangay or 'N/A'],
+        ["Address:", student.address or 'N/A'],
+        ["Student Type:", student.student_type or 'N/A'],
+        ["Program/Year:", student.program_and_yr or 'N/A'],
+    ]
+    
+    t = Table(data, colWidths=[150, 300])
+    t.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+    ]))
+    elements.append(t)
+    elements.append(Spacer(1, 20))
+    
+    # Academic History
+    elements.append(Paragraph("Academic History", subtitle_style))
+    elements.append(Spacer(1, 6))
+    
+    acad_data = [
+        ["Elementary:", f"{student.elem_school or 'N/A'} ({student.elem_year or 'N/A'})"],
+        ["JHS:", f"{student.jhs_school or 'N/A'} ({student.jhs_year or 'N/A'})"],
+        ["SHS:", f"{student.shs_school or 'N/A'} ({student.shs_year or 'N/A'})"],
+        ["College:", f"{student.college_school or 'N/A'} ({student.college_year or 'N/A'})"],
+    ]
+    
+    t2 = Table(acad_data, colWidths=[150, 300])
+    t2.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+    ]))
+    elements.append(t2)
+    elements.append(Spacer(1, 20))
+    
+    # Family Info
+    elements.append(Paragraph("Family & Achievements", subtitle_style))
+    elements.append(Spacer(1, 6))
+    
+    family_data = [
+        ["Parent Name:", student.parent_name or 'N/A'],
+        ["Guardian Name:", student.guardian_name or 'N/A'],
+        ["Guardian Contact:", student.guardian_contact or 'N/A'],
+        ["Achievements:", student.achievements or 'None Registered'],
+    ]
+    
+    t3 = Table(family_data, colWidths=[150, 300])
+    t3.setStyle(TableStyle([
+        ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+        ('FONTNAME', (0,0), (0,-1), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+    ]))
+    elements.append(t3)
+    
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
+
+
+@csrf_exempt
+def bulk_download_documents(request):
+    """Generate a ZIP file containing all documents for selected students"""
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+        
+    try:
+        data = json.loads(request.body)
+        student_ids = data.get('student_ids', [])
+    except:
+        return JsonResponse({'success': False, 'error': 'Invalid request data'}, status=400)
+
+    if not student_ids:
+        return JsonResponse({'success': False, 'error': 'No students selected'}, status=400)
+
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for sid in student_ids:
+            student = Student.objects.filter(pk=sid).first()
+            if not student:
+                continue
+            
+            # Create a folder name for the student
+            full_name = f"{student.first_name} {student.last_name}"
+            barangay = student.barangay or "NoBarangay"
+            folder_name = f"{slugify(full_name)}_{slugify(barangay)}_{sid}"
+
+            # 1. Profile PDF (Newly Added)
+            try:
+                profile_pdf_buffer = generate_student_profile_pdf(student)
+                zip_file.writestr(f"{folder_name}/Profile_Summary.pdf", profile_pdf_buffer.read())
+            except Exception as e:
+                print(f"Error generating PDF for {sid}: {e}")
+
+            # 2. Primary document (doc_submitted)
+            if student.doc_submitted:
+                try:
+                    name = os.path.basename(student.doc_submitted.name)
+                    # Force evaluation of the file descriptor
+                    with student.doc_submitted.open('rb') as f:
+                        content = f.read()
+                        if content:
+                            zip_file.writestr(f"{folder_name}/Primary_{name}", content)
+                except Exception as e:
+                    print(f"Error reading Primary Doc for {sid}: {e}")
+
+            # 3. Additional Student Documents (StudentDocument)
+            for doc in student.documents.all():
+                if doc.file:
+                    try:
+                        ext = os.path.splitext(doc.file.name)[1]
+                        base_name = doc.document_name if doc.document_name else f"Doc_{doc.id}"
+                        # Clean base_name of illegal characters
+                        base_name = slugify(base_name)
+                        if not base_name.lower().endswith(ext.lower()):
+                            filename = f"{base_name}{ext}"
+                        else:
+                            filename = base_name
+                        
+                        with doc.file.open('rb') as f:
+                            content = f.read()
+                            if content:
+                                zip_file.writestr(f"{folder_name}/{filename}", content)
+                    except Exception as e:
+                        print(f"Error reading Student Doc {doc.id} for {sid}: {e}")
+            
+            # 4. Application Documents (ApplicationDocument linked via home_applications)
+            for app in student.home_applications.all():
+                program_name = slugify(app.program.program_name) if app.program else "UnknownProgram"
+                for app_doc in app.documents.all():
+                    if app_doc.file:
+                        try:
+                            name = os.path.basename(app_doc.file.name)
+                            with app_doc.file.open('rb') as f:
+                                content = f.read()
+                                if content:
+                                    zip_file.writestr(f"{folder_name}/App_{program_name}_{name}", content)
+                        except Exception as e:
+                            print(f"Error reading App Doc {app_doc.id} for {sid}: {e}")
+
+    zip_buffer.seek(0)
+    if zip_buffer.getbuffer().nbytes == 0:
+         return JsonResponse({'success': False, 'error': 'Generated ZIP is empty. No documents were found or readable.'}, status=500)
+
+    response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
+    response['Content-Disposition'] = f'attachment; filename="Bulk_Documents_{timezone.now().strftime("%Y%m%d_%H%M%S")}.zip"'
+    return response
 
 
 
