@@ -12,8 +12,9 @@ def create_program(request):
             application_end_date = request.POST.get('application_end_date') or None
             program_image = request.FILES.get('program_image')
             program_type = request.POST.get('program_type')
+            target_student_types = request.POST.getlist('target_student_types')
             
-            print(f"Creating program: Name={program_name}, Type={program_type}") # Debug log
+            print(f"Creating program: Name={program_name}, Type={program_type}, Targets={target_student_types}") # Debug log
 
             if program_name:  # simple validation
                 Program.objects.create(
@@ -23,7 +24,8 @@ def create_program(request):
                     application_start_date=application_start_date,
                     application_end_date=application_end_date,
                     program_image=program_image,
-                    program_type=program_type
+                    program_type=program_type,
+                    target_student_types=target_student_types
                 )
                 return JsonResponse({'success': True, 'message': 'Program created successfully'})
             else:
@@ -46,7 +48,8 @@ def get_programs(request):
             'application_start_date': p.application_start_date,
             'application_end_date': p.application_end_date,
             'program_image': p.program_image.url if p.program_image else None,
-            'program_type': p.program_type
+            'program_type': p.program_type,
+            'target_student_types': p.target_student_types or []
         }
         for p in programs
     ]
@@ -64,6 +67,9 @@ def edit_program(request, program_id):
             
             if 'document_requirements' in request.POST:
                 program.document_requirements = request.POST.getlist('document_requirements')
+            
+            if 'target_student_types' in request.POST:
+                program.target_student_types = request.POST.getlist('target_student_types')
             
             start_date = request.POST.get('application_start_date')
             if start_date: 

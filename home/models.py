@@ -72,6 +72,7 @@ class Program(models.Model):
         ('Other', 'Other'),
     ]
     program_type = models.CharField(max_length=50, choices=PROGRAM_TYPES, default='Other')
+    target_student_types = models.JSONField(default=list, blank=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

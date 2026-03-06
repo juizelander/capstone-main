@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -2682,3 +2683,55 @@ def admin_analytics_data(request):
         })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+@csrf_exempt
+def get_student_recommendations(request):
+    """API endpoint for student recommendations based on Student Type"""
+    user_id = request.session.get('user_id')
+    role = request.session.get('user_role')
+    if not user_id or role != 'student':
+        return JsonResponse({'success': False, 'error': 'Not authenticated'}, status=401)
+
+    try:
+        from .models import Student
+        from home.models import Program
+
+        student = Student.objects.get(pk=user_id)
+        student_type = student.student_type
+
+        results = []
+
+        if student_type:
+            # Primary: programs explicitly tagged for this student type
+            programs = Program.objects.filter(
+                is_active=True,
+                target_student_types__contains=student_type
+            ).distinct()[:3]
+
+            for p in programs:
+                results.append({
+                    'id': p.program_id,
+                    'name': p.program_name,
+                    'requirements': p.requirements[:120] if p.requirements else "",
+                    'reasons': [f"Recommended for {student_type}"]
+                })
+
+        # Fallback: if no tagged programs found, show up to 3 active programs
+        if not results:
+            fallback = Program.objects.filter(is_active=True).order_by('-program_id')[:3]
+            for p in fallback:
+                results.append({
+                    'id': p.program_id,
+                    'name': p.program_name,
+                    'requirements': p.requirements[:120] if p.requirements else "",
+                    'reasons': ["Open for all applicants"]
+                })
+
+        return JsonResponse({'success': True, 'recommendations': results})
+    except Student.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Student profile not found'}, status=404)
+    except Exception as e:
+        print(f"Recommendation Error: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+

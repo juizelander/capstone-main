@@ -385,7 +385,7 @@
           <div class="mt-12 mb-8 animate-slide-up">
             <div class="flex items-center gap-3 mb-6">
               <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-                <i class="fas fa-chart-pie text-xl"></i>
+                <i class="fa-solid fa-chart-pie text-xl"></i>
               </div>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Scholarship Insights & GIS Distribution</h2>
             </div>
@@ -396,7 +396,7 @@
                 class="xl:col-span-2 card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                    <i class="fas fa-map-marked-alt text-brand-primary"></i>
+                    <i class="fa-solid fa-map-location-dot text-brand-primary"></i>
                     Applicant Geographic Distribution (Subic)
                   </h3>
                   <span class="text-xs text-gray-400">Real-time heat map by Barangay</span>
@@ -410,7 +410,7 @@
                 <div
                   class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex-1 overflow-hidden flex flex-col">
                   <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                    <i class="fas fa-list-ol text-brand-secondary"></i> Top Barangays
+                    <i class="fa-solid fa-list-ol text-brand-secondary"></i> Top Barangays
                   </h3>
                   <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 420px;">
                     <div class="flex justify-center items-center h-40 text-gray-400">
@@ -422,12 +422,12 @@
             </div>
 
             <!-- Analytics Charts Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <!-- Program Popularity -->
               <div
                 class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
+                  <i class="fa-solid fa-graduation-cap text-indigo-500"></i> Program Popularity
                 </h3>
                 <div style="height: 300px;">
                   <canvas id="programStatsChart"></canvas>
@@ -438,13 +438,14 @@
               <div
                 class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
+                  <i class="fa-solid fa-chart-line text-emerald-500"></i> Registration Trends
                 </h3>
                 <div style="height: 300px;">
                   <canvas id="registrationTrendChart"></canvas>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
 
@@ -566,7 +567,8 @@
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Applicant Management</h3>
-              <div class="application-filters grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-3 w-full md:w-auto">
+              <div
+                class="application-filters grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-row gap-3 w-full md:w-auto">
                 <input type="text" id="student-search" placeholder="Search students..." onkeyup="filterStudents()"
                   class="search-input bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
                 <select id="student-status-filter" onchange="filterStudents()"
@@ -603,11 +605,13 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="flex items-center gap-2 mb-4 p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <input type="checkbox" id="select-all-students" onchange="toggleSelectAll(this)" class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
-                <label for="select-all-students" class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Select All Visible</label>
-                <span id="selected-count" class="text-xs text-gray-500 dark:text-gray-400 ml-auto">0 selected</span>
+              <input type="checkbox" id="select-all-students" onchange="toggleSelectAll(this)"
+                class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+              <label for="select-all-students"
+                class="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Select All Visible</label>
+              <span id="selected-count" class="text-xs text-gray-500 dark:text-gray-400 ml-auto">0 selected</span>
             </div>
 
             <div class="student-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
@@ -1078,6 +1082,50 @@
                     <option value="Scholarship">Scholarship</option>
                     <option value="Other">Other</option>
                   </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Target Student
+                    Types</label>
+                  <div
+                    class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900/50">
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Junior High School"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Junior High
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Senior High School"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Senior High
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Undergraduate"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Undergraduate
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Master's"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Master's
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Doctoral"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Doctoral
+                    </label>
+                    <label
+                      class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                      <input type="checkbox" name="target_student_types" value="Board Exam"
+                        class="create-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                      Board Exam
+                    </label>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -1921,64 +1969,64 @@
     }
 
     function toggleSelectAll(master) {
-        const visibleIds = _spGetVisible().map(s => s.id);
-        const checkboxes = document.querySelectorAll('.student-checkbox');
-        checkboxes.forEach(cb => {
-            if (visibleIds.includes(parseInt(cb.dataset.id))) {
-                cb.checked = master.checked;
-            }
-        });
-        updateSelectedCount();
+      const visibleIds = _spGetVisible().map(s => s.id);
+      const checkboxes = document.querySelectorAll('.student-checkbox');
+      checkboxes.forEach(cb => {
+        if (visibleIds.includes(parseInt(cb.dataset.id))) {
+          cb.checked = master.checked;
+        }
+      });
+      updateSelectedCount();
     }
 
     function updateSelectedCount() {
-        const checked = document.querySelectorAll('.student-checkbox:checked');
-        const count = checked.length;
-        document.getElementById('selected-count').textContent = `${count} selected`;
-        document.getElementById('bulk-download-zip').disabled = count === 0;
+      const checked = document.querySelectorAll('.student-checkbox:checked');
+      const count = checked.length;
+      document.getElementById('selected-count').textContent = `${count} selected`;
+      document.getElementById('bulk-download-zip').disabled = count === 0;
     }
 
     async function downloadSelectedZIP() {
-        const checked = document.querySelectorAll('.student-checkbox:checked');
-        const ids = Array.from(checked).map(cb => parseInt(cb.dataset.id));
-        
-        if (ids.length === 0) return;
+      const checked = document.querySelectorAll('.student-checkbox:checked');
+      const ids = Array.from(checked).map(cb => parseInt(cb.dataset.id));
 
-        const btn = document.getElementById('bulk-download-zip');
-        const originalText = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating ZIP...';
+      if (ids.length === 0) return;
 
-        try {
-            const response = await fetch('/api/admin/bulk-download-documents/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ student_ids: ids }),
-            });
+      const btn = document.getElementById('bulk-download-zip');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Generating ZIP...';
 
-            if (!response.ok) throw new Error('Download failed');
+      try {
+        const response = await fetch('/api/admin/bulk-download-documents/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ student_ids: ids }),
+        });
 
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `Bulk_Documents_${new Date().toISOString().slice(0,10)}.zip`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            Swal.fire('Success', 'Bulk download started successfully.', 'success');
-        } catch (err) {
-            console.error(err);
-            Swal.fire('Error', 'Failed to generate ZIP file.', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-            updateSelectedCount();
-        }
+        if (!response.ok) throw new Error('Download failed');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = `Bulk_Documents_${new Date().toISOString().slice(0, 10)}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        Swal.fire('Success', 'Bulk download started successfully.', 'success');
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'Failed to generate ZIP file.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+        updateSelectedCount();
+      }
     }
 
     function renewStudent(studentId) {
@@ -2485,7 +2533,7 @@
           if (cb) cb.checked = false;
         }
       });
-      
+
       // Reset Select All checkbox
       const master = document.getElementById('select-all-students');
       if (master) master.checked = false;
@@ -2939,6 +2987,7 @@
         })
         .catch(err => console.error('Analytics Error:', err));
     }
+
 
     function renderGisMap(coords, stats) {
       if (!gisMap) {
@@ -4469,6 +4518,50 @@
           </div>
 
           <div class="form-group">
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Target Student
+              Types</label>
+            <div
+              class="grid grid-cols-2 lg:grid-cols-3 gap-3 p-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900/50">
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Junior High School"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Junior High
+              </label>
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Senior High School"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Senior High
+              </label>
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Undergraduate"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Undergraduate
+              </label>
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Master's"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Master's
+              </label>
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Doctoral"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Doctoral
+              </label>
+              <label
+                class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-brand-primary transition-colors">
+                <input type="checkbox" name="target_student_types" value="Board Exam"
+                  class="edit-type-check w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary">
+                Board Exam
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
             <label for="edit_requirements"
               class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
             <textarea id="edit_requirements" name="requirements" rows="4"
@@ -4526,6 +4619,12 @@
       document.getElementById('edit_requirements').value = program.requirements;
       document.getElementById('edit_application_start_date').value = program.application_start_date || '';
       document.getElementById('edit_application_end_date').value = program.application_end_date || '';
+
+      // Reset and check target student types
+      const editCheckboxes = document.querySelectorAll('#edit-program-form input[name="target_student_types"]');
+      editCheckboxes.forEach(cb => {
+        cb.checked = (program.target_student_types || []).includes(cb.value);
+      });
 
       document.getElementById('edit-program-modal').style.display = 'flex';
     }

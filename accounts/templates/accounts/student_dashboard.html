@@ -9,10 +9,10 @@
   <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
-  
+
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -66,19 +66,104 @@
       border-radius: 50%;
       border: 2px solid white;
     }
-    
+
     .custom-scrollbar::-webkit-scrollbar {
       width: 6px;
     }
+
     .custom-scrollbar::-webkit-scrollbar-track {
       background: transparent;
     }
+
     .custom-scrollbar::-webkit-scrollbar-thumb {
       background-color: #cbd5e1;
       border-radius: 20px;
     }
+
     .dark .custom-scrollbar::-webkit-scrollbar-thumb {
       background-color: #475569;
+    }
+
+    /* AI Recommendations Styles */
+    .recommendations-container {
+      margin-bottom: 2rem;
+    }
+
+    .recommendation-card-ai {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      padding: 1.25rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark .recommendation-card-ai {
+      background: #1f2937;
+      border-color: #374151;
+    }
+
+    .recommendation-card-ai:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .recommendation-card-ai.high-match {
+      border-left: 4px solid #10b981;
+    }
+
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      background: #ecfdf5;
+      color: #059669;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .dark .ai-badge {
+      background: #064e3b;
+      color: #34d399;
+    }
+
+    .pulse-ai {
+      width: 8px;
+      height: 8px;
+      background: #10b981;
+      border-radius: 50%;
+      margin-right: 6px;
+      animation: ai-pulse 2s infinite;
+    }
+
+    @keyframes ai-pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    .match-reason-tag {
+      font-size: 0.7rem;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .dark .match-reason-tag {
+      background: #334155;
+      color: #cbd5e1;
     }
   </style>
 </head>
@@ -88,57 +173,78 @@
     <!-- Sidebar -->
     <aside class="sd-sidebar">
       <div class="sd-sidebar-header">
-        <a href="#" onclick="switchTab('dashboard')" class="flex items-center gap-2 no-underline" style="text-decoration:none; color:inherit;">
+        <a href="#" onclick="switchTab('dashboard')" class="flex items-center gap-2 no-underline"
+          style="text-decoration:none; color:inherit;">
           <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
           <span>ScholarSync</span>
         </a>
       </div>
       <nav class="sd-sidebar-nav">
-        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('dashboard')">
+        <a href="#" class="nav-item active transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('dashboard')">
           <i class="fas fa-home"></i> Home
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('applications')">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('applications')">
           <i class="fas fa-folder-open"></i> My Applications
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('apply')">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('apply')">
           <i class="fas fa-plus-circle"></i> Apply
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('profile')">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('profile')">
           <i class="fas fa-user-edit"></i> Profile
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('documents')">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('documents')">
           <i class="fas fa-file-invoice"></i> Documents/Files
         </a>
-        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2" onclick="switchTab('inbox')">
+        <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
+          onclick="switchTab('inbox')">
           <i class="fas fa-inbox"></i> Inbox / Tickets
-          <span class="nav-badge" id="badge-inbox" style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
+          <span class="nav-badge" id="badge-inbox"
+            style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
 
       </nav>
       <div class="sd-sidebar-footer relative">
-        <div class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden" onclick="toggleProfileDropdown(event)">
+        <div
+          class="profile-card cursor-pointer p-4 rounded-xl shadow-md transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group relative overflow-hidden"
+          onclick="toggleProfileDropdown(event)">
           <!-- Hover Gradient Background -->
-          <div class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0"></div>
-          
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-brand-primary to-brand-secondary transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out z-0">
+          </div>
+
           <div class="relative z-10 flex items-center justify-between">
             <div class="flex items-center gap-3 overflow-hidden">
-              <div class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
+              <div
+                class="avatar-circle w-11 h-11 flex-shrink-0 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 group-hover:bg-white/20 group-hover:text-white transition-colors duration-300">
                 <i class="fas fa-user"></i>
               </div>
               <div class="profile-info flex-1 overflow-hidden">
-                <div class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">{{ student.first_name|default:student.username }}</div>
-                <div class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">Student Account</div>
+                <div
+                  class="font-bold text-base truncate text-gray-900 dark:text-white group-hover:text-white transition-colors duration-300">
+                  {{ student.first_name|default:student.username }}</div>
+                <div
+                  class="text-xs font-medium text-gray-600 dark:text-gray-400 group-hover:text-white/90 transition-colors duration-300">
+                  Student Account</div>
               </div>
             </div>
-            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300" id="profile-chevron"></i>
+            <i class="fas fa-chevron-up text-sm text-gray-500 dark:text-gray-400 group-hover:text-white/90 transition-all duration-300"
+              id="profile-chevron"></i>
           </div>
         </div>
 
         <!-- Logout Dropdown -->
-        <div class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50" id="profile-dropdown">
+        <div
+          class="profile-dropdown absolute bottom-[calc(100%+0.5rem)] left-0 w-full bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 hidden flex-col overflow-hidden animate-slide-up z-50"
+          id="profile-dropdown">
           <form method="post" action="{% url 'accounts:logout' %}" class="m-0">
             {% csrf_token %}
-            <button type="submit" class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+            <button type="submit"
+              class="w-full flex items-center gap-3 p-4 text-sm font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
               <i class="fas fa-sign-out-alt w-5 text-center"></i> Logout
             </button>
           </form>
@@ -180,30 +286,52 @@
               <h1>Welcome back, {{ student.first_name|default:student.username }}!</h1>
               <p class="muted">Here's a quick overview of your applications.</p>
             </div>
-            <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="switchTab('apply')">
+            <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95"
+              onclick="switchTab('apply')">
               <i class="fas fa-plus"></i> New Application
             </button>
           </div>
 
+          <!-- AI Program Recommendations -->
+          <div id="ai-recommendations-section" class="recommendations-container animate-fade-in" style="display: none;">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                <i class="fas fa-magic text-brand-primary"></i> Recommended For You
+              </h2>
+              <span class="text-xs text-gray-400">Personalized matching based on your profile</span>
+            </div>
+            <div id="recommendations-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Recommendations loaded via JS -->
+            </div>
+          </div>
+
           <div class="kpi-grid">
-            <div class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 100ms;">
+            <div
+              class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in"
+              style="animation-delay: 100ms;">
               <div class="kpi-title">Total Applications</div>
               <div class="kpi-value" id="kpi-total">0</div>
             </div>
-            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 200ms;">
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in"
+              style="animation-delay: 200ms;">
               <div class="kpi-title">Approved</div>
               <div class="kpi-value kpi-success" id="kpi-approved">0</div>
             </div>
-            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 300ms;">
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in"
+              style="animation-delay: 300ms;">
               <div class="kpi-title">Under Review</div>
               <div class="kpi-value kpi-warning" id="kpi-pending">0</div>
             </div>
-            <div class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in" style="animation-delay: 400ms;">
+            <div
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in"
+              style="animation-delay: 400ms;">
               <div class="kpi-title">Rejected</div>
               <div class="kpi-value kpi-danger" id="kpi-rejected">0</div>
             </div>
           </div>
-          
+
           <div class="dashboard-info-row">
             <section class="sd-info card">
               <h2>Account Status</h2>
@@ -224,7 +352,9 @@
           <section id="my-applications" class="card tab-card animate-slide-up">
             <div class="card-header-flex">
               <h2>My Applications</h2>
-              <button class="btn btn-sm btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="loadMyApplications()">
+              <button
+                class="btn btn-sm btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95"
+                onclick="loadMyApplications()">
                 <i class="fas fa-sync-alt"></i> Refresh
               </button>
             </div>
@@ -255,89 +385,110 @@
             <!-- Application Form View (Hidden initially) -->
             <div id="application-form-container" style="display: none;" class="mt-4">
               <!-- Program Image Banner -->
-              <div id="program-hero-banner" class="relative w-full h-40 rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-brand-primary to-blue-400" style="display:none;">
+              <div id="program-hero-banner"
+                class="relative w-full h-40 rounded-2xl overflow-hidden mb-6 bg-gradient-to-tr from-brand-primary to-blue-400"
+                style="display:none;">
                 <div id="program-hero-bg" class="absolute inset-0 bg-cover bg-center" style="opacity: 0.35;"></div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                 <div class="absolute bottom-0 left-0 p-5">
-                  <span id="program-hero-type" class="text-xs font-bold text-white/70 uppercase tracking-widest block mb-1"></span>
+                  <span id="program-hero-type"
+                    class="text-xs font-bold text-white/70 uppercase tracking-widest block mb-1"></span>
                   <h3 id="program-hero-title" class="text-2xl font-bold text-white m-0"></h3>
                 </div>
-                <button type="button" class="absolute top-3 right-3 btn btn-sm text-white border-white/30 bg-black/30 hover:bg-black/50 backdrop-blur-sm" onclick="showProgramGrid()">
+                <button type="button"
+                  class="absolute top-3 right-3 btn btn-sm text-white border-white/30 bg-black/30 hover:bg-black/50 backdrop-blur-sm"
+                  onclick="showProgramGrid()">
                   <i class="fas fa-arrow-left"></i> Back
                 </button>
               </div>
 
               <!-- Fallback header when no image -->
-              <div id="program-header-plain" class="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-4">
+              <div id="program-header-plain"
+                class="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-4">
                 <h3 id="selected-program-title" class="text-xl font-bold text-gray-800 dark:text-white m-0"></h3>
-                <button type="button" class="btn btn-sm btn-outline text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800" onclick="showProgramGrid()">
+                <button type="button"
+                  class="btn btn-sm btn-outline text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  onclick="showProgramGrid()">
                   <i class="fas fa-arrow-left"></i> Back to Programs
                 </button>
               </div>
 
-              <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form" onsubmit="handleProgramSubmit(event)">
-              {% csrf_token %}
-              <!-- Hidden Program Select -->
-              <div class="form-group" style="display: none;">
+              <form id="programForm" method="post" action="#" enctype="multipart/form-data" class="program-form"
+                onsubmit="handleProgramSubmit(event)">
+                {% csrf_token %}
+                <!-- Hidden Program Select -->
+                <div class="form-group" style="display: none;">
                   <label for="program">Program</label>
                   <div class="select-wrapper">
                     <select id="program" name="program" required onchange="showProgramDescription()">
                       <option value="">Select a program</option>
                     </select>
                   </div>
-              </div>
+                </div>
 
-              <div id="program-description" class="program-description" style="display: none;">
-                <h4><i class="fas fa-info-circle"></i> Program Description</h4>
-                <div id="program-requirements" class="requirements-content mb-4 text-sm text-gray-700 dark:text-gray-300"></div>
-                
-                <h4 class="mt-4"><i class="fas fa-file-contract"></i> Required Documents</h4>
-                <div id="program-doc-requirements" class="flex flex-wrap gap-2 text-sm mt-2"></div>
-              </div>
+                <div id="program-description" class="program-description" style="display: none;">
+                  <h4><i class="fas fa-info-circle"></i> Program Description</h4>
+                  <div id="program-requirements"
+                    class="requirements-content mb-4 text-sm text-gray-700 dark:text-gray-300"></div>
+
+                  <h4 class="mt-4"><i class="fas fa-file-contract"></i> Required Documents</h4>
+                  <div id="program-doc-requirements" class="flex flex-wrap gap-2 text-sm mt-2"></div>
+                </div>
 
 
 
-              <div class="form-group">
-                <label>Supporting documents</label>
-                
-                <!-- Import from Uploaded Documents -->
-                <div class="mb-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
+                <div class="form-group">
+                  <label>Supporting documents</label>
+
+                  <!-- Import from Uploaded Documents -->
+                  <div
+                    class="mb-4 bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-200 dark:border-gray-600">
                     <div class="flex items-center justify-between mb-3">
-                        <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 m-0 flex items-center gap-2">
-                           <i class="fas fa-folder-open text-brand-primary"></i> Import from My Documents
-                        </h4>
-                        <button type="button" class="text-xs text-brand-primary hover:underline font-medium" onclick="loadMyDocumentsForImport()">
-                            <i class="fas fa-sync-alt"></i> Refresh List
-                        </button>
+                      <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 m-0 flex items-center gap-2">
+                        <i class="fas fa-folder-open text-brand-primary"></i> Import from My Documents
+                      </h4>
+                      <button type="button" class="text-xs text-brand-primary hover:underline font-medium"
+                        onclick="loadMyDocumentsForImport()">
+                        <i class="fas fa-sync-alt"></i> Refresh List
+                      </button>
                     </div>
-                    <p class="text-xs text-gray-500 mb-3">Select documents you've already uploaded to attach them to this application.</p>
-                    <div id="import-documents-list" class="flex flex-col max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
-                        <p class="text-xs text-gray-400 italic">No available documents. Upload in the Documents tab first.</p>
+                    <p class="text-xs text-gray-500 mb-3">Select documents you've already uploaded to attach them to
+                      this application.</p>
+                    <div id="import-documents-list"
+                      class="flex flex-col max-h-[250px] overflow-y-auto custom-scrollbar pr-1">
+                      <p class="text-xs text-gray-400 italic">No available documents. Upload in the Documents tab first.
+                      </p>
                     </div>
-                </div>
+                  </div>
 
-                <div class="flex items-center my-3">
+                  <div class="flex items-center my-3">
                     <div class="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
-                    <span class="px-3 text-xs text-gray-400 font-medium uppercase tracking-wider text-center">Or upload new</span>
+                    <span class="px-3 text-xs text-gray-400 font-medium uppercase tracking-wider text-center">Or upload
+                      new</span>
                     <div class="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
-                </div>
+                  </div>
 
-                <div class="file-upload-block">
+                  <div class="file-upload-block">
                     <label class="file-upload-label" for="supporting_docs">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <span>Click to browse supporting documents</span>
-                        <small>PNG, JPG, PDF, DOCX (You can select multiple)</small>
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <span>Click to browse supporting documents</span>
+                      <small>PNG, JPG, PDF, DOCX (You can select multiple)</small>
                     </label>
-                    <input id="supporting_docs" name="supporting_docs" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple style="display: none;">
+                    <input id="supporting_docs" name="supporting_docs" type="file"
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" multiple style="display: none;">
+                  </div>
+                  <div id="file-list" class="file-list" aria-live="polite"></div>
                 </div>
-                <div id="file-list" class="file-list" aria-live="polite"></div>
-              </div>
 
-              <div class="form-actions mt-4 flex gap-3">
-                <button type="button" class="btn border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition" onclick="showProgramGrid()">Cancel</button>
-                <button type="submit" class="btn btn-primary flex-1 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">Submit Application</button>
-              </div>
-            </form>
+                <div class="form-actions mt-4 flex gap-3">
+                  <button type="button"
+                    class="btn border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                    onclick="showProgramGrid()">Cancel</button>
+                  <button type="submit"
+                    class="btn btn-primary flex-1 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">Submit
+                    Application</button>
+                </div>
+              </form>
             </div>
           </section>
         </div>
@@ -350,207 +501,315 @@
               <p class="muted">View and update your personal and academic information.</p>
             </div>
             <div class="flex gap-2">
-              <button type="button" class="btn btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="openChangePasswordModal()">
+              <button type="button"
+                class="btn btn-outline transition-all duration-200 transform hover:scale-105 active:scale-95"
+                onclick="openChangePasswordModal()">
                 <i class="fas fa-key"></i> Change Password
               </button>
-              <button type="button" id="editProfileBtn" class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95" onclick="toggleProfileEditMode(true)">
+              <button type="button" id="editProfileBtn"
+                class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95"
+                onclick="toggleProfileEditMode(true)">
                 <i class="fas fa-user-edit"></i> Edit Profile
               </button>
             </div>
           </div>
-          
-          <div id="profile-msg" class="app-message" style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
-          
+
+          <div id="profile-msg" class="app-message"
+            style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
+
           <form id="profileForm" onsubmit="handleProfileSubmit(event)">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               <!-- Personal Info Card -->
               <section class="card tab-card animate-slide-up relative h-full">
-                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                <h4
+                  style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Personal Information
                 </h4>
-                <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr 1fr; align-items: start; margin-bottom: 15px;">
+                <div
+                  style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr 1fr; align-items: start; margin-bottom: 15px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_first_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">First Name</label>
-                    <input type="text" id="prof_first_name" name="first_name" value="{{ student.first_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_first_name"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">First Name</label>
+                    <input type="text" id="prof_first_name" name="first_name" value="{{ student.first_name }}" required
+                      disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_mname" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Middle Name</label>
-                    <input type="text" id="prof_mname" name="mname" value="{{ student.mname|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_mname"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Middle Name</label>
+                    <input type="text" id="prof_mname" name="mname" value="{{ student.mname|default:'' }}" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_last_name" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Last Name</label>
-                    <input type="text" id="prof_last_name" name="last_name" value="{{ student.last_name }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_last_name"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Last Name</label>
+                    <input type="text" id="prof_last_name" name="last_name" value="{{ student.last_name }}" required
+                      disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
                 <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr; align-items: start;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_sex" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sex</label>
-                    <select id="prof_sex" name="sex" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent disabled:appearance-none dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_sex"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sex</label>
+                    <select id="prof_sex" name="sex" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent disabled:appearance-none dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                       <option value="Male" {% if student.sex == 'Male' %}selected{% endif %}>Male</option>
                       <option value="Female" {% if student.sex == 'Female' %}selected{% endif %}>Female</option>
                     </select>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_bday" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Birthday</label>
-                    <input type="date" id="prof_bday" name="bday" value="{{ student.bday|date:'Y-m-d' }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_bday"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Birthday</label>
+                    <input type="date" id="prof_bday" name="bday" value="{{ student.bday|date:'Y-m-d' }}" required
+                      disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
-                
+
                 <div style="margin-top: 20px; display: grid; gap: 15px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_email" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Email Address</label>
-                    <input type="email" id="prof_email" name="email" value="{{ student.email }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_email"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Email Address</label>
+                    <input type="email" id="prof_email" name="email" value="{{ student.email }}" required disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_contact" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact Number</label>
-                    <input type="text" id="prof_contact" name="contact_num" value="{{ student.contact_num }}" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_contact"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact Number</label>
+                    <input type="text" id="prof_contact" name="contact_num" value="{{ student.contact_num }}" required
+                      disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
               </section>
-              
+
               <!-- Academic Info Card -->
               <section class="card tab-card animate-slide-up relative h-full" style="animation-delay: 100ms;">
-                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                <h4
+                  style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Academic & Contact Info
                 </h4>
                 <div style="display: grid; gap: 15px;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_student_type" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Type of Student</label>
-                    <select id="prof_student_type" name="student_type" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" onchange="handleStudentTypeChange()">
-                      <option value="" {% if not student.student_type %}selected{% endif %} disabled>Select student type</option>
+                    <label for="prof_student_type"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Type of Student</label>
+                    <select id="prof_student_type" name="student_type" required disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;"
+                      onchange="handleStudentTypeChange()">
+                      <option value="" {% if not student.student_type %}selected{% endif %} disabled>Select student type
+                      </option>
                       <optgroup label="High School">
                         <option value="Junior High School" {% if student.student_type == 'Junior High School' %}selected{% endif %}>Junior High School</option>
                         <option value="Senior High School" {% if student.student_type == 'Senior High School' %}selected{% endif %}>Senior High School</option>
                       </optgroup>
                       <optgroup label="College">
-                        <option value="Undergraduate" {% if student.student_type == 'Undergraduate' %}selected{% endif %}>Undergraduate</option>
-                        <option value="Master's" {% if student.student_type == "Master's" %}selected{% endif %}>Master's</option>
-                        <option value="Doctoral" {% if student.student_type == 'Doctoral' %}selected{% endif %}>Doctoral</option>
+                        <option value="Undergraduate" {% if student.student_type == 'Undergraduate' %}selected{% endif %}>
+                          Undergraduate</option>
+                        <option value="Master's" {% if student.student_type == "Master's" %}selected{% endif %}>Master's
+                        </option>
+                        <option value="Doctoral" {% if student.student_type == 'Doctoral' %}selected{% endif %}>Doctoral
+                        </option>
                       </optgroup>
                       <optgroup label="Other">
-                        <option value="Board Exam" {% if student.student_type == 'Board Exam' %}selected{% endif %}>Board Exam</option>
+                        <option value="Board Exam" {% if student.student_type == 'Board Exam' %}selected{% endif %}>Board
+                          Exam</option>
                       </optgroup>
                     </select>
                   </div>
-                  <div style="display: flex; flex-direction: column; gap: 5px;" id="prof_program_yr_container" {% if student.student_type != 'Undergraduate' %}style="display: none;"{% endif %}>
-                    <label for="prof_program_and_yr" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Program and Year</label>
-                    <input type="text" id="prof_program_and_yr" name="program_and_yr" value="{{ student.program_and_yr|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" {% if student.student_type == 'Undergraduate' %}required{% endif %}>
+                  <div style="display: flex; flex-direction: column; gap: 5px;" id="prof_program_yr_container" {% if student.student_type != 'Undergraduate' %}style="display: none;" {% endif %}>
+                    <label for="prof_program_and_yr"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Program and Year</label>
+                    <input type="text" id="prof_program_and_yr" name="program_and_yr"
+                      value="{{ student.program_and_yr|default:'' }}" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;"
+                      {% if student.student_type == 'Undergraduate' %}required{% endif %}>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_barangay" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Barangay</label>
-                    <select id="prof_barangay" name="barangay" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
-                      <option value="" {% if not student.barangay %}selected{% endif %} disabled>Select your barangay</option>
+                    <label for="prof_barangay"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Barangay</label>
+                    <select id="prof_barangay" name="barangay" required disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <option value="" {% if not student.barangay %}selected{% endif %} disabled>Select your barangay
+                      </option>
                       <option value="Aningway-Sacatihan" {% if student.barangay == 'Aningway-Sacatihan' %}selected{% endif %}>Aningway-Sacatihan</option>
                       <option value="Asinan (Poblacion)" {% if student.barangay == 'Asinan (Poblacion)' %}selected{% endif %}>Asinan (Poblacion)</option>
-                      <option value="Asinan Proper" {% if student.barangay == 'Asinan Proper' %}selected{% endif %}>Asinan Proper</option>
-                      <option value="Baraca-Camachile (Poblacion)" {% if student.barangay == 'Baraca-Camachile (Poblacion)' %}selected{% endif %}>Baraca-Camachile (Poblacion)</option>
-                      <option value="Batiawan" {% if student.barangay == 'Batiawan' %}selected{% endif %}>Batiawan</option>
-                      <option value="Calapacuan" {% if student.barangay == 'Calapacuan' %}selected{% endif %}>Calapacuan</option>
+                      <option value="Asinan Proper" {% if student.barangay == 'Asinan Proper' %}selected{% endif %}>Asinan
+                        Proper</option>
+                      <option value="Baraca-Camachile (Poblacion)" {% if student.barangay == 'Baraca-Camachile (Poblacion)' %}selected{% endif %}>Baraca-Camachile
+                        (Poblacion)</option>
+                      <option value="Batiawan" {% if student.barangay == 'Batiawan' %}selected{% endif %}>Batiawan
+                      </option>
+                      <option value="Calapacuan" {% if student.barangay == 'Calapacuan' %}selected{% endif %}>Calapacuan
+                      </option>
                       <option value="Calapandayan (Poblacion)" {% if student.barangay == 'Calapandayan (Poblacion)' %}selected{% endif %}>Calapandayan (Poblacion)</option>
                       <option value="Cawag" {% if student.barangay == 'Cawag' %}selected{% endif %}>Cawag</option>
                       <option value="Ilwas (Poblacion)" {% if student.barangay == 'Ilwas (Poblacion)' %}selected{% endif %}>Ilwas (Poblacion)</option>
-                      <option value="Mangan-Vaca" {% if student.barangay == 'Mangan-Vaca' %}selected{% endif %}>Mangan-Vaca</option>
+                      <option value="Mangan-Vaca" {% if student.barangay == 'Mangan-Vaca' %}selected{% endif %}>
+                        Mangan-Vaca</option>
                       <option value="Matain" {% if student.barangay == 'Matain' %}selected{% endif %}>Matain</option>
                       <option value="Naugsol" {% if student.barangay == 'Naugsol' %}selected{% endif %}>Naugsol</option>
-                      <option value="Pamatawan" {% if student.barangay == 'Pamatawan' %}selected{% endif %}>Pamatawan</option>
-                      <option value="San Isidro" {% if student.barangay == 'San Isidro' %}selected{% endif %}>San Isidro</option>
-                      <option value="Santo Tomas" {% if student.barangay == 'Santo Tomas' %}selected{% endif %}>Santo Tomas</option>
+                      <option value="Pamatawan" {% if student.barangay == 'Pamatawan' %}selected{% endif %}>Pamatawan
+                      </option>
+                      <option value="San Isidro" {% if student.barangay == 'San Isidro' %}selected{% endif %}>San Isidro
+                      </option>
+                      <option value="Santo Tomas" {% if student.barangay == 'Santo Tomas' %}selected{% endif %}>Santo
+                        Tomas</option>
                       <option value="Wawandue (Poblacion)" {% if student.barangay == 'Wawandue (Poblacion)' %}selected{% endif %}>Wawandue (Poblacion)</option>
                     </select>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_address" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Home Address</label>
-                    <textarea id="prof_address" name="address" rows="3" required disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">{{ student.address }}</textarea>
+                    <label for="prof_address"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Home Address</label>
+                    <textarea id="prof_address" name="address" rows="3" required disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">{{ student.address }}</textarea>
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label for="prof_scholarship" style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current Scholarship (If any)</label>
-                    <input type="text" id="prof_scholarship" name="scholarship" value="{{ student.scholarship|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label for="prof_scholarship"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current Scholarship (If
+                      any)</label>
+                    <input type="text" id="prof_scholarship" name="scholarship"
+                      value="{{ student.scholarship|default:'' }}" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
               </section>
 
               <!-- Academic History Card -->
               <section class="card tab-card animate-slide-up relative h-full" style="animation-delay: 200ms;">
-                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+                <h4
+                  style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Academic History
                 </h4>
                 <div style="display: grid; gap: 15px;">
                   <!-- Elementary -->
                   <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Elementary School</label>
-                      <input type="text" name="elem_school" value="{{ student.elem_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Elementary
+                        School</label>
+                      <input type="text" name="elem_school" value="{{ student.elem_school|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
-                      <input type="text" name="elem_year" value="{{ student.elem_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year
+                        Graduated</label>
+                      <input type="text" name="elem_year" value="{{ student.elem_year|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                   </div>
                   <!-- Secondary -->
                   <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Secondary School (JHS)</label>
-                      <input type="text" name="jhs_school" value="{{ student.jhs_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Secondary School
+                        (JHS)</label>
+                      <input type="text" name="jhs_school" value="{{ student.jhs_school|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
-                      <input type="text" name="jhs_year" value="{{ student.jhs_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year
+                        Graduated</label>
+                      <input type="text" name="jhs_year" value="{{ student.jhs_year|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                   </div>
                   <!-- Senior High -->
                   <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Senior High School</label>
-                      <input type="text" name="shs_school" value="{{ student.shs_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Senior High
+                        School</label>
+                      <input type="text" name="shs_school" value="{{ student.shs_school|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
-                      <input type="text" name="shs_year" value="{{ student.shs_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year
+                        Graduated</label>
+                      <input type="text" name="shs_year" value="{{ student.shs_year|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                   </div>
                   <!-- College -->
                   <div style="display: grid; gap: 15px; grid-template-columns: 2fr 1fr;">
                     <div style="display: flex; flex-direction: column; gap: 5px;">
                       <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">College</label>
-                      <input type="text" name="college_school" value="{{ student.college_school|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <input type="text" name="college_school" value="{{ student.college_school|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 5px;">
-                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year Graduated</label>
-                      <input type="text" name="college_year" value="{{ student.college_year|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                      <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Year
+                        Graduated</label>
+                      <input type="text" name="college_year" value="{{ student.college_year|default:'' }}" disabled
+                        class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                        style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                     </div>
                   </div>
                 </div>
               </section>
 
               <!-- Certificates and Achievements Card -->
-              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2" style="animation-delay: 300ms;">
-                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2"
+                style="animation-delay: 300ms;">
+                <h4
+                  style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Certificates & Achievements
                 </h4>
                 <div style="display: flex; flex-direction: column; gap: 5px;">
-                  <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sports, academic achievements, extracurricular activities, and competitions</label>
-                  <textarea name="achievements" rows="4" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;" placeholder="List your achievements here...">{{ student.achievements|default:'' }}</textarea>
+                  <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Sports, academic
+                    achievements, extracurricular activities, and competitions</label>
+                  <textarea name="achievements" rows="4" disabled
+                    class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                    style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;"
+                    placeholder="List your achievements here...">{{ student.achievements|default:'' }}</textarea>
                 </div>
               </section>
 
               <!-- Family Background Card -->
-              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2" style="animation-delay: 400ms;">
-                <h4 style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
+              <section class="card tab-card animate-slide-up relative h-full lg:col-span-2"
+                style="animation-delay: 400ms;">
+                <h4
+                  style="margin-bottom: 20px; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; color: var(--text-primary); font-size: 1.1rem; font-weight: 600;">
                   Family Background
                 </h4>
                 <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr 1fr;">
                   <div style="display: flex; flex-direction: column; gap: 5px;">
                     <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Parent Name</label>
-                    <input type="text" name="parent_name" value="{{ student.parent_name|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <input type="text" name="parent_name" value="{{ student.parent_name|default:'' }}" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Guardian Name</label>
-                    <input type="text" name="guardian_name" value="{{ student.guardian_name|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Guardian
+                      Name</label>
+                    <input type="text" name="guardian_name" value="{{ student.guardian_name|default:'' }}" disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;">
-                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact Number</label>
-                    <input type="text" name="guardian_contact" value="{{ student.guardian_contact|default:'' }}" disabled class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
+                    <label style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Contact
+                      Number</label>
+                    <input type="text" name="guardian_contact" value="{{ student.guardian_contact|default:'' }}"
+                      disabled
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                 </div>
               </section>
@@ -560,7 +819,8 @@
             <!-- Action Buttons -->
             <div id="profile-actions" class="hidden mt-6 justify-end gap-3 animate-fade-in">
               <button type="button" class="btn btn-outline" onclick="toggleProfileEditMode(false)">Cancel</button>
-              <button type="submit" class="btn btn-primary transform transition-all active:scale-95" id="profileSubmitBtn">Save Changes</button>
+              <button type="submit" class="btn btn-primary transform transition-all active:scale-95"
+                id="profileSubmitBtn">Save Changes</button>
             </div>
           </form>
         </div>
@@ -579,10 +839,14 @@
             <!-- Upload Form -->
             <div class="mt-4 bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-700">
               <h4 class="font-semibold mb-3">Upload New Document</h4>
-              <form id="documentUploadForm" onsubmit="handleDocumentUpload(event)" class="flex flex-col sm:flex-row gap-4 items-end">
+              <form id="documentUploadForm" onsubmit="handleDocumentUpload(event)"
+                class="flex flex-col sm:flex-row gap-4 items-end">
                 <div class="flex-1 w-full relative">
-                  <label for="doc_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Document Name / Type</label>
-                  <select id="doc_name" name="document_name" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white transition-colors duration-200 bg-white" onchange="toggleOtherDocName()">
+                  <label for="doc_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Document
+                    Name / Type</label>
+                  <select id="doc_name" name="document_name" required
+                    class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white transition-colors duration-200 bg-white"
+                    onchange="toggleOtherDocName()">
                     <option value="" disabled selected>Select a document type...</option>
                     <option value="School ID (Current Semester)">School ID (Current Semester)</option>
                     <option value="Valid ID">Valid ID</option>
@@ -592,12 +856,19 @@
                     <option value="Letter of Application">Letter of Application</option>
                     <option value="Other">Other</option>
                   </select>
-                  <input type="text" id="doc_name_other" name="document_name_other" placeholder="Please specify document type..." class="mt-2 w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white transition-colors duration-200" style="display: none;">
+                  <input type="text" id="doc_name_other" name="document_name_other"
+                    placeholder="Please specify document type..."
+                    class="mt-2 w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white transition-colors duration-200"
+                    style="display: none;">
                 </div>
                 <div class="flex-1 w-full relative">
-                  <label for="doc_file" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">File</label>
-                  <div class="relative w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-700 hover:border-brand-primary/50 cursor-pointer overflow-hidden text-sm">
-                    <input type="file" id="doc_file" name="file" required class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" onchange="document.getElementById('file-chosen-doc').textContent = this.files[0] ? this.files[0].name : 'No file chosen'">
+                  <label for="doc_file"
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">File</label>
+                  <div
+                    class="relative w-full rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-2 bg-white dark:bg-gray-700 hover:border-brand-primary/50 cursor-pointer overflow-hidden text-sm">
+                    <input type="file" id="doc_file" name="file" required
+                      class="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                      onchange="document.getElementById('file-chosen-doc').textContent = this.files[0] ? this.files[0].name : 'No file chosen'">
                     <div class="flex items-center gap-2 pointer-events-none">
                       <i class="fas fa-upload text-gray-400"></i>
                       <span id="file-chosen-doc" class="text-gray-500 dark:text-gray-300 truncate">Choose file</span>
@@ -605,7 +876,8 @@
                   </div>
                 </div>
                 <div class="w-full sm:w-auto mt-2 sm:mt-0">
-                  <button type="submit" id="docUploadBtn" class="btn btn-primary w-full sm:w-auto h-[42px] px-6">Upload</button>
+                  <button type="submit" id="docUploadBtn"
+                    class="btn btn-primary w-full sm:w-auto h-[42px] px-6">Upload</button>
                 </div>
               </form>
             </div>
@@ -613,60 +885,79 @@
             <div id="documents-msg" class="mt-4 rounded-lg p-3 hidden text-sm font-medium"></div>
 
             <!-- Required Documents Checklist -->
-            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden text-sm">
-                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                    <h3 class="font-bold text-gray-800 dark:text-gray-100"><i class="fas fa-tasks text-brand-primary mr-2"></i> Required Documents Checklist</h3>
-                    <p class="text-xs text-gray-500 mt-1">Upload these files to complete your profile requirements.</p>
+            <div
+              class="mt-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden text-sm">
+              <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+                <h3 class="font-bold text-gray-800 dark:text-gray-100"><i
+                    class="fas fa-tasks text-brand-primary mr-2"></i> Required Documents Checklist</h3>
+                <p class="text-xs text-gray-500 mt-1">Upload these files to complete your profile requirements.</p>
+              </div>
+              <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item"
+                  data-doc="School ID (Current Semester)">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">School ID (Current Semester)</span>
                 </div>
-                <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="School ID (Current Semester)">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">School ID (Current Semester)</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Valid ID">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">Valid ID</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="TOR">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">TOR</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Voter's Certificate">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">Voter's Certificate</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Certificate of Indigency">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">Certificate of Indigency</span>
-                    </div>
-                    <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Letter of Application">
-                        <div class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors"></div>
-                        <span class="text-gray-700 dark:text-gray-300">Letter of Application</span>
-                    </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Valid ID">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">Valid ID</span>
                 </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="TOR">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">TOR</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Voter's Certificate">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">Voter's Certificate</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item"
+                  data-doc="Certificate of Indigency">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">Certificate of Indigency</span>
+                </div>
+                <div class="flex items-center gap-3 p-2 rounded-lg doc-checklist-item" data-doc="Letter of Application">
+                  <div
+                    class="checkbox-box w-5 h-5 flex flex-shrink-0 items-center justify-center border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 transition-colors">
+                  </div>
+                  <span class="text-gray-700 dark:text-gray-300">Letter of Application</span>
+                </div>
+              </div>
             </div>
 
             <div class="mt-6 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm">
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                   <thead>
-                    <tr class="bg-gray-50 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-bold">
+                    <tr
+                      class="bg-gray-50 dark:bg-gray-800/80 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-bold">
                       <th class="py-3 px-4 border-b dark:border-gray-700">Document Type</th>
                       <th class="py-3 px-4 border-b dark:border-gray-700">Date Uploaded</th>
                       <th class="py-3 px-4 border-b dark:border-gray-700 text-center">Action</th>
                     </tr>
                   </thead>
-                  <tbody id="documents-tbody" class="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
+                  <tbody id="documents-tbody"
+                    class="bg-white dark:bg-gray-900 divide-y divide-gray-100 dark:divide-gray-800">
                     <tr>
                       <td colspan="3" class="py-6 text-center text-gray-500">
-                        <div class="animate-pulse flex items-center justify-center gap-2"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                        <div class="animate-pulse flex items-center justify-center gap-2"><i
+                            class="fas fa-spinner fa-spin"></i> Loading...</div>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-            
+
           </div>
         </div>
 
@@ -689,7 +980,8 @@
             <div class="overflow-x-auto mt-4 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm">
               <table class="w-full text-left border-collapse">
                 <thead>
-                  <tr class="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-bold">
+                  <tr
+                    class="bg-gray-50 dark:bg-gray-800/50 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider font-bold">
                     <th class="py-4 px-6 border-b dark:border-gray-700">Status</th>
                     <th class="py-4 px-6 border-b dark:border-gray-700">Subject</th>
                     <th class="py-4 px-6 border-b dark:border-gray-700 hidden md:table-cell">From</th>
@@ -736,20 +1028,27 @@
   </div>
 
   <!-- Program Details Modal -->
-  <div id="program-details-modal" class="fixed inset-0 z-[1050] flex items-center justify-center p-4 sm:p-6 w-full h-full" style="display: none; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
-    <div class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-2xl max-h-[90vh] mx-auto animate-slide-up overflow-hidden">
-      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
+  <div id="program-details-modal"
+    class="fixed inset-0 z-[1050] flex items-center justify-center p-4 sm:p-6 w-full h-full"
+    style="display: none; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
+    <div
+      class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-2xl max-h-[90vh] mx-auto animate-slide-up overflow-hidden">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="details-modal-title">Program Details</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeProgramDetailsModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeProgramDetailsModal()">&times;</span>
       </div>
       <div class="modal-body overflow-y-auto custom-scrollbar flex-1">
         <div class="flex justify-between items-center mb-4">
-            <span id="details-modal-type" class="px-3 py-1 text-xs font-semibold text-white bg-gray-600 rounded-full"></span>
-            <span id="details-modal-dates" class="text-xs font-medium text-brand-primary flex items-center gap-1"></span>
+          <span id="details-modal-type"
+            class="px-3 py-1 text-xs font-semibold text-white bg-gray-600 rounded-full"></span>
+          <span id="details-modal-dates" class="text-xs font-medium text-brand-primary flex items-center gap-1"></span>
         </div>
         <h4 class="font-semibold text-gray-700 dark:text-gray-300 mb-2">Description:</h4>
-        <div id="details-modal-requirements" class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed"></div>
-        
+        <div id="details-modal-requirements"
+          class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap leading-relaxed"></div>
+
         <h4 class="font-semibold text-gray-700 dark:text-gray-300 mt-4 mb-2">Required Documents:</h4>
         <div id="details-modal-doc-requirements" class="flex flex-wrap gap-2 text-sm mb-4"></div>
       </div>
@@ -761,34 +1060,47 @@
   </div>
 
   <!-- Change Password Modal -->
-  <div id="change-password-modal" class="fixed inset-0 z-[1050] flex items-center justify-center p-4 sm:p-6 w-full h-full" style="display: none; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
-    <div class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-md mx-auto animate-slide-up overflow-hidden">
-      <div class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
+  <div id="change-password-modal"
+    class="fixed inset-0 z-[1050] flex items-center justify-center p-4 sm:p-6 w-full h-full"
+    style="display: none; background-color: rgba(17, 24, 39, 0.5); backdrop-filter: blur(4px);">
+    <div
+      class="relative bg-white dark:bg-gray-800 p-6 rounded-xl shadow-2xl flex flex-col w-full max-w-md mx-auto animate-slide-up overflow-hidden">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4 shrink-0">
         <h3 class="text-xl font-bold text-gray-800 dark:text-white">Change Password</h3>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer" onclick="closeChangePasswordModal()">&times;</span>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeChangePasswordModal()">&times;</span>
       </div>
       <div class="modal-body overflow-y-auto custom-scrollbar flex-1">
-        <div id="change-pwd-msg" class="app-message" style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
+        <div id="change-pwd-msg" class="app-message"
+          style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
         <form id="changePasswordForm" onsubmit="handleChangePasswordSubmit(event)">
-            <div class="mb-4">
-              <label for="current_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
-              <input type="password" id="current_password" name="current_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
-            </div>
-            <div class="mb-4">
-              <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-              <input type="password" id="new_password" name="new_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
-              <p class="mt-1 text-xs text-gray-500">Must be at least 8 characters long, contain at least one capital letter and one number.</p>
-            </div>
-            <div class="mb-4">
-              <label for="confirm_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
-              <input type="password" id="confirm_password" name="confirm_password" required class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
-            </div>
+          <div class="mb-4">
+            <label for="current_password"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Current Password</label>
+            <input type="password" id="current_password" name="current_password" required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
           </div>
-          <div class="modal-footer flex gap-3 pt-6 mt-4 border-t border-gray-100 dark:border-gray-700 justify-end">
-            <button type="button" class="btn btn-outline" onclick="closeChangePasswordModal()">Cancel</button>
-            <button type="submit" class="btn btn-primary" id="change-pwd-btn">Save Changes</button>
+          <div class="mb-4">
+            <label for="new_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">New
+              Password</label>
+            <input type="password" id="new_password" name="new_password" required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
+            <p class="mt-1 text-xs text-gray-500">Must be at least 8 characters long, contain at least one capital
+              letter and one number.</p>
           </div>
-        </form>
+          <div class="mb-4">
+            <label for="confirm_password"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" required
+              class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary dark:bg-gray-700 dark:text-white">
+          </div>
+      </div>
+      <div class="modal-footer flex gap-3 pt-6 mt-4 border-t border-gray-100 dark:border-gray-700 justify-end">
+        <button type="button" class="btn btn-outline" onclick="closeChangePasswordModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="change-pwd-btn">Save Changes</button>
+      </div>
+      </form>
     </div>
   </div>
 
@@ -823,7 +1135,7 @@
 
       data.programs.forEach(p => {
         programsData[p.program_id] = p;
-        
+
         // Add to hidden select for form submission compatibility
         const opt = document.createElement('option');
         opt.value = p.program_id;
@@ -889,7 +1201,7 @@
         `;
         grid.appendChild(card);
       });
-      
+
       if (data.programs.length === 0) {
         grid.innerHTML = '<p class="no-programs w-full text-center text-gray-500 py-10 font-medium text-lg bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">No programs available at the moment.</p>';
       }
@@ -899,7 +1211,7 @@
     function selectProgramForApplication(programId) {
       const select = document.getElementById('program');
       select.value = programId; // Set the hidden select
-      
+
       const program = programsData[programId];
       if (program) {
         document.getElementById('selected-program-title').textContent = program.program_name;
@@ -920,14 +1232,14 @@
           plainHeader.style.display = 'flex';
         }
       }
-      
+
       showProgramDescription(); // Update requirements display
-      
+
       // Toggle Views
       document.getElementById('program-grid-container').style.display = 'none';
       document.getElementById('application-form-container').style.display = 'block';
       document.getElementById('apply-subtitle').style.display = 'none';
-      
+
       closeProgramDetailsModal(); // Close modal if open
     }
 
@@ -939,14 +1251,14 @@
       document.getElementById('details-modal-title').textContent = program.program_name;
       document.getElementById('details-modal-type').textContent = program.program_type || 'Other';
       document.getElementById('details-modal-requirements').textContent = program.requirements || 'No description listed.';
-      
+
       const docReqContainer = document.getElementById('details-modal-doc-requirements');
       if (program.document_requirements && program.document_requirements.length > 0) {
         docReqContainer.innerHTML = program.document_requirements.map(doc => `<span class="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-xs font-bold whitespace-nowrap">${doc}</span>`).join('');
       } else {
         docReqContainer.innerHTML = '<span class="text-xs italic text-gray-400">No specific document requirements set.</span>';
       }
-      
+
       const datesEl = document.getElementById('details-modal-dates');
       if (program.application_start_date || program.application_end_date) {
         datesEl.innerHTML = `<i class="fas fa-calendar-alt"></i> ${program.application_start_date || 'N/A'} - ${program.application_end_date || 'N/A'}`;
@@ -955,7 +1267,7 @@
       }
 
       const applyBtn = document.getElementById('details-modal-apply-btn');
-      
+
       const now = new Date();
       now.setHours(0, 0, 0, 0);
       let isExpired = false;
@@ -973,7 +1285,7 @@
       } else {
         applyBtn.textContent = 'Apply Now';
         applyBtn.className = 'btn btn-primary py-2.5 px-6 shadow-sm';
-        applyBtn.onclick = function() {
+        applyBtn.onclick = function () {
           selectProgramForApplication(programId);
         };
       }
@@ -991,14 +1303,14 @@
       document.getElementById('program-grid-container').style.display = 'block';
       document.getElementById('application-form-container').style.display = 'none';
       document.getElementById('apply-subtitle').style.display = 'block';
-      
+
       // Reset form
       document.getElementById('programForm').reset();
       document.getElementById('file-list').innerHTML = '';
       document.getElementById('app-msg').style.display = 'none';
       document.getElementById('program').value = '';
       document.getElementById('import-documents-list').innerHTML = '<p class="text-xs text-gray-400 italic">No available documents. Upload in the Documents tab first.</p>';
-      
+
       // Hide hero banner and restore plain header
       document.getElementById('program-hero-banner').style.display = 'none';
       document.getElementById('program-hero-bg').style.backgroundImage = '';
@@ -1018,15 +1330,15 @@
       if (select.value && programsData[select.value]) {
         const program = programsData[select.value];
         requirementsDiv.textContent = program.requirements || 'No description listed.';
-        
+
         if (program.document_requirements && program.document_requirements.length > 0) {
-            docReqContainer.innerHTML = program.document_requirements.map(doc => `<span class="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-xs font-bold whitespace-nowrap">${doc}</span>`).join('');
+          docReqContainer.innerHTML = program.document_requirements.map(doc => `<span class="inline-block px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800 rounded text-xs font-bold whitespace-nowrap">${doc}</span>`).join('');
         } else {
-            docReqContainer.innerHTML = '<span class="text-xs italic text-gray-400">No specific document requirements set.</span>';
+          docReqContainer.innerHTML = '<span class="text-xs italic text-gray-400">No specific document requirements set.</span>';
         }
-        
+
         descriptionDiv.style.display = 'block';
-        
+
         // Auto-load available documents for import when viewing application form
         loadMyDocumentsForImport();
       } else {
@@ -1036,23 +1348,23 @@
 
     // Load user's uploaded documents as list
     async function loadMyDocumentsForImport() {
-        const listDiv = document.getElementById('import-documents-list');
-        listDiv.innerHTML = '<p class="text-xs text-gray-500">Loading your documents...</p>';
-        try {
-            const res = await fetch('/api/student/documents/', { credentials: 'same-origin' });
-            if (!res.ok) throw new Error('Failed to fetch documents');
-            const data = await res.json();
-            
-            if (data.documents && data.documents.length > 0) {
-                listDiv.innerHTML = '';
-                data.documents.forEach(doc => {
-                    const listItem = document.createElement('div');
-                    listItem.className = "flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 mb-2 shadow-sm transition-shadow hover:shadow-md";
-                    
-                    const filename = doc.name || 'Document';
-                    const dateStr = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                    
-                    listItem.innerHTML = `
+      const listDiv = document.getElementById('import-documents-list');
+      listDiv.innerHTML = '<p class="text-xs text-gray-500">Loading your documents...</p>';
+      try {
+        const res = await fetch('/api/student/documents/', { credentials: 'same-origin' });
+        if (!res.ok) throw new Error('Failed to fetch documents');
+        const data = await res.json();
+
+        if (data.documents && data.documents.length > 0) {
+          listDiv.innerHTML = '';
+          data.documents.forEach(doc => {
+            const listItem = document.createElement('div');
+            listItem.className = "flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 mb-2 shadow-sm transition-shadow hover:shadow-md";
+
+            const filename = doc.name || 'Document';
+            const dateStr = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            listItem.innerHTML = `
                         <div class="flex items-center gap-3 overflow-hidden pr-2">
                             <div class="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
                                 <i class="fas fa-file-alt text-brand-primary text-lg"></i>
@@ -1066,45 +1378,45 @@
                             <i class="fas fa-plus mr-1"></i> Import
                         </button>
                     `;
-                    listDiv.appendChild(listItem);
+            listDiv.appendChild(listItem);
 
-                    // Behavior to handle import action
-                    const btn = listItem.querySelector('.import-btn');
-                    btn.addEventListener('click', function() {
-                        const isImported = this.classList.contains('imported');
-                        
-                        if (isImported) {
-                            // UI Update to Normal
-                            this.classList.remove('imported', 'bg-brand-primary', 'text-white');
-                            this.classList.add('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
-                            this.innerHTML = '<i class="fas fa-plus mr-1"></i> Import';
-                            
-                            // Form Logic
-                            const hiddenInput = document.getElementById('imported_doc_' + doc.id);
-                            if (hiddenInput) hiddenInput.remove();
-                        } else {
-                            // UI Update to Imported
-                            this.classList.add('imported', 'bg-brand-primary', 'text-white');
-                            this.classList.remove('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
-                            this.innerHTML = '<i class="fas fa-check mr-1"></i> Imported';
-                            
-                            // Form Logic
-                            const hiddenInput = document.createElement('input');
-                            hiddenInput.type = 'hidden';
-                            hiddenInput.name = 'imported_docs';
-                            hiddenInput.value = doc.id;
-                            hiddenInput.id = 'imported_doc_' + doc.id;
-                            document.getElementById('programForm').appendChild(hiddenInput);
-                        }
-                    });
-                });
-            } else {
-                listDiv.innerHTML = '<p class="text-xs text-gray-400 italic">No available documents found in your account.</p>';
-            }
-        } catch (err) {
-            console.error(err);
-            listDiv.innerHTML = '<p class="text-xs text-red-500 italic">Failed to load documents.</p>';
+            // Behavior to handle import action
+            const btn = listItem.querySelector('.import-btn');
+            btn.addEventListener('click', function () {
+              const isImported = this.classList.contains('imported');
+
+              if (isImported) {
+                // UI Update to Normal
+                this.classList.remove('imported', 'bg-brand-primary', 'text-white');
+                this.classList.add('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
+                this.innerHTML = '<i class="fas fa-plus mr-1"></i> Import';
+
+                // Form Logic
+                const hiddenInput = document.getElementById('imported_doc_' + doc.id);
+                if (hiddenInput) hiddenInput.remove();
+              } else {
+                // UI Update to Imported
+                this.classList.add('imported', 'bg-brand-primary', 'text-white');
+                this.classList.remove('text-brand-primary', 'hover:bg-brand-primary', 'hover:text-white');
+                this.innerHTML = '<i class="fas fa-check mr-1"></i> Imported';
+
+                // Form Logic
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'imported_docs';
+                hiddenInput.value = doc.id;
+                hiddenInput.id = 'imported_doc_' + doc.id;
+                document.getElementById('programForm').appendChild(hiddenInput);
+              }
+            });
+          });
+        } else {
+          listDiv.innerHTML = '<p class="text-xs text-gray-400 italic">No available documents found in your account.</p>';
         }
+      } catch (err) {
+        console.error(err);
+        listDiv.innerHTML = '<p class="text-xs text-red-500 italic">Failed to load documents.</p>';
+      }
     }
 
     // Show application confirmation popup
@@ -1208,16 +1520,16 @@
       if (e) e.stopPropagation();
       const dropdown = document.getElementById('profile-dropdown');
       const chevron = document.getElementById('profile-chevron');
-      
+
       const isHidden = dropdown.classList.contains('hidden');
       if (isHidden) {
         dropdown.classList.remove('hidden');
         dropdown.classList.add('flex');
-        if(chevron) chevron.style.transform = 'rotate(180deg)';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
       } else {
         dropdown.classList.add('hidden');
         dropdown.classList.remove('flex');
-        if(chevron) chevron.style.transform = 'rotate(0deg)';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
       }
     }
 
@@ -1352,7 +1664,47 @@
     }
 
     // Load notifications on start
-    document.addEventListener('DOMContentLoaded', loadNotifications);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadNotifications();
+      loadStudentRecommendations();
+    });
+
+    async function loadStudentRecommendations() {
+      const containerIdx = document.getElementById('ai-recommendations-section');
+      const listIdx = document.getElementById('recommendations-list');
+
+      try {
+        const res = await fetch('/api/student/recommendations/', { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (data.success && data.recommendations && data.recommendations.length > 0) {
+          containerIdx.style.display = 'block';
+          listIdx.innerHTML = data.recommendations.map(p => `
+            <div class="recommendation-card-ai high-match flex flex-col h-full">
+              <div class="ai-badge">
+                <span class="pulse-ai"></span> High Match
+              </div>
+              <h4 class="font-bold text-gray-900 dark:text-white mb-2 truncate" title="${p.name}">${p.name}</h4>
+              <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2 mb-3 h-8">${p.requirements || 'Matches your profile criteria'}</p>
+              
+              <div class="flex flex-wrap gap-1 mb-4">
+                ${p.reasons.map(r => `<span class="match-reason-tag">${r}</span>`).join('')}
+              </div>
+              
+              <button onclick="switchTab('apply'); setTimeout(() => selectProgramForApplication(${p.id}), 100);" 
+                      class="mt-auto w-full py-2 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white transition-all duration-200 text-xs font-bold rounded-lg border border-brand-primary/20">
+                Apply Now
+              </button>
+            </div>
+          `).join('');
+        } else {
+          containerIdx.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Recommendation Error:', err);
+        containerIdx.style.display = 'none';
+      }
+    }
     console.log('Student Dashboard Script Loaded');
 
     const docsInput = document.getElementById('supporting_docs');
@@ -1390,7 +1742,7 @@
         if (data.applications && data.applications.length > 0) {
           container.innerHTML = '';
           studentApplications = {}; // Reset global store
-          
+
           let total = 0, approved = 0, pending = 0, rejected = 0;
 
           data.applications.forEach(app => {
@@ -1489,7 +1841,7 @@
                     `;
             container.appendChild(el);
           });
-          
+
           document.getElementById('kpi-total').textContent = total;
           document.getElementById('kpi-approved').textContent = approved;
           document.getElementById('kpi-pending').textContent = pending;
@@ -1500,7 +1852,7 @@
           document.getElementById('kpi-approved').textContent = '0';
           document.getElementById('kpi-pending').textContent = '0';
           document.getElementById('kpi-rejected').textContent = '0';
-          
+
           container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-folder-open"></i>
@@ -1575,8 +1927,8 @@
       const actions = document.getElementById('profile-actions');
       const editBtn = document.getElementById('editProfileBtn');
       const msg = document.getElementById('profile-msg');
-      
-      if(msg) msg.style.display = 'none';
+
+      if (msg) msg.style.display = 'none';
 
       inputs.forEach(input => {
         input.disabled = !isEditing;
@@ -1592,7 +1944,7 @@
         editBtn.style.display = 'inline-flex';
         document.getElementById('profileForm').reset();
       }
-      
+
       handleStudentTypeChange();
     }
 
@@ -1600,12 +1952,12 @@
       const typeSelect = document.getElementById('prof_student_type');
       const container = document.getElementById('prof_program_yr_container');
       const input = document.getElementById('prof_program_and_yr');
-      
+
       if (typeSelect.value === 'Undergraduate') {
         container.style.display = 'flex';
         // Only make it required if we're in edit mode. Overriding attribute if disabled doesn't matter too much, but let's be safe.
         if (!typeSelect.disabled) {
-           input.setAttribute('required', 'required');
+          input.setAttribute('required', 'required');
         }
       } else {
         container.style.display = 'none';
@@ -1669,10 +2021,10 @@
     function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      
+
       const tab = document.getElementById('tab-' + tabId);
       if (tab) tab.classList.add('active');
-      
+
       const navItem = document.querySelector(`.nav-item[onclick="switchTab('${tabId}')"]`);
       if (navItem) navItem.classList.add('active');
 
@@ -1680,12 +2032,12 @@
       if (tabId === 'inbox') {
         loadMessages();
       }
-      
+
       // Also refresh applications if switching back
       if (tabId === 'applications' || tabId === 'dashboard') {
         loadMyApplications();
       }
-      
+
       if (tabId === 'documents') {
         loadMyDocuments();
       }
@@ -1731,7 +2083,7 @@
         const res = await fetch('/api/messages/');
         const data = await res.json();
         const tbody = document.getElementById('inbox-tbody');
-        
+
         if (res.ok && data.success) {
           studentMessages = data.messages;
           if (studentMessages.length === 0) {
@@ -1743,13 +2095,13 @@
           studentMessages.forEach(msg => {
             const dateStr = new Date(msg.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const isUnread = !msg.is_read && msg.sender_type === 'admin';
-            const statusBadge = isUnread 
+            const statusBadge = isUnread
               ? `<span class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 border border-red-200 w-full text-center block" style="width: 50px;">New</span>`
               : `<span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200 w-full text-center block" style="width: 50px;">Read</span>`;
-            
+
             // Highlight text if unread
             const textClass = isUnread ? 'font-bold text-gray-900 dark:text-white' : 'font-medium text-gray-600 dark:text-gray-300';
-            
+
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer border-b border-gray-100 dark:border-gray-700';
             tr.onclick = () => openViewMessageModal(msg.id);
@@ -1802,7 +2154,7 @@
       const msgAlert = document.getElementById('ticket-msg');
       const submitBtn = document.getElementById('ticketSubmitBtn');
       msgAlert.style.display = 'none';
-      
+
       const subject = document.getElementById('ticket-subject').value;
       const body = document.getElementById('ticket-body').value;
 
@@ -1820,13 +2172,13 @@
           credentials: 'same-origin'
         });
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           msgAlert.textContent = 'Ticket submitted successfully!';
           msgAlert.className = 'app-message success mb-3';
           msgAlert.style.display = 'block';
           msgAlert.style.color = '#10b981';
-          
+
           setTimeout(() => {
             closeSubmitTicketModal();
             loadMessages(); // Refresh inbox list
@@ -1853,12 +2205,12 @@
       document.getElementById('view-message-subject').textContent = msg.subject;
       document.getElementById('view-message-sender').textContent = msg.sender_type === 'admin' ? 'Administrator' : 'You (Ticket)';
       document.getElementById('view-message-avatar').textContent = msg.sender_type.charAt(0).toUpperCase();
-      document.getElementById('view-message-avatar').className = msg.sender_type === 'admin' 
-        ? 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shadow-sm' 
+      document.getElementById('view-message-avatar').className = msg.sender_type === 'admin'
+        ? 'w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold shadow-sm'
         : 'w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-bold shadow-sm';
       document.getElementById('view-message-date').textContent = new Date(msg.created_at).toLocaleString();
       document.getElementById('view-message-body').textContent = msg.body;
-      
+
       document.getElementById('view-message-modal').style.display = 'flex';
 
       // Mark as read if it is unread and from an admin
@@ -1882,7 +2234,7 @@
 
     // Load Messages on Dashboard initialization
     document.addEventListener('DOMContentLoaded', () => {
-        loadMessages();
+      loadMessages();
     });
 
     // Documents/Files Logic
@@ -1902,68 +2254,68 @@
     async function loadMyDocuments() {
       const tbody = document.getElementById('documents-tbody');
       tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-gray-500"><div class="animate-pulse flex items-center justify-center gap-2"><i class="fas fa-spinner fa-spin"></i> Loading...</div></td></tr>';
-      
+
       try {
         const res = await fetch('/api/student/documents/', { credentials: 'same-origin' });
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
-          
+
           // Reset all checklist items
           document.querySelectorAll('.doc-checklist-item').forEach(item => {
-             const box = item.querySelector('.checkbox-box');
-             box.innerHTML = '';
-             box.classList.remove('bg-green-500', 'border-green-600', 'dark:bg-green-600');
-             box.classList.add('bg-white', 'dark:bg-gray-700');
-             item.classList.remove('bg-green-50', 'dark:bg-green-900/10');
+            const box = item.querySelector('.checkbox-box');
+            box.innerHTML = '';
+            box.classList.remove('bg-green-500', 'border-green-600', 'dark:bg-green-600');
+            box.classList.add('bg-white', 'dark:bg-gray-700');
+            item.classList.remove('bg-green-50', 'dark:bg-green-900/10');
           });
 
           const select = document.getElementById('doc_name');
-          
+
           // Reset all options
           Array.from(select.options).forEach(opt => {
-              if (opt.value && opt.value !== 'Other') {
-                  opt.disabled = false;
-                  opt.text = opt.value;
-              }
+            if (opt.value && opt.value !== 'Other') {
+              opt.disabled = false;
+              opt.text = opt.value;
+            }
           });
 
           if (!data.documents || data.documents.length === 0) {
             tbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-gray-500 italic"><i class="fas fa-folder-open text-3xl mb-3 text-gray-300 block"></i> No documents uploaded yet.</td></tr>';
             return;
           }
-          
+
           tbody.innerHTML = '';
           const uploadedNames = new Set(data.documents.map(d => d.name));
-          
+
           // Disable already uploaded options
           Array.from(select.options).forEach(opt => {
-              if (opt.value && opt.value !== 'Other' && uploadedNames.has(opt.value)) {
-                  opt.disabled = true;
-                  opt.text = opt.value + ' (Uploaded)';
-              }
+            if (opt.value && opt.value !== 'Other' && uploadedNames.has(opt.value)) {
+              opt.disabled = true;
+              opt.text = opt.value + ' (Uploaded)';
+            }
           });
-          
+
           if (select.selectedOptions.length > 0 && select.selectedOptions[0].disabled) {
-              select.value = '';
+            select.value = '';
           }
-          
+
           document.querySelectorAll('.doc-checklist-item').forEach(item => {
-              const docType = item.getAttribute('data-doc');
-              if (uploadedNames.has(docType)) {
-                  const box = item.querySelector('.checkbox-box');
-                  box.innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
-                  box.classList.remove('bg-white', 'dark:bg-gray-700');
-                  box.classList.add('bg-green-500', 'border-green-600', 'dark:bg-green-600');
-                  item.classList.add('bg-green-50', 'dark:bg-green-900/10');
-              }
+            const docType = item.getAttribute('data-doc');
+            if (uploadedNames.has(docType)) {
+              const box = item.querySelector('.checkbox-box');
+              box.innerHTML = '<i class="fas fa-check text-white text-xs"></i>';
+              box.classList.remove('bg-white', 'dark:bg-gray-700');
+              box.classList.add('bg-green-500', 'border-green-600', 'dark:bg-green-600');
+              item.classList.add('bg-green-50', 'dark:bg-green-900/10');
+            }
           });
 
           data.documents.forEach(doc => {
             const dateStr = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors';
-            
+
             tr.innerHTML = `
               <td class="py-3 px-4 text-gray-800 dark:text-gray-200 font-medium">
                 <i class="fas fa-file-alt text-brand-primary mr-2"></i> ${doc.name || 'Document'}
@@ -1997,7 +2349,7 @@
       const form = document.getElementById('documentUploadForm');
       const btn = document.getElementById('docUploadBtn');
       const msg = document.getElementById('documents-msg');
-      
+
       const formData = new FormData(form);
       if (formData.get('document_name') === 'Other') {
         const otherName = formData.get('document_name_other');
@@ -2009,18 +2361,18 @@
         }
         formData.set('document_name', otherName.trim());
       }
-      
+
       const fileInput = document.getElementById('doc_file');
-      if(fileInput.files.length > 0 && fileInput.files[0].size > 5 * 1024 * 1024) {
-          msg.textContent = 'File is too large. Maximum size is 5MB.';
-          msg.className = 'mt-4 rounded-lg p-3 text-sm font-medium bg-red-100 text-red-700 block';
-          return;
+      if (fileInput.files.length > 0 && fileInput.files[0].size > 5 * 1024 * 1024) {
+        msg.textContent = 'File is too large. Maximum size is 5MB.';
+        msg.className = 'mt-4 rounded-lg p-3 text-sm font-medium bg-red-100 text-red-700 block';
+        return;
       }
-      
+
       btn.disabled = true;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
       msg.style.display = 'none';
-      
+
       try {
         const res = await fetch('/api/student/documents/upload/', {
           method: 'POST',
@@ -2029,7 +2381,7 @@
           credentials: 'same-origin'
         });
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           msg.textContent = 'Document uploaded successfully!';
           msg.className = 'mt-4 rounded-lg p-3 text-sm font-medium bg-green-100 text-green-700 block';
@@ -2060,9 +2412,9 @@
         cancelButtonColor: '#ef4444',
         confirmButtonText: 'Yes, delete it!'
       });
-      
+
       if (!result.isConfirmed) return;
-      
+
       try {
         const res = await fetch(`/api/student/documents/${docId}/delete/`, {
           method: 'POST',
@@ -2070,7 +2422,7 @@
           credentials: 'same-origin'
         });
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           loadMyDocuments();
           Swal.fire({
@@ -2100,16 +2452,22 @@
         <form id="submitTicketForm" onsubmit="handleTicketSubmit(event)">
           <div class="input-group mb-4">
             <label for="ticket-subject" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Subject</label>
-            <input type="text" id="ticket-subject" name="subject" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1">
+            <input type="text" id="ticket-subject" name="subject" required
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1">
           </div>
           <div class="input-group mb-4">
-            <label for="ticket-body" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Message Details</label>
-            <textarea id="ticket-body" name="body" rows="5" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1"></textarea>
+            <label for="ticket-body" class="text-sm font-semibold text-gray-700 dark:text-gray-300">Message
+              Details</label>
+            <textarea id="ticket-body" name="body" rows="5" required
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white mt-1"></textarea>
           </div>
           <div id="ticket-msg" style="display: none;" class="mb-3"></div>
           <div class="flex justify-end gap-3 mt-6">
-            <button type="button" class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition duration-300" onclick="closeSubmitTicketModal()">Cancel</button>
-            <button type="submit" id="ticketSubmitBtn" class="btn-primary flex items-center gap-2">Send Ticket <i class="fas fa-paper-plane"></i></button>
+            <button type="button"
+              class="px-5 py-2 rounded-lg font-medium text-gray-600 hover:bg-gray-100 transition duration-300"
+              onclick="closeSubmitTicketModal()">Cancel</button>
+            <button type="submit" id="ticketSubmitBtn" class="btn-primary flex items-center gap-2">Send Ticket <i
+                class="fas fa-paper-plane"></i></button>
           </div>
         </form>
       </div>
@@ -2125,7 +2483,8 @@
       </div>
       <div class="modal-body">
         <div class="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100 dark:border-gray-700">
-          <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold" id="view-message-avatar">
+          <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold"
+            id="view-message-avatar">
             A
           </div>
           <div>
@@ -2133,7 +2492,8 @@
             <div class="text-xs text-gray-500" id="view-message-date">Jan 1, 2024</div>
           </div>
         </div>
-        <p id="view-message-body" style="white-space: pre-wrap; font-size: 1.05em; color: #4a5568; line-height: 1.6;" class="dark:text-gray-300"></p>
+        <p id="view-message-body" style="white-space: pre-wrap; font-size: 1.05em; color: #4a5568; line-height: 1.6;"
+          class="dark:text-gray-300"></p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-primary" onclick="closeViewMessageModal()">Close</button>
@@ -2195,14 +2555,14 @@
 
     async function handleChangePasswordSubmit(e) {
       e.preventDefault();
-      
+
       const form = e.target;
       const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
-      
+
       const msgDiv = document.getElementById('change-pwd-msg');
       const btn = document.getElementById('change-pwd-btn');
-      
+
       // Basic client-side validation
       if (data.new_password !== data.confirm_password) {
         msgDiv.textContent = 'New passwords do not match.';
@@ -2210,7 +2570,7 @@
         msgDiv.style.display = 'block';
         return;
       }
-      
+
       const pwdRegex = /^(?=.*\d)(?=.*[A-Z]).{8,}$/;
       if (!pwdRegex.test(data.new_password)) {
         msgDiv.textContent = 'Password must be at least 8 characters long, contain at least one capital letter and one number.';
@@ -2261,10 +2621,10 @@
     }
 
     // Clear forms on load and disable autocomplete for all inputs
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       const forms = document.querySelectorAll('form');
       forms.forEach(form => form.reset());
-      
+
       const inputs = document.querySelectorAll('input, textarea');
       inputs.forEach(input => {
         input.setAttribute('autocomplete', 'off');

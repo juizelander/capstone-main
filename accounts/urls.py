@@ -84,4 +84,7 @@ urlpatterns = [
     
     # Advanced Analytics & GIS
     path('api/admin/analytics/data/', views.admin_analytics_data, name='admin_analytics_data'),
+
+    # AI Recommendations
+    path('api/student/recommendations/', views.get_student_recommendations, name='get_student_recommendations'),
 ]
