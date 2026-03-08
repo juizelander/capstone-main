@@ -13,8 +13,9 @@ def create_program(request):
             program_image = request.FILES.get('program_image')
             program_type = request.POST.get('program_type')
             target_student_types = request.POST.getlist('target_student_types')
+            max_slots = request.POST.get('max_slots', 0)
             
-            print(f"Creating program: Name={program_name}, Type={program_type}, Targets={target_student_types}") # Debug log
+            print(f"Creating program: Name={program_name}, Type={program_type}, Targets={target_student_types}, Slots={max_slots}") # Debug log
 
             if program_name:  # simple validation
                 Program.objects.create(
@@ -25,7 +26,8 @@ def create_program(request):
                     application_end_date=application_end_date,
                     program_image=program_image,
                     program_type=program_type,
-                    target_student_types=target_student_types
+                    target_student_types=target_student_types,
+                    max_slots=int(max_slots) if max_slots else 0
                 )
                 return JsonResponse({'success': True, 'message': 'Program created successfully'})
             else:
@@ -38,9 +40,13 @@ def create_program(request):
 
 
 def get_programs(request):
+    from .models import Application
     programs = Program.objects.all().order_by('-program_id')
-    data = [
-        {
+    student_id = request.session.get('user_id')
+    
+    data = []
+    for p in programs:
+        item = {
             'program_id': p.program_id,
             'program_name': p.program_name,
             'requirements': p.requirements or '',
@@ -49,10 +55,20 @@ def get_programs(request):
             'application_end_date': p.application_end_date,
             'program_image': p.program_image.url if p.program_image else None,
             'program_type': p.program_type,
-            'target_student_types': p.target_student_types or []
+            'target_student_types': p.target_student_types or [],
+            'max_slots': p.max_slots,
+            'current_apps': Application.objects.filter(program=p, requirement_status='approved').count(),
+            'user_app_status': None
         }
-        for p in programs
-    ]
+        
+        if student_id:
+            # Check for existing application for this student
+            user_app = Application.objects.filter(student_id=student_id, program=p).first()
+            if user_app:
+                item['user_app_status'] = user_app.requirement_status
+        
+        data.append(item)
+        
     return JsonResponse({'programs': data})
 
 
@@ -64,6 +80,7 @@ def edit_program(request, program_id):
             program.program_name = request.POST.get('program_name', program.program_name)
             program.requirements = request.POST.get('requirements', program.requirements)
             program.program_type = request.POST.get('program_type', program.program_type)
+            program.max_slots = int(request.POST.get('max_slots', program.max_slots))
             
             if 'document_requirements' in request.POST:
                 program.document_requirements = request.POST.getlist('document_requirements')

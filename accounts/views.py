@@ -283,6 +283,24 @@ def create_student_application(request):
         student = get_object_or_404(Student, pk=student_id)
         program = get_object_or_404(Program, program_id=program_id)
 
+        # Check if student already has an ACTIVE (Approved or Pending) application for this program
+        if Application.objects.filter(student=student, program=program).exclude(requirement_status='rejected').exists():
+            existing_app = Application.objects.filter(student=student, program=program).exclude(requirement_status='rejected').first()
+            status_text = "already been approved" if existing_app.requirement_status == 'approved' else "is currently pending"
+            return JsonResponse({
+                'success': False, 
+                'error': f'Your application for {program.program_name} {status_text}. You cannot apply again unless it is rejected.'
+            }, status=400)
+
+        # Check for available slots (only count APPROVED applications)
+        if program.max_slots > 0:
+            approved_apps = Application.objects.filter(program=program, requirement_status='approved').count()
+            if approved_apps >= program.max_slots:
+                return JsonResponse({
+                    'success': False, 
+                    'error': f'This program has reached its maximum capacity of {program.max_slots} approved applicants.'
+                }, status=400)
+
         app = Application.objects.create(
             student=student,
             program=program,
@@ -366,19 +384,21 @@ def admin_change_password(request):
     
     try:
         data = json.loads(request.body)
+        old_password = data.get('old_password')
         new_password = data.get('new_password')
         confirm_password = data.get('confirm_password')
         
-        if not new_password or not confirm_password:
-            return JsonResponse({'success': False, 'error': 'Both password fields are required.'})
+        if not old_password or not new_password or not confirm_password:
+            return JsonResponse({'success': False, 'error': 'All password fields are required.'})
+            
+        admin = Admin.objects.get(admin_id=admin_id)
+        
+        if old_password != admin.password:
+            return JsonResponse({'success': False, 'error': 'Incorrect current password.'})
             
         if new_password != confirm_password:
-            return JsonResponse({'success': False, 'error': 'Passwords do not match.'})
+            return JsonResponse({'success': False, 'error': 'New passwords do not match.'})
             
-        # Password strength validation (optional but good to have)
-        # Removed per user request
-        
-        admin = Admin.objects.get(admin_id=admin_id)
         admin.password = new_password
         admin.save()
         
@@ -457,6 +477,43 @@ def create_admin(request):
         AdminLog.objects.create(admin=current_admin, action=f"Created new admin: {new_admin.admin_name}")
 
         return JsonResponse({'success': True, 'message': 'Admin created successfully.'})
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def edit_admin_profile(request):
+    """Update current admin profile details"""
+    admin_id = request.session.get('user_id')
+    if not admin_id:
+        return JsonResponse({'error': 'Not authenticated'}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        new_username = data.get('username')
+        new_full_name = data.get('full_name')
+        new_role = data.get('role')
+
+        admin = Admin.objects.get(admin_id=admin_id)
+
+        if new_username and new_username != admin.admin_name:
+            if Admin.objects.filter(admin_name=new_username).exclude(admin_id=admin_id).exists():
+                return JsonResponse({'success': False, 'error': 'Username already taken.'})
+            admin.admin_name = new_username
+            request.session['admin_name'] = new_username  # Update session
+
+        if new_full_name is not None:
+            admin.full_name = new_full_name
+            
+        if new_role is not None:
+            admin.role = new_role
+
+        admin.save()
+        AdminLog.objects.create(admin=admin, action="Updated admin profile.")
+
+        return JsonResponse({'success': True, 'message': 'Profile updated successfully.'})
 
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -719,6 +776,20 @@ def get_student_applications(request):
                 'contact_num': student.contact_num,
                 'program_and_yr': student.program_and_yr,
                 'status': student.status,
+                'sex': student.sex,
+                'mname': student.mname,
+                'elem_school': student.elem_school,
+                'elem_year': student.elem_year,
+                'jhs_school': student.jhs_school,
+                'jhs_year': student.jhs_year,
+                'shs_school': student.shs_school,
+                'shs_year': student.shs_year,
+                'college_school': student.college_school,
+                'college_year': student.college_year,
+                'achievements': student.achievements,
+                'parent_name': student.parent_name,
+                'guardian_name': student.guardian_name,
+                'guardian_contact': student.guardian_contact,
                 'doc_submitted': student.doc_submitted.url if student.doc_submitted else None,
                 'student_documents': doc_list,
                 'created_at': student.created_at.isoformat() if student.created_at else None,
@@ -1083,6 +1154,17 @@ def approve_program_application(request, application_id):
         remarks = data.get('remarks', '')
 
         application = get_object_or_404(Application, app_id=application_id)
+        program = application.program
+
+        # Check for available slots BEFORE approving (exclude current application if it's already approved)
+        if program.max_slots > 0:
+            approved_count = Application.objects.filter(program=program, requirement_status='approved').exclude(app_id=application_id).count()
+            if approved_count >= program.max_slots:
+                return JsonResponse({
+                    'success': False, 
+                    'error': f'Cannot approve: This program has reached its maximum capacity of {program.max_slots} approved applicants.'
+                }, status=400)
+
         application.requirement_status = 'approved'
         application.remarks = remarks
         application.save()
@@ -1262,7 +1344,7 @@ def get_student_statistics(request):
         
         if chart_type == 'status':
             # Get students by status
-            status_data = Student.objects.values('status').annotate(count=Count('id'))
+            status_data = Student.objects.values('status').annotate(count=Count('student_id'))
             
             labels = []
             data = []
@@ -1281,7 +1363,7 @@ def get_student_statistics(request):
             
         elif chart_type == 'program':
             # Get students by program
-            program_data = Student.objects.values('program_and_yr').annotate(count=Count('id')).order_by('-count')[:10]
+            program_data = Student.objects.values('program_and_yr').annotate(count=Count('student_id')).order_by('-count')[:10]
             
             labels = []
             data = []
@@ -1313,7 +1395,7 @@ def get_student_statistics(request):
                 created_at__date__gte=start_date
             ).extra(
                 select={'month': 'strftime("%Y-%m", created_at)'}
-            ).values('month').annotate(count=Count('id')).order_by('month')
+            ).values('month').annotate(count=Count('student_id')).order_by('month')
             
             labels = []
             data = []
@@ -2702,13 +2784,19 @@ def get_student_recommendations(request):
         results = []
 
         if student_type:
-            # Primary: programs explicitly tagged for this student type
-            programs = Program.objects.filter(
-                is_active=True,
-                target_student_types__contains=student_type
-            ).distinct()[:3]
+            # Primary: programs explicitly tagged for this student type. 
+            # Using Python filtering, because SQLite does not support JSONField __contains lookups.
+            all_active_programs = Program.objects.filter(is_active=True)
+            matched_programs = []
+            
+            for p in all_active_programs:
+                # Safely check if student_type is in the target_student_types list
+                if isinstance(p.target_student_types, list) and student_type in p.target_student_types:
+                    matched_programs.append(p)
+                if len(matched_programs) >= 3:
+                    break
 
-            for p in programs:
+            for p in matched_programs:
                 results.append({
                     'id': p.program_id,
                     'name': p.program_name,

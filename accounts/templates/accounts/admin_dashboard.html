@@ -245,13 +245,17 @@
           <!-- Statistics Cards -->
           <div class="kpi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div
-              class="kpi-card highlight transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-gradient-to-br from-brand-primary to-green-600 text-white p-6 rounded-xl"
+              class="kpi-card transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl animate-fade-in bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700"
               style="animation-delay: 100ms;">
               <div class="flex justify-between items-start mb-4">
-                <div class="kpi-title font-medium text-white/90">Total Applicants</div>
-                <i class="fas fa-users text-2xl text-white/80"></i>
+                <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Total Applicants</div>
+                <div
+                  class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 flex items-center justify-center">
+                  <i class="fas fa-users"></i>
+                </div>
               </div>
-              <div class="kpi-value text-4xl font-bold" id="total-students">Loading...</div>
+              <div class="kpi-value text-3xl font-bold text-gray-800 dark:text-white" id="total-students">
+                Loading...</div>
             </div>
 
             <div
@@ -259,10 +263,12 @@
               style="animation-delay: 200ms;">
               <div class="flex justify-between items-start mb-4">
                 <div class="kpi-title font-medium text-gray-500 dark:text-gray-400">Active Popups</div>
-                <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center"><i
-                    class="fas fa-bell"></i></div>
+                <div
+                  class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400 flex items-center justify-center">
+                  <i class="fas fa-bell"></i>
+                </div>
               </div>
-              <div class="kpi-value kpi-primary text-3xl font-bold text-gray-800 dark:text-white" id="active-popups">
+              <div class="kpi-value text-3xl font-bold text-gray-800 dark:text-white" id="active-popups">
                 Loading...</div>
             </div>
 
@@ -306,7 +312,7 @@
                   </select>
                 </div>
               </div>
-              <div class="chart-container relative h-64 w-full">
+              <div class="chart-container relative h-64 w-full bg-gray-50/50 dark:bg-gray-700/20 rounded-lg p-2">
                 <canvas id="applicationsChart"></canvas>
               </div>
             </div>
@@ -315,7 +321,7 @@
             <div
               class="card chart-card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div class="card-header flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Student Statistics</h3>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-white">Applicant Statistics</h3>
                 <div class="chart-controls">
                   <select id="student-chart-type" onchange="updateStudentChart()"
                     class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
@@ -325,7 +331,7 @@
                   </select>
                 </div>
               </div>
-              <div class="chart-container relative h-64 w-full">
+              <div class="chart-container relative h-64 w-full bg-gray-50/50 dark:bg-gray-700/20 rounded-lg p-2">
                 <canvas id="studentChart"></canvas>
               </div>
             </div>
@@ -384,38 +390,35 @@
           <!-- Advanced Analytics & GIS Section (Embedded) -->
           <div class="mt-12 mb-8 animate-slide-up">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 rounded-lg bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-                <i class="fa-solid fa-chart-pie text-xl"></i>
+              <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                <i class="fas fa-chart-pie text-xl"></i>
               </div>
               <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Scholarship Insights & GIS Distribution</h2>
             </div>
 
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <!-- GIS Map Card -->
               <div
-                class="xl:col-span-2 card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-full">
                 <div class="flex justify-between items-center mb-4">
                   <h3 class="font-bold text-gray-700 dark:text-gray-200 flex items-center gap-2">
-                    <i class="fa-solid fa-map-location-dot text-brand-primary"></i>
-                    Applicant Geographic Distribution (Subic)
+                    <i class="fas fa-map-location-dot text-emerald-500"></i>
+                    Applicant Geographic Distribution
                   </h3>
-                  <span class="text-xs text-gray-400">Real-time heat map by Barangay</span>
+                  <span class="text-xs text-gray-400">Heat map by Barangay</span>
                 </div>
-                <div id="barangay-map" style="height: 500px; width: 100%; border-radius: 12px; z-index: 1;"></div>
+                <div id="barangay-map" style="height: 450px; width: 100%; border-radius: 12px; z-index: 1;"></div>
               </div>
 
-              <!-- Secondary Stats Column -->
-              <div class="flex flex-col gap-6">
-                <!-- Barangay Table/List Card -->
-                <div
-                  class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex-1 overflow-hidden flex flex-col">
-                  <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-list-ol text-brand-secondary"></i> Top Barangays
-                  </h3>
-                  <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 420px;">
-                    <div class="flex justify-center items-center h-40 text-gray-400">
-                      <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading data...
-                    </div>
+              <!-- Top Barangays Column -->
+              <div
+                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col h-full">
+                <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
+                  <i class="fas fa-chart-simple text-amber-500"></i> Top Barangays
+                </h3>
+                <div class="overflow-y-auto flex-1 pr-2" id="barangay-list-container" style="max-height: 500px;">
+                  <div class="flex justify-center items-center h-40 text-gray-400">
+                    <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading data...
                   </div>
                 </div>
               </div>
@@ -427,7 +430,7 @@
               <div
                 class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fa-solid fa-graduation-cap text-indigo-500"></i> Program Popularity
+                  <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
                 </h3>
                 <div style="height: 300px;">
                   <canvas id="programStatsChart"></canvas>
@@ -438,7 +441,7 @@
               <div
                 class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                 <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fa-solid fa-chart-line text-emerald-500"></i> Registration Trends
+                  <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
                 </h3>
                 <div style="height: 300px;">
                   <canvas id="registrationTrendChart"></canvas>
@@ -915,6 +918,41 @@
         <div id="admins" class="tab-content animate-fade-in">
           <div class="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
 
+            <!-- Admin Profile Card -->
+            <div
+              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-16 h-16 rounded-full bg-brand-primary/10 text-brand-primary flex items-center justify-center font-bold text-2xl flex-shrink-0">
+                    <i class="fas fa-user-shield"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white" id="current_admin_card_name">{{
+                      admin.full_name|default:admin.admin_name }}</h3>
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-2">
+                      <span
+                        class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-2.5 py-0.5 rounded-full text-xs font-bold"
+                        id="current_admin_card_role">{{ admin.role|default:"Administrator" }}</span>
+                      <span class="text-gray-400 text-xs">@<span id="current_admin_card_username">{{ admin.admin_name
+                          }}</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <button type="button"
+                    onclick="openEditAdminProfileModal('{{ admin.admin_name }}', '{{ admin.full_name|escapejs }}', '{{ admin.role|escapejs }}')"
+                    class="btn btn-outline border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors duration-200 flex items-center gap-2">
+                    <i class="fas fa-edit"></i> Edit Profile
+                  </button>
+                  <button type="button" onclick="openChangePasswordModal()"
+                    class="btn btn-outline border-2 border-gray-300 text-gray-700 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors duration-200 flex items-center gap-2">
+                    <i class="fas fa-key"></i> Change Password
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Create Admin Card -->
             <div
               class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
@@ -969,37 +1007,7 @@
               </div>
             </div>
 
-            <!-- Change Password Card -->
-            <div
-              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Change Password</h3>
-              <div class="settings-section">
-                <form id="change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
-                  <div class="form-group flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                      <label for="new_password"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
-                      <input type="password" id="new_password" name="new_password"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        required>
-                    </div>
-                    <div class="flex-1">
-                      <label for="confirm_password"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype New
-                        Password</label>
-                      <input type="password" id="confirm_password" name="confirm_password"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        required>
-                    </div>
-                  </div>
-                  <button type="submit"
-                    class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Update
-                    Password</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Admin List Card -->
+            <!-- Create Admin Card -->
             <div
               class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin List</h3>
@@ -1133,6 +1141,13 @@
                     class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Requirements</label>
                   <textarea id="p_req" name="requirements" rows="3"
                     class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label for="p_slots" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Maximum
+                    Slots (0 for unlimited)</label>
+                  <input id="p_slots" name="max_slots" type="number" min="0" value="0"
+                    class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                 </div>
 
                 <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1495,6 +1510,94 @@
     </div>
   </div>
 
+  <!-- Edit Admin Profile Modal -->
+  <div id="edit-admin-profile-modal" class="modal"
+    style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div class="modal-content !max-w-md bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Edit My Profile</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeEditAdminProfileModal()">&times;</span>
+      </div>
+      <form id="edit-admin-profile-form" onsubmit="saveEditAdminProfile(event)" class="space-y-4">
+        <div class="form-group">
+          <label for="edit_admin_profile_username"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
+          <input type="text" id="edit_admin_profile_username" name="username"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="edit_admin_profile_fullname"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+          <input type="text" id="edit_admin_profile_fullname" name="full_name"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="edit_admin_profile_role"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Role / Position</label>
+          <input type="text" id="edit_admin_profile_role" name="role"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            placeholder="e.g. Administrator">
+        </div>
+        <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeEditAdminProfileModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">
+            Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="change-password-modal" class="modal"
+    style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div class="modal-content !max-w-md bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Change Password</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeChangePasswordModal()">&times;</span>
+      </div>
+      <form id="modal-change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
+        <div class="form-group">
+          <label for="old_password"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Old/Current Password</label>
+          <input type="password" id="old_password" name="old_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New
+            Password</label>
+          <input type="password" id="new_password" name="new_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype
+            New Password</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeChangePasswordModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">
+            Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Popup Modal -->
   <div id="popup-modal" class="modal" style="display: none;">
     <div class="modal-content !max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
@@ -1610,44 +1713,52 @@
       }
     });
 
-    // Tab switching functionality
-    document.addEventListener('DOMContentLoaded', function () {
+    function switchTab(targetId) {
       const tabs = document.querySelectorAll('.nav-link, .nav-item');
       const contents = document.querySelectorAll('.tab-content');
 
+      // Remove active class from all tabs
+      tabs.forEach(t => t.classList.remove('active'));
+
+      // Hide all content sections
+      contents.forEach(c => c.classList.remove('active'));
+
+      // Find the tab element with the matching data-tab or id
+      const targetTab = Array.from(tabs).find(t => t.getAttribute('data-tab') === targetId);
+      if (targetTab) targetTab.classList.add('active');
+
+      // Show corresponding content
+      const content = document.getElementById(targetId);
+      if (content) {
+        content.classList.add('active');
+
+        // Lazy-load data when tab is opened
+        if (targetId === 'student-registrations') {
+          loadStudentRegistrations();
+        } else if (targetId === 'student-applications') {
+          loadProgramApplications();
+        } else if (targetId === 'notifications') {
+          loadPopups();
+        } else if (targetId === 'dashboard') {
+          loadDashboardStats();
+        } else if (targetId === 'programs') {
+          loadPrograms();
+        } else if (targetId === 'students') {
+          loadStudents();
+        } else if (targetId === 'announcements') {
+          loadAnnouncements();
+        }
+      }
+    }
+
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('.nav-link, .nav-item');
       tabs.forEach(tab => {
         tab.addEventListener('click', (e) => {
           e.preventDefault();
-
-          // Remove active class from all tabs
-          tabs.forEach(t => t.classList.remove('active'));
-
-          // Hide all content sections
-          contents.forEach(c => c.classList.remove('active'));
-
-          // Add active class to clicked tab
-          tab.classList.add('active');
-
-          // Show corresponding content
           const targetId = tab.getAttribute('data-tab');
-          document.getElementById(targetId)?.classList.add('active');
-
-          // Lazy-load data when tab is opened
-          if (targetId === 'student-registrations') {
-            loadStudentRegistrations();
-          } else if (targetId === 'student-applications') {
-            loadProgramApplications();
-          } else if (targetId === 'notifications') {
-            loadPopups();
-          } else if (targetId === 'dashboard') {
-            loadDashboardStats();
-          } else if (targetId === 'programs') {
-            loadPrograms();
-          } else if (targetId === 'students') {
-            loadStudents();
-          } else if (targetId === 'announcements') {
-            loadAnnouncements();
-          }
+          if (targetId) switchTab(targetId);
         });
       });
 
@@ -2240,7 +2351,9 @@
       try {
         const res = await fetch(`/api/admin/students/${studentId}/documents/`, { credentials: 'same-origin' });
         const data = await res.json();
-        if (!data.success) throw new Error(data.error);
+
+        // The backend returns {'error': ...} on failure, but doesn't explicitly return {'success': True} on success.
+        if (data.error) throw new Error(data.error);
 
         container.innerHTML = '';
 
@@ -2769,6 +2882,73 @@
       document.getElementById('popup-modal').style.display = 'none';
     }
 
+    // Edit Admin Profile Functions
+    function openEditAdminProfileModal(username, fullName, role) {
+      document.getElementById('edit_admin_profile_username').value = username || '';
+      document.getElementById('edit_admin_profile_fullname').value = fullName || '';
+      document.getElementById('edit_admin_profile_role').value = role || '';
+      document.getElementById('edit-admin-profile-modal').style.display = 'flex';
+    }
+
+    function closeEditAdminProfileModal() {
+      document.getElementById('edit-admin-profile-modal').style.display = 'none';
+    }
+
+    async function saveEditAdminProfile(e) {
+      e.preventDefault();
+      const form = e.target;
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      const data = {
+        username: document.getElementById('edit_admin_profile_username').value,
+        full_name: document.getElementById('edit_admin_profile_fullname').value,
+        role: document.getElementById('edit_admin_profile_role').value
+      };
+
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/admin/edit-profile/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Profile Updated',
+            text: 'Your profile has been updated successfully.',
+            timer: 1500,
+            showConfirmButton: false
+          }).then(() => {
+            // Update UI
+            document.getElementById('current_admin_card_username').textContent = data.username;
+            document.getElementById('current_admin_card_name').textContent = data.full_name || data.username;
+            document.getElementById('current_admin_card_role').textContent = data.role || 'Administrator';
+            closeEditAdminProfileModal();
+            // Update header name if necessary
+            const headerNames = document.querySelectorAll('.profile-info .font-bold.truncate');
+            if (headerNames.length > 0) headerNames[0].textContent = data.full_name || data.username;
+          });
+        } else {
+          Swal.fire('Error', result.error || 'Failed to update profile.', 'error');
+        }
+      } catch (err) {
+        console.error(err);
+        Swal.fire('Error', 'Network error occurred.', 'error');
+      } finally {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    }
+
     function editPopup(popupId) {
       openPopupModal(popupId);
     }
@@ -2843,24 +3023,42 @@
         });
     }
 
+    function openChangePasswordModal() {
+      document.getElementById('old_password').value = '';
+      document.getElementById('new_password').value = '';
+      document.getElementById('confirm_password').value = '';
+      document.getElementById('change-password-modal').style.display = 'flex';
+    }
+
+    function closeChangePasswordModal() {
+      document.getElementById('change-password-modal').style.display = 'none';
+    }
+
     function changeAdminPassword(event) {
       event.preventDefault();
 
+      const oldPassword = document.getElementById('old_password').value;
       const newPassword = document.getElementById('new_password').value;
       const confirmPassword = document.getElementById('confirm_password').value;
 
       if (newPassword !== confirmPassword) {
-        alert("Passwords do not match!");
+        Swal.fire('Error', 'New passwords do not match!', 'error');
         return;
       }
+
+      const btn = event.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+      btn.disabled = true;
 
       fetch('/api/admin/change-password/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+          'X-CSRFToken': getCookie('csrftoken')
         },
         body: JSON.stringify({
+          old_password: oldPassword,
           new_password: newPassword,
           confirm_password: confirmPassword
         })
@@ -2868,15 +3066,20 @@
         .then(response => response.json())
         .then(data => {
           if (data.success) {
-            alert(data.message);
-            document.getElementById('change-password-form').reset();
+            Swal.fire('Success', data.message, 'success').then(() => {
+              closeChangePasswordModal();
+            });
           } else {
-            alert(data.error);
+            Swal.fire('Error', data.error, 'error');
           }
         })
         .catch(error => {
           console.error('Error:', error);
-          alert('An error occurred while changing the password.');
+          Swal.fire('Error', 'An error occurred while changing the password.', 'error');
+        })
+        .finally(() => {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
         });
     }
 
@@ -3985,6 +4188,10 @@
             <div class="flex-1 text-sm text-gray-600 dark:text-gray-300 line-clamp-3 mb-4">
               <p>${p.requirements || 'No specific requirements listed.'}</p>
             </div>
+
+            <div class="mb-4 text-xs font-semibold text-gray-500 dark:text-gray-400">
+                <i class="fas fa-users mr-1"></i> Slots: ${p.max_slots > 0 ? (p.max_slots - p.current_apps) + ' remaining of ' + p.max_slots : 'Unlimited'}
+            </div>
             
             ${(p.application_start_date || p.application_end_date) ? `
                 <div class="mt-auto pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center text-xs text-gray-500 dark:text-gray-400">
@@ -4067,21 +4274,7 @@
         .catch(err => console.error('Error loading popups:', err));
     }
 
-    function openPopupModal() {
-      const modal = document.getElementById('popup-modal');
-      const form = document.getElementById('popup-form');
-      if (modal && form) {
-        form.reset();
-        document.getElementById('popup_id').value = '';
-        document.getElementById('modal-title').textContent = 'Create New Popup';
-        modal.style.display = 'flex';
-      }
-    }
 
-    function closePopupModal() {
-      const modal = document.getElementById('popup-modal');
-      if (modal) modal.style.display = 'none';
-    }
 
     function togglePopup(id) {
       if (!confirm('Toggle this notification status?')) return;
@@ -4319,7 +4512,7 @@
 
   <footer
     style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
-    © 2024 Lander. All rights reserved.
+    © 2026 ScholarSync Subic. MJ, Lander, BJ, Stone. All rights reserved
   </footer>
 
 
@@ -4567,6 +4760,13 @@
             <textarea id="edit_requirements" name="requirements" rows="4"
               class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"></textarea>
           </div>
+          <div class="form-group">
+            <label for="edit_max_slots"
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Maximum Slots (0 for
+              unlimited)</label>
+            <input type="number" id="edit_max_slots" name="max_slots" min="0"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+          </div>
 
           <div class="form-group grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -4619,6 +4819,7 @@
       document.getElementById('edit_requirements').value = program.requirements;
       document.getElementById('edit_application_start_date').value = program.application_start_date || '';
       document.getElementById('edit_application_end_date').value = program.application_end_date || '';
+      document.getElementById('edit_max_slots').value = program.max_slots || 0;
 
       // Reset and check target student types
       const editCheckboxes = document.querySelectorAll('#edit-program-form input[name="target_student_types"]');

@@ -1,0 +1,4 @@
+# Ignore Django template files to prevent Prettier from breaking Django tags automatically
+# (e.g., stripping spaces around == or != in {% if %} tags)
+*.html
+accounts/templates/accounts/*.html

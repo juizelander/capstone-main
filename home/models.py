@@ -73,6 +73,7 @@ class Program(models.Model):
     ]
     program_type = models.CharField(max_length=50, choices=PROGRAM_TYPES, default='Other')
     target_student_types = models.JSONField(default=list, blank=True)
+    max_slots = models.IntegerField(default=0, help_text="Maximum number of applications allowed. 0 for unlimited.")
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
