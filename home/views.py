@@ -7,7 +7,10 @@ def create_program(request):
         try:
             program_name = request.POST.get('program_name')
             requirements = request.POST.get('requirements')
-            document_requirements = request.POST.getlist('document_requirements')
+            # Handle document_requirements as comma-separated string
+            doc_req_raw = request.POST.get('document_requirements', '')
+            document_requirements = [d.strip() for d in doc_req_raw.split(',')] if doc_req_raw else []
+            
             application_start_date = request.POST.get('application_start_date') or None
             application_end_date = request.POST.get('application_end_date') or None
             program_image = request.FILES.get('program_image')
@@ -83,7 +86,8 @@ def edit_program(request, program_id):
             program.max_slots = int(request.POST.get('max_slots', program.max_slots))
             
             if 'document_requirements' in request.POST:
-                program.document_requirements = request.POST.getlist('document_requirements')
+                doc_req_raw = request.POST.get('document_requirements', '')
+                program.document_requirements = [d.strip() for d in doc_req_raw.split(',')] if doc_req_raw else []
             
             if 'target_student_types' in request.POST:
                 program.target_student_types = request.POST.getlist('target_student_types')

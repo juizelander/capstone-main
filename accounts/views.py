@@ -129,15 +129,6 @@ def register_view(request):
         current_school = request.POST.get('current_school')
         documents = request.FILES.getlist('document')
         
-        # AI Document Pre-Screening
-        for i, doc in enumerate(documents):
-            # Check if it's an image (Gemini Vision needs images)
-            if doc.content_type.startswith('image/'):
-                validation = validate_document(doc, "Document")
-                if not validation['is_valid']:
-                    messages.error(request, f"Document #{i+1} rejected: {validation['reason']}")
-                    return render(request, 'accounts/register.html')
-        
         if student_type != 'Undergraduate':
             program_and_yr = None
 
@@ -240,16 +231,37 @@ def create_program(request):
         admin_id = request.session.get('user_id')
         program_name = request.POST.get('program_name')
         requirements = request.POST.get('requirements')
-        document_requirements = request.POST.getlist('document_requirements')
+        doc_req_raw = request.POST.get('document_requirements', '')
+        document_requirements = [d.strip() for d in doc_req_raw.split(',')] if doc_req_raw else []
         print("📦 POST DATA:", request.POST)
 
         program_type = request.POST.get('program_type')
+        max_slots = request.POST.get('max_slots')
+        application_start_date = request.POST.get('application_start_date')
+        application_end_date = request.POST.get('application_end_date')
+        target_student_types = request.POST.getlist('target_student_types')
+        program_image = request.FILES.get('program_image')
 
         if not program_name:
             messages.error(request, "Program name is required.")
             return redirect('accounts:admin_dashboard')
 
-        Program.objects.create(program_name=program_name, requirements=requirements, document_requirements=document_requirements, program_type=program_type)
+        # Clean dates: convert empty strings to None
+        start_dt = application_start_date if application_start_date else None
+        end_dt = application_end_date if application_end_date else None
+
+        Program.objects.create(
+            program_name=program_name,
+            requirements=requirements,
+            document_requirements=document_requirements,
+            program_type=program_type,
+            max_slots=int(max_slots) if max_slots else 0,
+            application_start_date=start_dt,
+            application_end_date=end_dt,
+            target_student_types=target_student_types,
+            program_image=program_image,
+            is_active=True
+        )
         
         if admin_id:
             current_admin = Admin.objects.get(admin_id=admin_id)
@@ -310,16 +322,6 @@ def create_student_application(request):
 
         # Handle multiple supporting documents (new uploads)
         documents = request.FILES.getlist('supporting_docs')
-        
-        # AI Document Pre-Screening
-        for i, doc in enumerate(documents):
-            if doc.content_type.startswith('image/'):
-                validation = validate_document(doc, "Supporting Document")
-                if not validation['is_valid']:
-                    return JsonResponse({
-                        'success': False, 
-                        'error': f"Supporting Document #{i+1} rejected: {validation['reason']}"
-                    }, status=400)
         
         for doc in documents:
             ApplicationDocument.objects.create(application=app, file=doc)
@@ -1632,7 +1634,10 @@ def generate_report(request):
 
             writer.writerow(['Municipality of Subic'])
             writer.writerow(['Baraca-Camachile, National Highway, Subic, 2209 Zambales'])
-            writer.writerow(['Applicants List'])
+            
+            # Dynamic Title based on report type
+            report_title = "Students List" if report_type == 'students' else "Applicants List"
+            writer.writerow([report_title])
             writer.writerow([])
 
             if report_type == 'students':
@@ -1736,7 +1741,9 @@ def generate_report(request):
             run_address = p1.add_run('Baraca-Camachile, National Highway, Subic, 2209 Zambales\n')
             run_address.font.size = Pt(10)
             
-            run_title = p1.add_run('Applicants List')
+            # Dynamic Title based on report type
+            report_title_text = "Students List" if report_type == 'students' else "Applicants List"
+            run_title = p1.add_run(report_title_text)
             run_title.bold = True
             run_title.font.size = Pt(14)
             

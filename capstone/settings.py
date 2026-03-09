@@ -13,10 +13,13 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 import dj_database_url
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -156,4 +159,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'scholarsyncsubic@gmai
 
 
 # Gemini AI Configuration
-GEMINI_API_KEY = 'AIzaSyCn8iw_Y5Dugt34SjJnwnMSUwtFqNgCooU'
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyC0xzSWI2j_9i_fkr6jc8iT_-yYVLBFgIo')
+
+# Groq AI Configuration (fallback for chatbot)
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')

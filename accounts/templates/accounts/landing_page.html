@@ -637,6 +637,8 @@
         .chat-menu-dropdown.show {
             display: flex;
             animation: fadeIn 0.2s ease;
+        }
+
 
             /* --- Featured Programs Carousel --- */
             .featured-programs-section {
@@ -1922,10 +1924,8 @@
                                 <div class="fp-card-content">
                                     <h3>{{ program.program_name }}</h3>
                                     <div class="fp-dates">
-                                        <p><i class="fa-regular fa-calendar-check"></i> <strong>Start:</strong> {{
-                                            program.application_start_date|date:"M d, Y" }}</p>
-                                        <p><i class="fa-regular fa-clock"></i> <strong>Due:</strong> {{
-                                            program.application_end_date|date:"M d, Y" }}</p>
+                                        <p><i class="fa-regular fa-calendar-check"></i> <strong>Start:</strong> {{ program.application_start_date|date:"M d, Y" }}</p>
+                                        <p><i class="fa-regular fa-clock"></i> <strong>Due:</strong> {{ program.application_end_date|date:"M d, Y" }}</p>
                                     </div>
                                     <button class="fp-flip-btn">View Details <i
                                             class="fa-solid fa-arrow-right"></i></button>
