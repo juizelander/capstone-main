@@ -1789,6 +1789,19 @@
                 height: 250px;
             }
         }
+        .chatbot {
+            /* Basic chatbot variables or styles if overwritten */
+            transition: all 0.3s ease;
+        }
+
+        .chatbot.maximized {
+            width: 100% !important;
+            height: 100% !important;
+            bottom: 0 !important;
+            right: 0 !important;
+            border-radius: 0 !important;
+            z-index: 99999;
+        }
     </style>
 </head>
 
@@ -2061,8 +2074,9 @@
                     <ul>
                         <li><a href="#">FAQs</a></li>
                         <li><a href="#">Application Guide</a></li>
-                        <li><a href="#">Terms & Conditions</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#" onclick="openTermsModal()">Terms & Conditions</a></li>
+                        <li><a href="#" onclick="openPrivacyModal()">Privacy Policy</a></li>
+                        <li><a href="#" onclick="openCookiesModal()">Cookies Policy</a></li>
                     </ul>
                 </div>
 
@@ -2094,9 +2108,9 @@
             <div class="footer-bottom">
                 <p>&copy; 2026 ScholarSync Subic. MJ, Lander, BJ, Stone. All rights reserved.</p>
                 <div class="footer-bottom-links">
-                    <a href="#">Terms</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Cookies</a>
+                    <a href="#" onclick="openTermsModal()">Terms</a>
+                    <a href="#" onclick="openPrivacyModal()">Privacy</a>
+                    <a href="#" onclick="openCookiesModal()">Cookies</a>
                 </div>
             </div>
         </footer>
@@ -2539,6 +2553,48 @@
             // Toggle current card
             card.classList.toggle('expanded');
         }
+    </script>
+    <div id="terms-modal" class="modal" style="display: none; align-items: center; justify-content: center; z-index: 9999;">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h3>Terms and Conditions</h3>
+                <span class="close" onclick="closeTermsModal()">&times;</span>
+            </div>
+            <div class="modal-body text-left">
+                <p>Welcome to ScholarSync Subic. By using our platform, you agree to these terms.</p>
+                <br>
+                <h4>1. Acceptance of Terms</h4>
+                <p>By accessing and registering an account, you accept these terms in full.</p>
+                <br>
+                <h4>2. User Responsibilities</h4>
+                <p>You must provide accurate and verifiable information during the application process. Falsified documents will lead to disqualification.</p>
+            </div>
+            <div class="modal-footer" style="text-align: right;">
+                <button type="button" class="btn btn-primary" onclick="closeTermsModal()">I Understand</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy and Cookies are just Prompts as requested -->
+    <script>
+        function openTermsModal() {
+            document.getElementById('terms-modal').style.display = 'flex';
+        }
+        function closeTermsModal() {
+            document.getElementById('terms-modal').style.display = 'none';
+        }
+        function openPrivacyModal() {
+            alert("Privacy Policy:\nScholarSync Subic respects your privacy. All submitted documents and personal data are strictly confidential and only used for scholarship evaluation purposes under the Data Privacy Act of 2012.");
+        }
+        function openCookiesModal() {
+            alert("Cookies Policy:\nWe use essential cookies to keep you logged in and ensure cross-site request forgery protection (CSRF). We do not track your activity across other websites.");
+        }
+
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
     </script>
 </body>
 

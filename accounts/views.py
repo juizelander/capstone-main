@@ -1676,12 +1676,14 @@ def generate_report(request):
             writer.writerow(['Baraca-Camachile, National Highway, Subic, 2209 Zambales'])
             
             # Dynamic Title based on report type
+            status_prefix = f"{status.title()} " if status and status != 'all' else ""
+            
             if report_type == 'students':
-                report_title = "Students List"
+                report_title = f"{status_prefix}Students List"
             elif report_type == 'paidout':
-                report_title = "Paid Out Students List"
+                report_title = f"{status_prefix}Paid Out Students List"
             else:
-                report_title = "Applicants List"
+                report_title = f"{status_prefix}Applicants List"
             writer.writerow([report_title])
             writer.writerow([])
 
@@ -1787,12 +1789,14 @@ def generate_report(request):
             run_address.font.size = Pt(10)
             
             # Dynamic Title based on report type
+            status_prefix = f"{status.title()} " if status and status != 'all' else ""
+            
             if report_type == 'students':
-                report_title_text = "Students List"
+                report_title_text = f"{status_prefix}Students List"
             elif report_type == 'paidout':
-                report_title_text = "Paid Out Students List"
+                report_title_text = f"{status_prefix}Paid Out Students List"
             else:
-                report_title_text = "Applicants List"
+                report_title_text = f"{status_prefix}Applicants List"
             run_title = p1.add_run(report_title_text)
             run_title.bold = True
             run_title.font.size = Pt(14)
@@ -2850,7 +2854,7 @@ def get_student_recommendations(request):
                 # Safely check if student_type is in the target_student_types list
                 if isinstance(p.target_student_types, list) and student_type in p.target_student_types:
                     matched_programs.append(p)
-                if len(matched_programs) >= 3:
+                if len(matched_programs) >= 4:
                     break
 
             for p in matched_programs:
@@ -2858,18 +2862,20 @@ def get_student_recommendations(request):
                     'id': p.program_id,
                     'name': p.program_name,
                     'requirements': p.requirements[:120] if p.requirements else "",
-                    'reasons': [f"Recommended for {student_type}"]
+                    'reasons': [f"Recommended for {student_type}"],
+                    'image': p.program_image.url if p.program_image else ""
                 })
 
         # Fallback: if no tagged programs found, show up to 3 active programs
         if not results:
-            fallback = Program.objects.filter(is_active=True).order_by('-program_id')[:3]
+            fallback = Program.objects.filter(is_active=True).order_by('-program_id')[:4]
             for p in fallback:
                 results.append({
                     'id': p.program_id,
                     'name': p.program_name,
                     'requirements': p.requirements[:120] if p.requirements else "",
-                    'reasons': ["Open for all applicants"]
+                    'reasons': ["Open for all applicants"],
+                    'image': p.program_image.url if p.program_image else ""
                 })
 
         return JsonResponse({'success': True, 'recommendations': results})
