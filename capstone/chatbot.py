@@ -77,31 +77,17 @@ Your role is to:
 # ──────────────────────────────────────────────
 #  🔧 GEMINI SETUP
 # ──────────────────────────────────────────────
-_gemini_chat = None
-_gemini_model = None
+_gemini_api_key = None
 
 def _setup_gemini():
-    """Initialize Gemini client. Returns True if successful."""
-    global _gemini_chat, _gemini_model
+    """Load Gemini API key. Returns True if key is available."""
+    global _gemini_api_key
     try:
-        import google.generativeai as genai
         api_key = getattr(settings, 'GEMINI_API_KEY', None) or os.environ.get('GEMINI_API_KEY', '')
         if not api_key:
             return False
-        genai.configure(api_key=api_key)
-        generation_config = {
-            "temperature": 0.7,
-            "top_p": 0.95,
-            "top_k": 40,
-            "max_output_tokens": 8192,
-        }
-        _gemini_model = genai.GenerativeModel(
-            model_name="gemini-flash-latest",
-            generation_config=generation_config,
-            system_instruction=SYSTEM_INSTRUCTION
-        )
-        _gemini_chat = _gemini_model.start_chat(history=[])
-        print("OK: Gemini AI initialized successfully.")
+        _gemini_api_key = api_key
+        print("OK: Gemini API configured (via REST).")
         return True
     except Exception as e:
         print(f"WARN: Gemini setup failed: {e}")
@@ -141,14 +127,30 @@ def get_chatbot_response(user_message):
     Tries Gemini first; if it fails, automatically falls back to Groq.
     Creates a fresh session each request to avoid state corruption.
     """
-    # ── Try Gemini first (fresh session each time to avoid corruption) ──
-    if _gemini_ready and _gemini_model:
+    # ── Try Gemini first ──
+    if _gemini_ready and _gemini_api_key:
         try:
-            fresh_chat = _gemini_model.start_chat(history=[])
-            response = fresh_chat.send_message(user_message)
-            return response.text
+            import requests
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={_gemini_api_key}"
+            payload = {
+                "system_instruction": {
+                    "parts": {"text": SYSTEM_INSTRUCTION}
+                },
+                "contents": [
+                    {"role": "user", "parts": [{"text": user_message}]}
+                ],
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "maxOutputTokens": 1024
+                }
+            }
+            gemini_res = requests.post(url, json=payload, headers={'Content-Type': 'application/json'}, timeout=15)
+            gemini_res.raise_for_status()
+            data = gemini_res.json()
+            if 'candidates' in data and len(data['candidates']) > 0:
+                return data['candidates'][0]['content']['parts'][0]['text']
         except Exception as e:
-            print(f"WARN: Gemini failed (switching to Groq): {e}")
+            print(f"WARN: Gemini REST failed (switching to Groq): {e}")
 
     # ── Fallback to Groq (via direct HTTP) ──
     if _groq_ready and _groq_api_key:
@@ -161,7 +163,7 @@ def get_chatbot_response(user_message):
                     "Content-Type": "application/json",
                 },
                 json={
-                    "model": "llama3-8b-8192",
+                    "model": "llama-3.1-8b-instant",
                     "messages": [
                         {"role": "system", "content": SYSTEM_INSTRUCTION},
                         {"role": "user", "content": user_message},

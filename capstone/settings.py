@@ -159,7 +159,7 @@ DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'scholarsyncsubic@gmai
 
 
 # Gemini AI Configuration
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyC0xzSWI2j_9i_fkr6jc8iT_-yYVLBFgIo')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyAm5d4iCLHTbmnI-GPGNt1hk6bzwydC5aU')
 
 # Groq AI Configuration (fallback for chatbot)
-GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '')
+GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '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')
