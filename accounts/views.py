@@ -1507,6 +1507,11 @@ def admin_receipt_view(request, application_id):
     if application.program.program_type != 'Financial Assistance':
         return HttpResponse("Receipt corresponds to Financial Assistance only.", status=400)
         
+    # Mark as paid out
+    if not application.is_paid_out:
+        application.is_paid_out = True
+        application.save()
+        
     # Format amount with commas
     try:
         amount_float = float(amount.replace(',', ''))
@@ -1618,6 +1623,41 @@ def generate_report(request):
                     'status': app.requirement_status,
                     'created_at': app.created_at.strftime('%Y-%m-%d') if app.created_at else 'N/A'
                 })
+
+        elif report_type == 'paidout':
+            # Base query
+            query = Application.objects.select_related('student', 'program').filter(
+                requirement_status='approved',
+                is_paid_out=True,
+                program__program_type='Financial Assistance'
+            ).order_by('-created_at')
+
+            # Filters
+            if start_date:
+                query = query.filter(created_at__date__gte=start_date)
+            if end_date:
+                query = query.filter(created_at__date__lte=end_date)
+            if program_id and program_id != 'all':
+                query = query.filter(program_id=program_id)
+                
+            barangay = request.GET.get('barangay')
+            school = request.GET.get('school')
+            
+            if barangay and barangay != 'all':
+                query = query.filter(student__barangay__iexact=barangay)
+            if school:
+                query = query.filter(student__current_school__icontains=school)
+
+            for app in query:
+                data.append({
+                    'id': app.app_id,
+                    'student': f"{app.student.first_name} {app.student.last_name}",
+                    'program': app.program.program_name,
+                    'barangay': app.student.barangay,
+                    'school': app.student.current_school,
+                    'status': 'Approved',
+                    'created_at': app.created_at.strftime('%Y-%m-%d') if app.created_at else 'N/A'
+                })
         
         else:
              return JsonResponse({'error': 'Invalid report type'}, status=400)
@@ -1636,7 +1676,12 @@ def generate_report(request):
             writer.writerow(['Baraca-Camachile, National Highway, Subic, 2209 Zambales'])
             
             # Dynamic Title based on report type
-            report_title = "Students List" if report_type == 'students' else "Applicants List"
+            if report_type == 'students':
+                report_title = "Students List"
+            elif report_type == 'paidout':
+                report_title = "Paid Out Students List"
+            else:
+                report_title = "Applicants List"
             writer.writerow([report_title])
             writer.writerow([])
 
@@ -1742,7 +1787,12 @@ def generate_report(request):
             run_address.font.size = Pt(10)
             
             # Dynamic Title based on report type
-            report_title_text = "Students List" if report_type == 'students' else "Applicants List"
+            if report_type == 'students':
+                report_title_text = "Students List"
+            elif report_type == 'paidout':
+                report_title_text = "Paid Out Students List"
+            else:
+                report_title_text = "Applicants List"
             run_title = p1.add_run(report_title_text)
             run_title.bold = True
             run_title.font.size = Pt(14)

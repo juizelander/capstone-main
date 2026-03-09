@@ -1,0 +1,26 @@
+C:\Users\Justin Lorenz\Downloads\capstone-main\capstone\chatbot.py:87: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+OK: Gemini AI initialized successfully.
+WARN: Groq: No API key found, skipping.
+home
+ [X] 0001_initial
+ [X] 0002_alter_application_student
+ [X] 0003_program_application_end_date_and_more
+ [X] 0004_program_program_image
+ [X] 0005_application_created_at
+ [X] 0006_program_is_active
+ [X] 0007_application_is_remarks_viewed
+ [X] 0008_program_program_type
+ [X] 0009_program_document_requirements
+ [X] 0010_student_achievements_student_college_school_and_more
+ [X] 0011_announcement
+ [X] 0012_program_target_student_types
+ [X] 0013_program_max_slots
+ [X] 0014_application_is_paid_out

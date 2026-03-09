@@ -90,6 +90,7 @@ class Application(models.Model):
     requirement_status = models.CharField(max_length=100)
     remarks = models.TextField(blank=True, null=True)
     is_remarks_viewed = models.BooleanField(default=False)
+    is_paid_out = models.BooleanField(default=False)
     notification = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
 

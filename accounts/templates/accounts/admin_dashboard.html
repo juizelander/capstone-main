@@ -1219,6 +1219,7 @@
                     onchange="toggleReportFilters()">
                     <option value="students">Students</option>
                     <option value="applications">Program Applications</option>
+                    <option value="paidout">Paid Out Students</option>
                   </select>
                 </div>
 
@@ -4545,7 +4546,8 @@
         tbody.innerHTML = '';
         applicants.forEach(app => {
           const isApproved = app.requirement_status === 'approved';
-          const canPrintReceipt = isApproved && currentProgramType === 'Financial Assistance';
+          const pType = currentProgramType || '';
+          const canPrintReceipt = isApproved && pType.trim().toLowerCase() === 'financial assistance';
           
           let statusBadge = '';
           switch(app.requirement_status) {

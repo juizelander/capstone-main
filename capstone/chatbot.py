@@ -101,10 +101,10 @@ def _setup_gemini():
             system_instruction=SYSTEM_INSTRUCTION
         )
         _gemini_chat = _gemini_model.start_chat(history=[])
-        print("✅ Gemini AI initialized successfully.")
+        print("OK: Gemini AI initialized successfully.")
         return True
     except Exception as e:
-        print(f"⚠️ Gemini setup failed: {e}")
+        print(f"WARN: Gemini setup failed: {e}")
         return False
 
 # ──────────────────────────────────────────────
@@ -119,13 +119,13 @@ def _setup_groq():
         import requests  # already installed with Django
         key = getattr(settings, 'GROQ_API_KEY', None) or os.environ.get('GROQ_API_KEY', '')
         if not key:
-            print("⚠️ Groq: No API key found, skipping.")
+            print("WARN: Groq: No API key found, skipping.")
             return False
         _groq_api_key = key
-        print("✅ Groq AI ready (via requests).")
+        print("OK: Groq AI ready (via requests).")
         return True
     except Exception as e:
-        print(f"⚠️ Groq setup failed: {e}")
+        print(f"WARN: Groq setup failed: {e}")
         return False
 
 # Initialize both on startup
@@ -148,7 +148,7 @@ def get_chatbot_response(user_message):
             response = fresh_chat.send_message(user_message)
             return response.text
         except Exception as e:
-            print(f"⚠️ Gemini failed (switching to Groq): {e}")
+            print(f"WARN: Gemini failed (switching to Groq): {e}")
 
     # ── Fallback to Groq (via direct HTTP) ──
     if _groq_ready and _groq_api_key:
@@ -174,7 +174,7 @@ def get_chatbot_response(user_message):
             groq_response.raise_for_status()
             return groq_response.json()["choices"][0]["message"]["content"]
         except Exception as e:
-            print(f"⚠️ Groq also failed: {e}")
+            print(f"WARN: Groq also failed: {e}")
 
     # ── Both failed ──
     return "I'm sorry, I'm having trouble connecting right now. Please try again in a moment, or contact the administration for help!"
@@ -226,5 +226,5 @@ def validate_document(file_obj, expected_type="Document"):
         }
 
     except Exception as e:
-        print(f"⚠️ AI Document Validation Error: {e}")
+        print(f"WARN: AI Document Validation Error: {e}")
         return {'is_valid': True, 'reason': 'AI validation unavailable, pending manual review.'}
