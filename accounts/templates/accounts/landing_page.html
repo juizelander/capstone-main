@@ -64,7 +64,7 @@
         }
 
         .landing-hero {
-            padding: 150px 40px 80px;
+            padding: 100px 40px; /* Reduced top padding */
             text-align: center;
             color: white;
             min-height: 80vh;
@@ -72,6 +72,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #10B981, #059669); /* Added background because it is now lower on the page */
         }
 
         .landing-hero h1 {
@@ -329,7 +330,7 @@
             }
 
             .landing-hero {
-                padding: 140px 20px 60px;
+                padding: 80px 20px 60px; /* Reduced top padding on mobile */
             }
 
             .landing-hero h1 {
@@ -1660,16 +1661,50 @@
 
         /* --- Student News Section --- */
         .student-news-section {
-            padding: 80px 5%;
-            background-color: #f8fafc;
+            padding: 80px 40px;
+            background: #fff;
         }
 
         .news-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
+            display: flex; /* Changed from grid to flex */
             gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
+            overflow-x: auto; /* Enable horizontal scrolling */
+            padding-bottom: 20px; /* Space for scrollbar */
+            -ms-overflow-style: none; /* Hide scrollbar for cleaner look */
+            scrollbar-width: thin;
+            align-items: stretch; /* Make items equal height */
+        }
+        
+        .news-grid::-webkit-scrollbar {
+            height: 8px; /* show a thin scrollbar */
+        }
+        
+        .news-grid::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        
+        .news-grid::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .news-grid::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .news-featured, .news-side {
+            min-width: 320px; /* Ensure cards don't shrink too much */
+            max-width: 400px; /* Keep them reasonably sized */
+            flex-shrink: 0;   /* Don't allow shrinking */
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .news-side {
+            gap: 20px;
         }
 
         .news-featured {
@@ -1820,98 +1855,9 @@
     </header>
 
     <div class="landing-container">
-        <section class="landing-hero">
-            <h1>ScholarSync Subic</h1>
-            <p>ScholarSync Subic creates a bridge between seeking students and educational opportunities
-                accessible for everyone in the municipality of Subic.</p>
-            <div class="cta-buttons">
-                <a href="{% url 'accounts:register' %}" class="btn-landing btn-primary-landing">Apply Now</a>
-                <a href="#features" class="btn-landing btn-outline-landing">Learn More</a>
-            </div>
-        </section>
-
-
-        <!-- Active Programs Section -->
-        <!-- <section id="active-programs" style="margin-top: 60px; margin-bottom: 40px;">
-            <h2 style="text-align: center; color: #2d3748; font-size: 2rem; margin-bottom: 30px;">Open Programs</h2>
-
-            {% if active_programs %}
-            <div class="carousel-wrapper">
-                <button class="carousel-btn prev-btn" onclick="moveCarousel(-1)">&#10094;</button>
-
-                <div class="carousel-container" id="programTrack">
-                    {% for program in active_programs %}
-                    <div class="program-card">
-                        {% if program.program_image %}
-                        <div class="program-img-header"
-                            style="background-image: url('{{ program.program_image.url }}');"></div>
-                        {% endif %}
-
-                        <div class="program-content">
-                            <div class="program-header">
-                                <h3>{{ program.program_name }}</h3>
-                            </div>
-
-                            <div class="program-body">
-                                <p>{{ program.requirements|truncatechars:100 }}</p>
-                            </div>
-
-                            <a href="{% url 'accounts:register' %}" class="btn-landing btn-primary-landing"
-                                style="margin-top: auto; align-self: center; font-size: 0.9rem; padding: 8px 20px;">Apply
-                                Now</a>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <button class="carousel-btn next-btn" onclick="moveCarousel(1)">&#10095;</button>
-            </div>
-            {% else %}
-            <div
-                style="text-align: center; color: #718096; padding: 40px; background: rgba(255,255,255,0.5); border-radius: 12px;">
-                <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 15px; color: #10B981;"></i>
-                <p>No scholarship programs are currently open. Please check back later.</p>
-            </div>
-            {% endif %}
-        </section> -->
-
-        <section id="features" class="features-section">
-            <div class="section-title">
-                <h2>Why ScholarSync?</h2>
-                <p>Designed to make scholarship administration seamless for everyone.</p>
-            </div>
-
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-paper-plane"></i>
-                    </div>
-                    <h3>Easy Application</h3>
-                    <p>Apply for multiple scholarship programs with a single profile using our streamlined application
-                        process.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3>Real-time Updates</h3>
-                    <p>Stay informed with instant notifications about your application status and important
-                        announcements.</p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Secure & Transparent</h3>
-                    <p>Your data is protected, and our selection process ensures fairness and transparency for all
-                        applicants.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Featured Programs Section (Carousel with Flip Cards) -->
-        <section id="featured-programs" class="featured-programs-section">
+    
+        <!-- Featured Programs Section (Carousel with Flip Cards) - MOVED UP -->
+        <section id="featured-programs" class="featured-programs-section" style="padding-top: 120px;">
             <div class="section-title">
                 <h2>Featured Programs</h2>
                 <p>Explore current scholarship opportunities available for you.</p>
@@ -1976,35 +1922,16 @@
             {% endif %}
         </section>
 
-        <!-- Student News Section -->
+        <!-- Student News Section - MOVED UP -->
         <section class="student-news-section">
             <h2 class="section-heading" style="text-align: center; margin-bottom: 50px;">Applicant News</h2>
 
             {% if announcements %}
             <div class="news-grid">
-                <!-- Featured News (Large) -->
-                {% with featured=announcements.0 %}
-                <div class="news-featured">
-                    <div class="news-card">
-                        <div class="news-img"
-                            style="background-image: url('{% if featured.image %}{{ featured.image.url }}{% else %}/static/accounts/scholarsync_logo.png{% endif %}');">
-                        </div>
-                        <div class="news-body">
-                            <h3>{{ featured.title }}</h3>
-                            <p>{{ featured.content|truncatechars:150 }}</p>
-                            <div class="news-meta">
-                                {{ featured.created_at|date:"F d, Y" }}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endwith %}
-
-                <!-- Side News (Collapsible) -->
+                {% for item in announcements %}
                 <div class="news-side">
-                    {% for item in announcements|slice:"1:5" %}
-                    <div class="news-card" onclick="toggleNews(this)">
-                        <div style="display: flex; flex-direction: column; padding: 20px;">
+                    <div class="news-card" onclick="toggleNews(this)" style="height: 100%; display: flex; flex-direction: column;">
+                        <div style="display: flex; flex-direction: column; padding: 20px; flex: 1;">
                             <div
                                 style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
                                 <div style="display: flex; gap: 15px; align-items: center; flex: 1;">
@@ -2020,13 +1947,13 @@
                                 {{ item.content|linebreaksbr }}
                             </div>
 
-                            <div class="news-meta" style="margin-top: 15px;">
+                            <div class="news-meta" style="margin-top: auto; padding-top: 15px;">
                                 {{ item.created_at|date:"F d, Y" }}
                             </div>
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
+                {% endfor %}
             </div>
             {% else %}
             <!-- Fallback if no news -->
@@ -2037,6 +1964,53 @@
                 <p>Check back later for important announcements and scholarship guides!</p>
             </div>
             {% endif %}
+        </section>
+        <!-- Hero Section -->
+        <section class="landing-hero">
+            <h1>ScholarSync Subic</h1>
+            <p>ScholarSync Subic creates a bridge between seeking students and educational opportunities
+                accessible for everyone in the municipality of Subic.</p>
+            <div class="cta-buttons">
+                <a href="{% url 'accounts:register' %}" class="btn-landing btn-primary-landing">Apply Now</a>
+                <a href="#features" class="btn-landing btn-outline-landing">Learn More</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <div class="section-title">
+                <h2>Why ScholarSync?</h2>
+                <p>Designed to make scholarship administration seamless for everyone.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <h3>Easy Application</h3>
+                    <p>Apply for multiple scholarship programs with a single profile using our streamlined application
+                        process.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Real-time Updates</h3>
+                    <p>Stay informed with instant notifications about your application status and important
+                        announcements.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure & Transparent</h3>
+                    <p>Your data is protected, and our selection process ensures fairness and transparency for all
+                        applicants.</p>
+                </div>
+            </div>
         </section>
 
         <footer class="premium-footer">

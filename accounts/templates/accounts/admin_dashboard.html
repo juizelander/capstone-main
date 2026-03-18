@@ -417,28 +417,22 @@
               </div>
             </div>
 
-            <!-- Analytics Charts Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <!-- Program Popularity -->
-              <div
-                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fas fa-graduation-cap text-indigo-500"></i> Program Popularity
-                </h3>
-                <div style="height: 300px;">
-                  <canvas id="programStatsChart"></canvas>
-                </div>
-              </div>
+            </div>
 
-              <!-- Registration Trends -->
-              <div
-                class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-                <h3 class="font-bold text-gray-700 dark:text-gray-200 mb-4 flex items-center gap-2">
-                  <i class="fas fa-chart-line text-emerald-500"></i> Registration Trends
-                </h3>
-                <div style="height: 300px;">
-                  <canvas id="registrationTrendChart"></canvas>
+            <!-- New Section: Registered Applicants per Program -->
+            <div class="card bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6">
+              <h3 class="font-bold text-gray-800 dark:text-white mb-6 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <i class="fas fa-clipboard-list text-brand-primary"></i> Registered Applicants per Program
                 </div>
+                <span class="text-xs font-normal text-gray-500">Live Breakdown</span>
+              </h3>
+              <div id="applicants-per-program-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Populated via loadProgramAnalytics() -->
+                <div class="animate-pulse bg-gray-50 dark:bg-gray-700 h-24 rounded-lg"></div>
+                <div class="animate-pulse bg-gray-50 dark:bg-gray-700 h-24 rounded-lg"></div>
+                <div class="animate-pulse bg-gray-50 dark:bg-gray-700 h-24 rounded-lg"></div>
+                <div class="animate-pulse bg-gray-50 dark:bg-gray-700 h-24 rounded-lg"></div>
               </div>
             </div>
 
@@ -474,10 +468,15 @@
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex justify-between items-center mb-6">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Student Program Applications</h3>
-              <div class="application-filters">
+              <div class="application-filters flex gap-3">
+                <select id="program-applicant-program-filter" onchange="filterProgramApplications()"
+                  class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
+                  <option value="all">All Programs</option>
+                  <!-- Programs populated via JS -->
+                </select>
                 <select id="program-application-filter" onchange="filterProgramApplications()"
                   class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5">
-                  <option value="all">All Applications</option>
+                  <option value="all">All Status</option>
                   <option value="submitted">Submitted</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
@@ -1013,13 +1012,30 @@
         <div id="programs" class="tab-content animate-fade-in">
           <div
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
-            <div class="card-header flex justify-between items-center mb-6">
+            <div class="card-header flex justify-between items-center mb-2">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Program Management</h3>
-              <button
-                class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200"
-                onclick="showCreateProgram()">
-                <i class="fas fa-plus"></i> Create New Program
-              </button>
+              <div class="flex gap-3">
+                <button
+                  class="btn btn-secondary bg-gray-600 text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-gray-700 transition-colors duration-200"
+                  onclick="showCreateOtherProgram()">
+                  <i class="fas fa-external-link-alt"></i> Create Other Program
+                </button>
+                <button
+                  class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200"
+                  onclick="showCreateProgram()">
+                  <i class="fas fa-plus"></i> Create New Program
+                </button>
+              </div>
+            </div>
+            
+            <!-- Sub-Tabs Navigation for Admin Subic vs Other Programs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700 mb-6 mt-2">
+                <button onclick="switchAdminProgramTab('subic')" id="btn-admin-tab-subic" class="admin-program-tab-btn active px-4 py-2 text-sm font-medium border-b-2 transition-colors duration-200" style="border-bottom-color: #10B981; color: #10B981;">
+                  Subic Programs
+                </button>
+                <button onclick="switchAdminProgramTab('other')" id="btn-admin-tab-other" class="admin-program-tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 transition-colors duration-200">
+                  Other Programs
+                </button>
             </div>
 
             <div id="createProgramForm"
@@ -1153,8 +1169,16 @@
               </form>
             </div>
 
-            <div class="programs-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <!-- Programs will load here -->
+            <div id="admin-subic-programs-content" class="admin-program-tab-content">
+                <div class="programs-list grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <!-- Subic Programs will load here -->
+                </div>
+            </div>
+
+            <div id="admin-other-programs-content" class="admin-program-tab-content hidden">
+                <div class="programs-list-other grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <!-- Other Programs will load here -->
+                </div>
             </div>
           </div>
         </div>
@@ -4076,9 +4100,22 @@
       }
     }
 
-    function toggleProgramForm() {
-      const form = document.getElementById('programForm');
-      form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    function showCreateOtherProgram() {
+      showCreateProgram();
+      document.getElementById('p_type').value = 'Other';
+      // Auto-set some defaults for "Other Programs"
+      document.getElementById('p_slots').value = '0';
+      document.getElementById('p_name').placeholder = 'e.g. External Scholarship Opportunity';
+    }
+
+    function hideCreateProgram() {
+      document.getElementById('createProgramForm').style.display = 'none';
+      document.getElementById('createProgramForm').reset();
+    }
+
+    function showCreateProgram() {
+      document.getElementById('createProgramForm').style.display = 'block';
+      document.getElementById('createProgramForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     document.querySelector('.program-form').addEventListener('submit', async function (e) {
@@ -4110,34 +4147,7 @@
       }
     });
 
-    async function loadPrograms() {
-      const container = document.querySelector('.programs-list');
-      const endpoints = ['/home/programs/', '/programs/'];
-      let data = null;
-      for (const url of endpoints) {
-        try {
-          const res = await fetch(url, { credentials: 'same-origin' });
-          console.log('Programs fetch', url, res.status);
-          if (!res.ok) continue;
-          data = await res.json();
-          break;
-        } catch (e) {
-          console.warn('Programs fetch failed for', url, e);
-        }
-      }
-      container.innerHTML = '';
-      if (!data || !data.programs) {
-        container.innerHTML = '<p class="no-programs">Unable to load programs.</p>';
-        return;
-      }
-
-      allPrograms = data.programs; // Store for edit modal access
-
-      if (data.programs.length === 0) {
-        container.innerHTML = '<p class="no-programs">No programs found.</p>';
-        return;
-      }
-      data.programs.forEach(p => {
+    function createProgramCardElement(p) {
         const el = document.createElement('div');
         el.className = 'program-item bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 dark:border-gray-700 flex flex-col relative';
 
@@ -4171,8 +4181,168 @@
             ` : ''}
           </div>
         `;
-        container.appendChild(el);
-      });
+        return el;
+    }
+
+    async function loadPrograms() {
+      const containerSubic = document.querySelector('.programs-list');
+      const containerOther = document.querySelector('.programs-list-other');
+      const endpoints = ['/home/programs/', '/programs/'];
+      let data = null;
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url, { credentials: 'same-origin' });
+          if (!res.ok) continue;
+          data = await res.json();
+          break;
+        } catch (e) {
+          console.warn('Programs fetch failed for', url, e);
+        }
+      }
+      
+      if (containerSubic) containerSubic.innerHTML = '';
+      if (containerOther) containerOther.innerHTML = '';
+
+      if (!data || !data.programs) {
+        if (containerSubic) containerSubic.innerHTML = '<p class="no-programs">Unable to load programs.</p>';
+        if (containerOther) containerOther.innerHTML = '<p class="no-programs">Unable to load programs.</p>';
+        return;
+      }
+
+      allPrograms = data.programs;
+
+      const appFilter = document.getElementById('program-applicant-program-filter');
+      if (appFilter) {
+          appFilter.innerHTML = '<option value="all">All Programs</option>';
+          data.programs.forEach(p => {
+              if (p.program_type !== 'Other') {
+                  const opt = document.createElement('option');
+                  opt.value = p.program_id;
+                  opt.textContent = p.program_name;
+                  appFilter.appendChild(opt);
+              }
+          });
+      }
+
+      if (typeof loadProgramAnalytics === 'function') {
+         loadProgramAnalytics();
+      }
+
+      const subicPrograms = data.programs.filter(p => p.program_type !== 'Other');
+      const otherPrograms = data.programs.filter(p => p.program_type === 'Other');
+
+      if (containerSubic) {
+        if (subicPrograms.length === 0) {
+          containerSubic.innerHTML = '<p class="no-programs text-gray-500">No Subic programs found.</p>';
+        } else {
+          subicPrograms.forEach(p => containerSubic.appendChild(createProgramCardElement(p)));
+        }
+      }
+
+      if (containerOther) {
+        if (otherPrograms.length === 0) {
+          containerOther.innerHTML = '<p class="no-programs text-gray-500">No Other programs found.</p>';
+        } else {
+          otherPrograms.forEach(p => containerOther.appendChild(createProgramCardElement(p)));
+        }
+      }
+    }
+
+    async function loadProgramAnalytics() {
+        const grid = document.getElementById('applicants-per-program-grid');
+        if (!grid) return;
+
+        // Use already loaded allPrograms
+        if (!allPrograms || allPrograms.length === 0) {
+            grid.innerHTML = '<p class="text-gray-400">No program data available for breakdown.</p>';
+            return;
+        }
+
+        grid.innerHTML = '';
+        allPrograms.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'bg-gray-50 dark:bg-gray-700/50 p-4 rounded-xl border border-gray-100 dark:border-gray-600 shadow-sm flex flex-col justify-center';
+            card.innerHTML = `
+                <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1 truncate" title="${p.program_name}">${p.program_name}</span>
+                <div class="flex items-baseline gap-2">
+                    <span class="text-2xl font-bold text-gray-800 dark:text-white">${p.current_apps || 0}</span>
+                    <span class="text-xs text-gray-400">Applicants</span>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    async function filterProgramApplications() {
+      const statusFilter = document.getElementById('program-application-filter').value;
+      const programFilter = document.getElementById('program-applicant-program-filter').value;
+      const container = document.getElementById('program-application-list');
+      
+      container.innerHTML = '<div class="col-span-full flex justify-center py-10"><i class="fas fa-spinner fa-spin text-3xl text-brand-primary"></i></div>';
+
+      try {
+        const res = await fetch('/api/admin/program-applications/');
+        const data = await res.json();
+        
+        if (data.success) {
+          let filtered = data.applications;
+          if (statusFilter !== 'all') {
+            filtered = filtered.filter(app => app.status === statusFilter);
+          }
+          if (programFilter !== 'all') {
+            filtered = filtered.filter(app => String(app.program_id) === String(programFilter));
+          }
+
+          container.innerHTML = '';
+          if (filtered.length === 0) {
+            container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">No applications found matching the criteria.</div>';
+            return;
+          }
+
+          filtered.forEach(app => {
+            const el = createProgramApplicationElement(app); 
+            container.appendChild(el);
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<div class="col-span-full text-center py-10 text-red-500">Error loading applications.</div>';
+      }
+    }
+
+    function switchAdminProgramTab(tabName) {
+      // Hide all sub-tabs content
+      document.getElementById('admin-subic-programs-content').classList.add('hidden');
+      document.getElementById('admin-other-programs-content').classList.add('hidden');
+      
+      // Remove active styling from all sub-tab buttons
+      const btnSubic = document.getElementById('btn-admin-tab-subic');
+      const btnOther = document.getElementById('btn-admin-tab-other');
+      
+      btnSubic.classList.remove('active', 'border-b-2');
+      btnSubic.style.borderBottomColor = 'transparent';
+      btnSubic.style.color = '';
+      btnSubic.classList.add('text-gray-500', 'border-transparent');
+      
+      btnOther.classList.remove('active', 'border-b-2');
+      btnOther.style.borderBottomColor = 'transparent';
+      btnOther.style.color = '';
+      btnOther.classList.add('text-gray-500', 'border-transparent');
+
+      // Show active content and set active styling
+      if (tabName === 'subic') {
+        document.getElementById('admin-subic-programs-content').classList.remove('hidden');
+        btnSubic.classList.add('active', 'border-b-2');
+        btnSubic.classList.remove('text-gray-500', 'border-transparent');
+        btnSubic.style.borderBottomColor = '#10B981';
+        btnSubic.style.color = '#10B981';
+      } else if (tabName === 'other') {
+        document.getElementById('admin-other-programs-content').classList.remove('hidden');
+        btnOther.classList.add('active', 'border-b-2');
+        btnOther.classList.remove('text-gray-500', 'border-transparent');
+        btnOther.style.borderBottomColor = '#10B981';
+        btnOther.style.color = '#10B981';
+      }
     }
   </script>
 

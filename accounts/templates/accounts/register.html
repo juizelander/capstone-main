@@ -396,7 +396,16 @@
         </div>
       </div>
 
-      <button type="submit" class="auth-button">Create Account</button>
+      <!-- Registration Consent Checkbox -->
+      <div class="privacy-consent-box" style="margin: 20px 0; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; display: flex; align-items: flex-start; gap: 12px; transition: all 0.3s ease;">
+          <input type="checkbox" id="form-privacy-check" required style="margin-top: 4px; width: 18px; height: 18px; accent-color: #10B981; cursor: pointer;">
+          <label for="form-privacy-check" style="font-size: 0.9rem; color: #334155; line-height: 1.5; cursor: pointer; user-select: none;">
+              I agree to the <a href="javascript:void(0)" id="open-privacy-modal-link" style="color: #10B981; font-weight: 600; text-decoration: underline;">Data Privacy Act of Subic</a>. 
+              I understand that I must read and accept the terms before creating an account.
+          </label>
+      </div>
+
+      <button type="submit" class="auth-button" id="main-submit-btn" disabled style="opacity: 0.6; cursor: not-allowed; transition: all 0.3s ease;">Create Account</button>
     </form>
 
     <div class="auth-link">
@@ -477,12 +486,303 @@
   </script>
   <script>
     // Clear forms on load and disable autocomplete for all inputs
+  <!-- Data Privacy Act Modal -->
+  <div id="privacy-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Data Privacy Act Consent</h2>
+        <span class="close" onclick="closePrivacyModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <h3>The Data Privacy Act of Subic</h3>
+        <p>In compliance with the Data Privacy Act of 2012 (Republic Act No. 10173), ScholarSync Subic (the "Service") is committed to protecting the privacy and security of your personal data. By using this service, you agree to the following:</p>
+        
+        <h3>1. Collection of Personal Information</h3>
+        <p>We collect personal information such as your name, address, contact details, birthday, and educational background. This information is necessary for verifying your identity and evaluating your eligibility for various scholarship programs within the Municipality of Subic.</p>
+        
+        <h3>2. Use of Information</h3>
+        <p>Your data will be used primarily for:</p>
+        <ul>
+            <li>Processing scholarship applications.</li>
+            <li>Communicating with you regarding your status.</li>
+            <li>Generating reports for the Subic Municipal Government.</li>
+            <li>Providing automated recommendations for scholarship programs.</li>
+        </ul>
+        
+        <h3>3. Data Protection</h3>
+        <p>We implement strict security measures to ensure that your data is safe from unauthorized access, alteration, or disclosure. Only authorized personnel from the Subic Scholarship Office have access to your sensitive documents.</p>
+        
+        <h3>4. Disclosure to Third Parties</h3>
+        <p>We do not sell or share your personal information with third-party companies for marketing purposes. Disclosure only happens when legally mandated or required for government auditing purposes.</p>
+
+        <h3>5. Your Rights</h3>
+        <p>You have the right to inquire about the data we hold, request corrections, or ask for the deletion of your account and associated data at any time by visiting the Subic Municipal Hall Scholarship Office.</p>
+
+        <div class="privacy-checkbox-container" style="margin-top: 25px; padding: 15px; background: #f0fdf4; border-radius: 8px; border: 1px solid #bbf7d0; display: flex; align-items: flex-start; gap: 10px;">
+            <input type="checkbox" id="privacy-agree" style="margin-top: 4px; width: 18px; height: 18px; accent-color: #10B981; cursor: pointer;">
+            <label for="privacy-agree" style="font-weight: 500; color: #064e3b; cursor: pointer; user-select: none;">
+                I have read the Data Privacy Act of Subic and I agree to these terms.
+            </label>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 15px;">
+        <button type="button" class="btn btn-secondary" onclick="closePrivacyModal()" style="background: transparent; border: 1px solid #cbd5e1; color: #64748b; padding: 10px 20px; border-radius: 8px;">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirm-registration-btn" disabled style="background: #cbd5e1; cursor: not-allowed; transition: all 0.3s ease;">Confirm & Register</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: white;
+      padding: 20px 25px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .close {
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+
+    .close:hover {
+      opacity: 1;
+    }
+
+    .modal-body {
+      padding: 25px;
+      overflow-y: auto;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    .modal-body h3 {
+      color: #10B981;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .modal-body h3:first-child {
+      margin-top: 0;
+    }
+
+    .modal-body p {
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    .modal-footer {
+      padding: 20px 25px;
+      border-top: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .btn-primary.active {
+      background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%) !important;
+      color: white !important;
+      cursor: pointer !important;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+    }
+
+    .btn-primary.active:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+
+  <script>
+    // Data Privacy Modal Logic
     document.addEventListener('DOMContentLoaded', function() {
       const forms = document.querySelectorAll('form');
+      const authForm = document.querySelector('.auth-form');
+      const privacyModal = document.getElementById('privacy-modal');
+      const formPrivacyCheck = document.getElementById('form-privacy-check');
+      const modalPrivacyCheck = document.getElementById('privacy-agree');
+      const confirmBtn = document.getElementById('confirm-registration-btn');
+      const mainSubmitBtn = document.getElementById('main-submit-btn');
+      const openModalLink = document.getElementById('open-privacy-modal-link');
+      
+      let isPrivacyAgreed = false;
+
+      // Function to open modal
+      function openModal(e) {
+          if (e) e.preventDefault();
+          privacyModal.style.display = 'block';
+          // Force scroll to top of modal body when opening
+          document.querySelector('.modal-body').scrollTop = 0;
+          
+          // Disable modal checkbox every time it opens to force re-reading
+          modalPrivacyCheck.checked = false;
+          isPrivacyAgreed = false; 
+          updateConfirmBtnState();
+      }
+
+      // Open modal when clicking the link
+      if (openModalLink) {
+          openModalLink.addEventListener('click', openModal);
+      }
+
+      // Intercept clicks on the form checkbox specifically
+      if (formPrivacyCheck) {
+          formPrivacyCheck.addEventListener('click', function(e) {
+              // If they are trying to check the box but haven't agreed in modal yet
+              if (this.checked && !isPrivacyAgreed) {
+                  e.preventDefault(); 
+                  this.checked = false; 
+                  openModal(); 
+                  return;
+              }
+              
+              // If they are checking it AFTER agreeing in modal
+              if (this.checked && isPrivacyAgreed) {
+                  updateMainSubmitState();
+              } else {
+                  // If they uncheck it
+                  updateMainSubmitState();
+              }
+          });
+      }
+
+      // Handle Modal Checkbox Toggle
+      function updateConfirmBtnState() {
+          if(modalPrivacyCheck.checked) {
+              confirmBtn.disabled = false;
+              confirmBtn.classList.add('active');
+              confirmBtn.style.background = '#10B981';
+          } else {
+              confirmBtn.disabled = true;
+              confirmBtn.classList.remove('active');
+              confirmBtn.style.background = '#cbd5e1';
+          }
+      }
+
+      if(modalPrivacyCheck) {
+          modalPrivacyCheck.addEventListener('change', updateConfirmBtnState);
+      }
+
+      // Handle Confirm Registration Button inside Modal
+      if(confirmBtn) {
+          confirmBtn.addEventListener('click', function() {
+              if(modalPrivacyCheck.checked) {
+                  isPrivacyAgreed = true;
+                  closePrivacyModal();
+                  
+                  // Uncheck it so they have to physically check it again
+                  if (formPrivacyCheck) formPrivacyCheck.checked = false;
+                  updateMainSubmitState();
+                  
+                  // Optional: Highlight the checkbox to show it's now ready to be checked
+                  if (formPrivacyCheck && formPrivacyCheck.parentElement) {
+                      formPrivacyCheck.parentElement.style.borderColor = '#10B981';
+                      formPrivacyCheck.parentElement.style.background = '#f0fdf4';
+                      
+                      const label = formPrivacyCheck.parentElement.querySelector('label');
+                      if (label && !label.dataset.hintAdded) {
+                          label.innerHTML += ' <br><span style="color: #10B981; font-size: 0.85em; font-weight: bold; display: block; margin-top: 4px;">Thank you for agreeing. Please check this box to complete setup.</span>';
+                          label.dataset.hintAdded = 'true';
+                      }
+                  }
+              }
+          });
+      }
+      
+      function updateMainSubmitState() {
+          if (formPrivacyCheck.checked && isPrivacyAgreed) {
+              mainSubmitBtn.disabled = false;
+              mainSubmitBtn.style.opacity = '1';
+              mainSubmitBtn.style.cursor = 'pointer';
+          } else {
+              mainSubmitBtn.disabled = true;
+              mainSubmitBtn.style.opacity = '0.6';
+              mainSubmitBtn.style.cursor = 'not-allowed';
+          }
+      }
+
+      // Global functions for modal close
+      window.closePrivacyModal = function() {
+          privacyModal.style.display = 'none';
+          // If they didn't agree, ensure the form checkbox is unchecked
+          if (!isPrivacyAgreed) {
+              formPrivacyCheck.checked = false;
+              updateMainSubmitState();
+          }
+          // If they close without agreeing, reset the modal checkbox state
+          if(!isPrivacyAgreed) {
+              modalPrivacyCheck.checked = false;
+              updateConfirmBtnState();
+          }
+      }
+
+      // Close on outside click
+      window.addEventListener('click', function(e) {
+          if (e.target === privacyModal) {
+              window.closePrivacyModal();
+          }
+      });
+
       forms.forEach(form => form.reset());
       
-      const inputs = document.querySelectorAll('input, textarea');
-      inputs.forEach(input => {
+      const inputs = document.querySelectorAll('input, textare');
+      // Fix typo above but keep original clear out logic
+      const fixedInputs = document.querySelectorAll('input, textarea');
+      fixedInputs.forEach(input => {
         input.setAttribute('autocomplete', 'off');
       });
     });

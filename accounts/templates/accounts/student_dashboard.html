@@ -190,7 +190,7 @@
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           onclick="switchTab('apply')">
-          <i class="fas fa-plus-circle"></i> Apply
+          <i class="fas fa-plus-circle"></i> Programs/Scholarships
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           onclick="switchTab('profile')">
@@ -359,20 +359,45 @@
           </section>
         </div>
 
-        <!-- Apply Tab -->
+        <!-- Programs/Scholarships Tab -->
         <div id="tab-apply" class="tab-pane">
           <section id="program-application" class="animate-slide-up">
-            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">Apply for a Program</h2>
-            <p class="muted" id="apply-subtitle">Browse available programs and select one to start your application.</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1">Programs & Scholarships</h2>
+            <p class="muted" id="apply-subtitle">Browse available opportunities and select one to start your application.</p>
 
             <div id="app-msg" class="app-message" style="display:none;"></div>
 
-            <!-- Program Cards Grid View -->
-            <div id="program-grid-container" class="mt-4">
-              <div id="program-cards-grid" class="flex flex-col gap-6">
-                <!-- Program cards will be dynamically injected here -->
-                <p class="loading-text w-full text-center py-6 text-gray-500">Loading programs...</p>
-              </div>
+            <!-- Sub-Tabs Navigation for Subic vs Other Programs -->
+            <div class="flex border-b border-gray-200 dark:border-gray-700 mt-4 mb-6">
+              <button onclick="switchProgramTab('subic')" id="btn-tab-subic" class="program-tab-btn active px-4 py-2 text-sm font-medium border-b-2 transition-colors duration-200" style="border-bottom-color: #10B981; color: #10B981;">
+                Subic Programs
+              </button>
+              <button onclick="switchProgramTab('other')" id="btn-tab-other" class="program-tab-btn px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 transition-colors duration-200">
+                Other Programs
+              </button>
+            </div>
+
+            <!-- Subic Programs Container -->
+            <div id="subic-programs-content" class="program-tab-content">
+                <!-- Program Cards Grid View -->
+                <div id="program-grid-container">
+                  <div id="program-cards-grid" class="flex flex-col gap-6">
+                    <!-- Program cards will be dynamically injected here -->
+                    <p class="loading-text w-full text-center py-6 text-gray-500">Loading programs...</p>
+                  </div>
+                </div>
+            </div>
+
+            <!-- Other Programs Container (Informational Only) -->
+            <div id="other-programs-content" class="program-tab-content hidden">
+                <div id="other-program-cards-grid" class="flex flex-col gap-6">
+                    <!-- Other program cards will be injected here. For now, a placeholder. -->
+                    <div class="text-center py-10 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+                        <i class="fas fa-info-circle text-3xl text-gray-400 mb-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Other External Programs</h3>
+                        <p class="text-gray-500 text-sm mt-2 max-w-md mx-auto">These are informational listings for external programs. You cannot apply to these directly through ScholarSync.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Application Form View (Hidden initially) -->
@@ -1172,7 +1197,10 @@
         const bgLayer = p.program_image ? `<div class="sm:w-1/3 md:w-1/4 w-full h-48 sm:h-auto bg-cover bg-center shrink-0 border-b sm:border-b-0 sm:border-r border-gray-100 dark:border-gray-700" style="background-image: ${bgImage};"></div>` : `<div class="sm:w-3 flex-shrink-0 w-full h-3 sm:h-auto bg-brand-primary transition-all duration-300 group-hover:bg-brand-secondary"></div>`;
 
         let actionButtonHtml = '';
-        if (isExpired) {
+        if (p.program_type === 'Other') {
+          // No apply button for "Other" programs
+          actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled><i class="fas fa-external-link-alt mr-1"></i> External Program</button>`;
+        } else if (isExpired) {
           actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled>Closed</button>`;
         } else if (p.user_app_status === 'approved') {
           actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled><i class="fas fa-check-circle mr-1"></i> Already Approved</button>`;
@@ -1298,7 +1326,11 @@
         }
       }
 
-      if (isExpired) {
+      if (program.program_type === 'Other') {
+        applyBtn.textContent = 'External Program';
+        applyBtn.className = 'btn py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed';
+        applyBtn.onclick = null;
+      } else if (isExpired) {
         applyBtn.textContent = 'Closed';
         applyBtn.className = 'btn py-2.5 px-6 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed';
         applyBtn.onclick = null;
@@ -2472,6 +2504,41 @@
         }
       } catch (err) {
         Swal.fire('Error', 'Network error while deleting document.', 'error');
+      }
+    }
+
+    function switchProgramTab(tabName) {
+      // Hide all sub-tabs content
+      document.getElementById('subic-programs-content').classList.add('hidden');
+      document.getElementById('other-programs-content').classList.add('hidden');
+      
+      // Remove active styling from all sub-tab buttons
+      const btnSubic = document.getElementById('btn-tab-subic');
+      const btnOther = document.getElementById('btn-tab-other');
+      
+      btnSubic.classList.remove('active', 'border-b-2');
+      btnSubic.style.borderBottomColor = 'transparent';
+      btnSubic.style.color = '';
+      btnSubic.classList.add('text-gray-500', 'border-transparent');
+      
+      btnOther.classList.remove('active', 'border-b-2');
+      btnOther.style.borderBottomColor = 'transparent';
+      btnOther.style.color = '';
+      btnOther.classList.add('text-gray-500', 'border-transparent');
+
+      // Show active content and set active styling
+      if (tabName === 'subic') {
+        document.getElementById('subic-programs-content').classList.remove('hidden');
+        btnSubic.classList.add('active', 'border-b-2');
+        btnSubic.classList.remove('text-gray-500', 'border-transparent');
+        btnSubic.style.borderBottomColor = '#10B981';
+        btnSubic.style.color = '#10B981';
+      } else if (tabName === 'other') {
+        document.getElementById('other-programs-content').classList.remove('hidden');
+        btnOther.classList.add('active', 'border-b-2');
+        btnOther.classList.remove('text-gray-500', 'border-transparent');
+        btnOther.style.borderBottomColor = '#10B981';
+        btnOther.style.color = '#10B981';
       }
     }
 
