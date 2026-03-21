@@ -185,6 +185,8 @@ def get_chatbot_response(user_message):
 # ──────────────────────────────────────────────
 #  📄 DOCUMENT VALIDATION (Gemini Vision)
 # ──────────────────────────────────────────────
+_gemini_model = None
+
 def validate_document(file_obj, expected_type="Document"):
     """
     Uses Gemini Vision to validate the quality and type of an uploaded document.

@@ -11,32 +11,33 @@ urlpatterns = [
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('student/dashboard/', views.student_dashboard, name='student_dashboard'),
     path('register/', views.register_view, name='register'),
+    path('admin-register/', views.admin_register_view, name='admin_register'),
     
     # Password Reset endpoints
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(
-             template_name='registration/password_reset_form.html',
-             email_template_name='registration/password_reset_email.html',
+             template_name='accounts/password_reset_form.html',
+             email_template_name='accounts/password_reset_email.html',
              success_url='/password-reset/done/'
          ),
          name='password_reset'),
     
     path('password-reset/done/', 
          auth_views.PasswordResetDoneView.as_view(
-             template_name='registration/password_reset_done.html'
+             template_name='accounts/password_reset_done.html'
          ),
          name='password_reset_done'),
          
     path('password-reset-confirm/<uidb64>/<token>/', 
          auth_views.PasswordResetConfirmView.as_view(
-             template_name='registration/password_reset_confirm.html',
+             template_name='accounts/password_reset_confirm.html',
              success_url='/password-reset-complete/'
          ),
          name='password_reset_confirm'),
          
     path('password-reset-complete/', 
          auth_views.PasswordResetCompleteView.as_view(
-             template_name='registration/password_reset_complete.html'
+             template_name='accounts/password_reset_complete.html'
          ),
          name='password_reset_complete'),
     

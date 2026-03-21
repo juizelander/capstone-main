@@ -89,6 +89,43 @@ def login_view(request):
 
     return render(request, 'accounts/login.html')
 
+def admin_register_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        full_name = request.POST.get('full_name')
+        role = request.POST.get('role')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if not username or not password:
+            messages.error(request, "Username and Password are required.")
+            return render(request, 'accounts/admin_register.html')
+
+        if password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+            return render(request, 'accounts/admin_register.html')
+
+        # Check for existing admin
+        if Admin.objects.filter(admin_name=username).exists():
+            messages.error(request, "Username is already taken.")
+            return render(request, 'accounts/admin_register.html')
+
+        try:
+            admin_user = Admin.objects.create(
+                admin_name=username,
+                full_name=full_name,
+                role=role,
+                password=password
+            )
+            AdminLog.objects.create(admin=admin_user, action="Admin Registered")
+            messages.success(request, "Admin account created successfully. You can now log in.")
+            return redirect('accounts:login')
+        except Exception as e:
+            messages.error(request, f"Error creating admin: {str(e)}")
+            return render(request, 'accounts/admin_register.html')
+
+    return render(request, 'accounts/admin_register.html')
+
 import re
 
 def register_view(request):
@@ -218,7 +255,33 @@ def student_dashboard(request):
     if not student_id:
         return redirect('accounts:login')
     student = get_object_or_404(Student, pk=student_id)
-    return render(request, 'accounts/student_dashboard.html', {'student': student})
+    
+    # Calculate profile completion
+    required_fields = [
+        student.first_name, student.last_name, student.bday, student.sex,
+        student.address, student.barangay, student.contact_num, student.email,
+        student.student_type, student.current_school,
+        student.elem_school, student.elem_year,
+        student.jhs_school, student.jhs_year,
+        student.achievements,
+        student.parent_name, student.guardian_name, student.guardian_contact
+    ]
+    
+    if student.student_type in ['Undergraduate', "Master's", 'Doctoral', 'Board Exam']:
+        required_fields.extend([student.shs_school, student.shs_year, student.college_school, student.college_year])
+    elif student.student_type == 'Senior High School':
+        required_fields.extend([student.shs_school, student.shs_year])
+
+    filled_fields = sum(1 for field in required_fields if field and str(field).strip() != '')
+    total_fields = len(required_fields)
+    profile_completion_percentage = int((filled_fields / total_fields) * 100) if total_fields > 0 else 0
+    if profile_completion_percentage > 100:
+        profile_completion_percentage = 100
+
+    return render(request, 'accounts/student_dashboard.html', {
+        'student': student,
+        'profile_completion_percentage': profile_completion_percentage
+    })
 
 def logout_view(request):
     request.session.flush()  # clears all session data
@@ -1040,6 +1103,7 @@ def update_student_profile(request):
             
         student.sex = data.get('sex', student.sex)
         student.scholarship = data.get('scholarship', student.scholarship)
+        student.current_school = data.get('current_school', student.current_school)
         
         # Extended Profile Fields
         student.mname = data.get('mname', student.mname)
@@ -1117,6 +1181,7 @@ def get_program_applications(request):
                 
                 # Safely access program data
                 program_data = {
+                    'program_id': getattr(app.program, 'program_id', None),
                     'program_name': getattr(app.program, 'program_name', 'Unknown Program'),
                 }
                 
@@ -1271,17 +1336,36 @@ def get_program_applicants_by_program(request, program_id):
         return JsonResponse({'error': 'Not authenticated'}, status=401)
         
     try:
-        applications = Application.objects.filter(program_id=program_id).select_related('student', 'program').order_by('-created_at')
+        applications = Application.objects.filter(program_id=program_id).select_related('student', 'program').order_by('created_at')
         
         app_list = []
         for app in applications:
+            # Fetch global student documents
+            student_docs_list = []
+            for s_doc in app.student.documents.all():
+                student_docs_list.append({
+                    'id': s_doc.id,
+                    'name': s_doc.document_name,
+                    'url': s_doc.file.url if s_doc.file else None
+                })
+            
+            # Fetch documents submitted specifically for this application
+            app_docs_list = []
+            for doc in app.documents.all():
+                 app_docs_list.append({
+                    'url': doc.file.url, 
+                    'name': doc.file.name.split('/')[-1]
+                 })
+
             app_list.append({
                 'app_id': app.app_id,
                 'student_name': f"{app.student.first_name} {app.student.last_name}",
                 'username': app.student.username,
                 'requirement_status': app.requirement_status,
                 'created_at': app.created_at.strftime('%Y-%m-%d %H:%M') if app.created_at else None,
-                'program_type': app.program.program_type
+                'program_type': app.program.program_type,
+                'student_documents': student_docs_list,
+                'application_documents': app_docs_list
             })
             
         return JsonResponse({'success': True, 'applications': app_list})
@@ -2847,7 +2931,7 @@ def get_student_recommendations(request):
         if student_type:
             # Primary: programs explicitly tagged for this student type. 
             # Using Python filtering, because SQLite does not support JSONField __contains lookups.
-            all_active_programs = Program.objects.filter(is_active=True)
+            all_active_programs = Program.objects.filter(is_active=True).exclude(program_type='Other')
             matched_programs = []
             
             for p in all_active_programs:
@@ -2868,7 +2952,7 @@ def get_student_recommendations(request):
 
         # Fallback: if no tagged programs found, show up to 3 active programs
         if not results:
-            fallback = Program.objects.filter(is_active=True).order_by('-program_id')[:4]
+            fallback = Program.objects.filter(is_active=True).exclude(program_type='Other').order_by('-program_id')[:4]
             for p in fallback:
                 results.append({
                     'id': p.program_id,

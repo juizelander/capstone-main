@@ -1,25 +1,7 @@
 /* admin_dashboard.css */
 
-/* Reset some defaults */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: 'Raleway', sans-serif;
-}
-
-body {
-  background: linear-gradient(135deg, #10B981 0%, #F59E0B 100%);
-  color: #333;
-  min-height: 100vh;
-}
-
 /* Header */
-header {
+.legacy-header {
   width: 100%;
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
@@ -32,7 +14,7 @@ header {
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-header h1 {
+.legacy-header h1 {
   background: linear-gradient(135deg, #10B981, #F59E0B);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -43,7 +25,7 @@ header h1 {
   letter-spacing: 1px;
 }
 
-header p {
+.legacy-header p {
   color: #718096;
   font-size: 1rem;
   font-weight: normal;
@@ -563,6 +545,8 @@ header p {
 /* Card Header */
 .card-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
@@ -700,6 +684,8 @@ header p {
 
 .popup-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
@@ -778,6 +764,8 @@ header p {
 
 .modal-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
@@ -895,6 +883,8 @@ form {
 
 .application-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
@@ -1147,6 +1137,8 @@ form {
 
 .student-header {
   display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
@@ -1519,39 +1511,4 @@ form {
 .dark .data-table th,
 .dark .data-table td {
   color: #d1d5db;
-}
-
-/* Print Styles for Student Profile */
-@media print {
-  body.printing-profile .sd-sidebar,
-  body.printing-profile .sd-topbar,
-  body.printing-profile .application-filters,
-  body.printing-profile button {
-    display: none !important;
-  }
-  
-  body.printing-profile .sd-content {
-    margin: 0 !important;
-    padding: 0 !important;
-  }
-
-  body.printing-profile .sd-main-wrapper {
-    margin-left: 0 !important;
-  }
-  
-  body.printing-profile #student-profile-section {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    border: none;
-    box-shadow: none;
-    background: white;
-    color: black;
-  }
-
-  body.printing-profile * {
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
-  }
 }

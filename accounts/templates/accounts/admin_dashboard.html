@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Leaflet GIS Mapping -->
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -103,17 +103,19 @@
       vertical-align: middle;
     }
   </style>
+  <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
 </head>
-<link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
-<link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
-
 <body>
   <div class="sd-app-layout">
     <!-- Sidebar -->
     <aside class="sd-sidebar">
       <div class="sd-sidebar-header">
-        <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
-        <span>ScholarSync</span>
+        <a href="#" onclick="switchTab('dashboard')" class="flex items-center gap-2 no-underline"
+          style="text-decoration:none; color:inherit;">
+          <img src="{% static 'accounts/favicon.png' %}" alt="Logo">
+          <span>ScholarSync</span>
+        </a>
       </div>
       <nav class="sd-sidebar-nav">
 
@@ -128,8 +130,8 @@
             style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2 relative"
-          data-tab="student-applications">
-          <i class="fas fa-file-alt"></i> Program Applications
+          data-tab="program-applications">
+          <i class="fas fa-file-invoice"></i> Program Applications
           <span class="nav-badge" id="badge-applications"
             style="display: none; background: #ef4444; color: white; padding: 2px 6px; border-radius: 9999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">0</span>
         </a>
@@ -148,7 +150,7 @@
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           data-tab="reports">
-          <i class="fas fa-chart-bar"></i> Reports
+          <i class="fas fa-file-alt"></i> Reports
         </a>
         <a href="#" class="nav-item transition-all duration-300 ease-in-out transform hover:translate-x-2"
           data-tab="programs">
@@ -206,13 +208,13 @@
     </aside>
 
     <!-- Main Wrapper -->
-    <div class="sd-main-wrapper">
+    <div class="sd-main-wrapper w-full relative">
       <!-- Topbar -->
-      <header class="sd-topbar">
+      <header class="sd-topbar w-full flex items-center justify-between shadow-sm relative z-50 bg-white dark:bg-gray-800" style="width: 100%;">
         <div class="topbar-search" style="display: none;">
           <input type="text" placeholder="Search... (⌘F)">
         </div>
-        <div class="topbar-actions">
+        <div class="topbar-actions" style="justify-content: flex-end; margin-left: auto;">
           <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
             <i class="fas fa-moon"></i>
           </button>
@@ -220,23 +222,9 @@
       </header>
 
       <!-- Main Content Area -->
-      <main class="sd-content">
+      <main class="sd-content w-full" style="padding-top: 3rem;">
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active animate-fade-in">
-          <div
-            class="welcome-header animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 mb-6 flex justify-between items-center">
-            <div>
-              <h1 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Dashboard Overview</h1>
-              <p class="text-gray-500 dark:text-gray-400">Welcome to your admin dashboard. Use the sidebar to navigate
-                between different sections.</p>
-            </div>
-            <button
-              class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95 bg-brand-primary text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2"
-              onclick="switchTab('programs')">
-              <i class="fas fa-plus"></i> New Program
-            </button>
-          </div>
-
           <!-- Statistics Cards -->
           <div class="kpi-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div
@@ -435,7 +423,6 @@
                 <div class="animate-pulse bg-gray-50 dark:bg-gray-700 h-24 rounded-lg"></div>
               </div>
             </div>
-
           </div>
         </div>
 
@@ -463,7 +450,7 @@
         </div>
 
         <!-- Student Applications Tab -->
-        <div id="student-applications" class="tab-content animate-fade-in">
+        <div id="program-applications" class="tab-content animate-fade-in">
           <div
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex justify-between items-center mb-6">
@@ -499,10 +486,8 @@
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex justify-between items-center mb-6">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Announcement Management</h3>
-              <button
-                class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white font-medium px-4 py-2 rounded-lg shadow-sm flex items-center gap-2"
-                onclick="openAnnouncementModal()">
-                <i class="fas fa-plus"></i> Create New Announcement
+              <button class="btn btn-primary transition-all duration-200 transform hover:scale-105 active:scale-95 bg-brand-primary text-white px-4 py-2 rounded-lg shadow font-medium flex items-center gap-2" onclick="openAnnouncementModal()">
+                <i class="fas fa-plus"></i> New Announcement
               </button>
             </div>
 
@@ -917,60 +902,6 @@
             <!-- Create Admin Card -->
             <div
               class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
-              <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Create New Admin</h3>
-              <div class="settings-section">
-                <form id="create-admin-form" onsubmit="createAdmin(event)" class="space-y-4">
-                  <div class="form-group flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                      <label for="new_admin_username"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
-                      <input type="text" id="new_admin_username" name="new_admin_username"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        required>
-                    </div>
-                    <div class="flex-1">
-                      <label for="new_admin_fullname"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
-                      <input type="text" id="new_admin_fullname" name="new_admin_fullname"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
-                    </div>
-                  </div>
-                  <div class="form-group flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                      <label for="new_admin_role"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Role/Position</label>
-                      <input type="text" id="new_admin_role" name="new_admin_role"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        placeholder="e.g. Scholarship Coordinator">
-                    </div>
-                  </div>
-                  <div class="form-group flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                      <label for="new_admin_password"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Password</label>
-                      <input type="password" id="new_admin_password" name="new_admin_password"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        required>
-                    </div>
-                    <div class="flex-1">
-                      <label for="new_admin_confirm_password"
-                        class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Confirm
-                        Password</label>
-                      <input type="password" id="new_admin_confirm_password" name="new_admin_confirm_password"
-                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                        required>
-                    </div>
-                  </div>
-                  <button type="submit"
-                    class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Create
-                    Admin</button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Create Admin Card -->
-            <div
-              class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 w-full">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-6">Admin List</h3>
               <div
                 class="overflow-x-auto overflow-y-auto max-h-[300px] relative rounded-lg border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800">
@@ -1015,12 +946,15 @@
             <div class="card-header flex justify-between items-center mb-2">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Program Management</h3>
               <div class="flex gap-3">
+
                 <button
-                  class="btn btn-secondary bg-gray-600 text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-gray-700 transition-colors duration-200"
+                  id="btn-create-other-program"
+                  class="btn btn-secondary bg-gray-600 text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-gray-700 transition-colors duration-200 hidden"
                   onclick="showCreateOtherProgram()">
                   <i class="fas fa-external-link-alt"></i> Create Other Program
                 </button>
                 <button
+                  id="btn-create-subic-program"
                   class="btn btn-primary bg-brand-primary text-white px-4 py-2 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200"
                   onclick="showCreateProgram()">
                   <i class="fas fa-plus"></i> Create New Program
@@ -1139,15 +1073,13 @@
                     <label for="p_start" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Start
                       Date</label>
                     <input id="p_start" name="application_start_date" type="date"
-                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                      required>
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                   </div>
                   <div>
                     <label for="p_end" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">End
                       Date</label>
                     <input id="p_end" name="application_end_date" type="date"
-                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
-                      required>
+                      class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
                   </div>
                 </div>
 
@@ -1190,6 +1122,11 @@
             class="card tab-card animate-slide-up bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
             <div class="card-header flex justify-between items-center mb-6">
               <h3 class="text-xl font-bold text-gray-800 dark:text-white">Generate Reports</h3>
+              <button
+                class="btn btn-primary bg-brand-primary hover:bg-brand-secondary transition-colors duration-200 text-white px-4 py-2 rounded-lg font-medium shadow-sm flex items-center gap-2"
+                onclick="exportGeneralReport()">
+                <i class="fas fa-file-export"></i> Export Summary Report
+              </button>
             </div>
 
             <div
@@ -1728,8 +1665,12 @@
         // Lazy-load data when tab is opened
         if (targetId === 'student-registrations') {
           loadStudentRegistrations();
-        } else if (targetId === 'student-applications') {
-          loadProgramApplications();
+        } else if (targetId === 'program-applications') {
+          if (!allPrograms || allPrograms.length === 0) {
+            loadPrograms().then(() => loadProgramApplications());
+          } else {
+            loadProgramApplications();
+          }
         } else if (targetId === 'notifications') {
           loadPopups();
         } else if (targetId === 'dashboard') {
@@ -2964,57 +2905,7 @@
         });
     }
 
-    function createAdmin(event) {
-      event.preventDefault();
 
-      const new_admin_username = document.getElementById('new_admin_username').value;
-      const new_admin_fullname = document.getElementById('new_admin_fullname').value;
-      const new_admin_role = document.getElementById('new_admin_role').value;
-      const new_admin_password = document.getElementById('new_admin_password').value;
-      const new_admin_confirm_password = document.getElementById('new_admin_confirm_password').value;
-
-      if (new_admin_password !== new_admin_confirm_password) {
-        alert('Passwords do not match!');
-        return;
-      }
-
-      const btn = event.target.querySelector('button[type="submit"]');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-      btn.disabled = true;
-
-      fetch('/api/admin/create-admin/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
-        },
-        body: JSON.stringify({
-          username: new_admin_username,
-          full_name: new_admin_fullname,
-          role: new_admin_role,
-          password: new_admin_password,
-          confirm_password: new_admin_confirm_password
-        })
-      })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            alert('Admin created successfully!');
-            window.location.reload();
-          } else {
-            alert('Error: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('An error occurred during admin creation.');
-        })
-        .finally(() => {
-          btn.innerHTML = originalText;
-          btn.disabled = false;
-        });
-    }
 
     function openChangePasswordModal() {
       document.getElementById('old_password').value = '';
@@ -4106,14 +3997,18 @@
       // Auto-set some defaults for "Other Programs"
       document.getElementById('p_slots').value = '0';
       document.getElementById('p_name').placeholder = 'e.g. External Scholarship Opportunity';
+      document.getElementById('p_name').value = '';
     }
 
     function hideCreateProgram() {
       document.getElementById('createProgramForm').style.display = 'none';
-      document.getElementById('createProgramForm').reset();
+      document.querySelector('.program-form').reset();
     }
 
     function showCreateProgram() {
+      document.querySelector('.program-form').reset();
+      document.getElementById('p_type').value = 'Financial Assistance'; // Default for Subic
+      document.getElementById('p_name').placeholder = '';
       document.getElementById('createProgramForm').style.display = 'block';
       document.getElementById('createProgramForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -4128,10 +4023,20 @@
           body: formData,
           headers: {
             'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-          }
+          },
+          credentials: 'same-origin'
         });
 
-        const data = await response.json();
+        const text = await response.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch(err) {
+            console.error("Non-JSON Response received:", text);
+            alert("Server Error (Check console for details). Likely a Session expired or CSRF configuration issue.");
+            return;
+        }
+
         if (data.success) {
           alert('Program created successfully!');
           this.reset();
@@ -4142,7 +4047,7 @@
           alert(data.error || 'Failed to create program');
         }
       } catch (error) {
-        alert('Error creating program');
+        alert('Error creating program: ' + (error.message || error));
         console.error(error);
       }
     });
@@ -4284,13 +4189,13 @@
         const res = await fetch('/api/admin/program-applications/');
         const data = await res.json();
         
-        if (data.success) {
+        if (data.applications) {
           let filtered = data.applications;
           if (statusFilter !== 'all') {
-            filtered = filtered.filter(app => app.status === statusFilter);
+            filtered = filtered.filter(app => app.requirement_status === statusFilter);
           }
           if (programFilter !== 'all') {
-            filtered = filtered.filter(app => String(app.program_id) === String(programFilter));
+            filtered = filtered.filter(app => app.program && String(app.program.program_id) === String(programFilter));
           }
 
           container.innerHTML = '';
@@ -4303,6 +4208,9 @@
             const el = createProgramApplicationElement(app); 
             container.appendChild(el);
           });
+        } else {
+            console.error("No applications returned", data);
+            container.innerHTML = `<div class="col-span-full text-center py-10 text-red-500">Error loading applications: ${data.error || 'Unknown error'}</div>`;
         }
       } catch (err) {
         console.error(err);
@@ -4333,15 +4241,23 @@
       if (tabName === 'subic') {
         document.getElementById('admin-subic-programs-content').classList.remove('hidden');
         btnSubic.classList.add('active', 'border-b-2');
-        btnSubic.classList.remove('text-gray-500', 'border-transparent');
         btnSubic.style.borderBottomColor = '#10B981';
         btnSubic.style.color = '#10B981';
-      } else if (tabName === 'other') {
+        btnSubic.classList.remove('text-gray-500', 'border-transparent');
+        
+        // Show/Hide create buttons
+        document.getElementById('btn-create-subic-program').classList.remove('hidden');
+        document.getElementById('btn-create-other-program').classList.add('hidden');
+      } else { // This implies 'other'
         document.getElementById('admin-other-programs-content').classList.remove('hidden');
         btnOther.classList.add('active', 'border-b-2');
-        btnOther.classList.remove('text-gray-500', 'border-transparent');
         btnOther.style.borderBottomColor = '#10B981';
         btnOther.style.color = '#10B981';
+        btnOther.classList.remove('text-gray-500', 'border-transparent');
+
+        // Show/Hide create buttons
+        document.getElementById('btn-create-subic-program').classList.add('hidden');
+        document.getElementById('btn-create-other-program').classList.remove('hidden');
       }
     }
   </script>
@@ -4651,13 +4567,27 @@
       document.getElementById('program-applicants-modal').style.display = 'none';
     }
 
+    let currentProgramId = null;
+
+    function printProgramReport() {
+      if (!currentProgramId) return;
+      let queryParams = new URLSearchParams({
+        type: 'applications',
+        program: currentProgramId,
+        status: 'all',
+        export: 'word'
+      });
+      window.location.href = `/api/admin/reports/?${queryParams.toString()}`;
+    }
+
     function openProgramViewModal(programId, programName, programType) {
       currentProgramType = programType || 'Other';
+      currentProgramId = programId;
       document.getElementById('pav-program-name').textContent = programName;
       document.getElementById('program-applicants-modal').style.display = 'flex';
 
       const tbody = document.getElementById('pav-table-body');
-      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">Loading applicants...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">Loading applicants...</td></tr>';
 
       fetch(`/api/admin/programs/${programId}/applicants/`, {
         headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -4671,7 +4601,7 @@
 
         const applicants = data.applications;
         if (applicants.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No applicants found for this program.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No applicants found for this program.</td></tr>';
           return;
         }
 
@@ -4685,25 +4615,41 @@
           switch(app.requirement_status) {
             case 'approved': statusBadge = '<span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Approved</span>'; break;
             case 'rejected': statusBadge = '<span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold">Rejected</span>'; break;
-            case 'submitted': statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">Submitted</span>'; break;
-            default: statusBadge = `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold capitalize">${app.requirement_status}</span>`;
+            case 'submitted': statusBadge = '<span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold" style="white-space: nowrap;">Submitted</span>'; break;
+            default: statusBadge = `<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold capitalize whitespace-nowrap">${app.requirement_status}</span>`;
           }
 
-          let actions = '';
-          if (canPrintReceipt) {
-            actions = `<button onclick="promptReceipt(${app.app_id})" class="text-xs bg-brand-primary text-white px-3 py-1 rounded hover:bg-brand-secondary transition shadow-sm flex items-center gap-1 mx-auto"><i class="fas fa-print"></i> Receipt</button>`;
+          let documentsHtml = '';
+          const docs = [...(app.student_documents || []), ...(app.application_documents || [])];
+          if (docs && docs.length > 0) {
+              documentsHtml = docs.map(d => `<a href="${d.url}" target="_blank" class="text-brand-primary hover:underline text-[11px] flex items-center gap-1 mb-1 truncate max-w-[120px]" title="${d.name}"><i class="fas fa-file-pdf shrink-0"></i> <span class="truncate">${d.name}</span></a>`).join('');
           } else {
-            actions = '<span class="text-xs text-gray-400">-</span>';
+              documentsHtml = '<span class="text-xs text-gray-400">None</span>';
+          }
+
+          let actions = '<div class="flex items-center justify-center gap-1 flex-wrap w-full">';
+          if (app.requirement_status === 'submitted' || app.requirement_status === 'pending') {
+            actions += `<button onclick="approveProgramApplication(${app.app_id})" class="text-xs bg-green-500 text-white w-7 h-7 flex items-center justify-center rounded hover:bg-green-600 transition shadow-sm tooltip shrink-0" title="Approve"><i class="fas fa-check"></i></button>`;
+            actions += `<button onclick="rejectProgramApplication(${app.app_id})" class="text-xs bg-red-500 text-white w-7 h-7 flex items-center justify-center rounded hover:bg-red-600 transition shadow-sm tooltip shrink-0" title="Reject"><i class="fas fa-times"></i></button>`;
+          }
+          if (canPrintReceipt) {
+            actions += `<button onclick="promptReceipt(${app.app_id})" class="text-xs bg-brand-primary text-white w-7 h-7 flex items-center justify-center rounded hover:bg-brand-secondary transition shadow-sm tooltip shrink-0" title="Print Receipt"><i class="fas fa-print"></i></button>`;
+          }
+          actions += '</div>';
+
+          if (actions === '<div class="flex items-center justify-center gap-1 flex-wrap w-full"></div>') {
+            actions = '<span class="text-xs text-gray-400 block text-center w-full">-</span>';
           }
 
           const tr = document.createElement('tr');
           tr.className = 'border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition';
           tr.innerHTML = `
-            <td class="p-4 text-sm text-gray-800 dark:text-gray-200 font-medium">${app.student_name}</td>
-            <td class="p-4 text-sm text-gray-600 dark:text-gray-400">@${app.username}</td>
-            <td class="p-4 text-sm">${statusBadge}</td>
-            <td class="p-4 text-sm text-gray-600 dark:text-gray-400">${app.created_at || 'N/A'}</td>
-            <td class="p-4 text-sm text-center">${actions}</td>
+            <td class="p-3 text-sm text-gray-800 dark:text-gray-200 font-medium whitespace-nowrap">${app.student_name}</td>
+            <td class="p-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">@${app.username}</td>
+            <td class="p-3 text-sm">${statusBadge}</td>
+            <td class="p-3 text-sm flex flex-col items-start justify-center min-w-[150px] overflow-hidden">${documentsHtml}</td>
+            <td class="p-3 text-sm text-gray-600 dark:text-gray-400 whitespace-nowrap">${app.created_at || 'N/A'}</td>
+            <td class="p-3 text-sm text-center align-middle h-full min-w-[100px]">${actions}</td>
           `;
           tbody.appendChild(tr);
         });
@@ -5511,12 +5457,17 @@
     style="display: none; position: fixed; z-index: 1050; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
     <div class="modal-content !max-w-4xl bg-white dark:bg-gray-800 p-0 rounded-xl shadow-2xl w-full mx-4 max-h-[90vh] flex flex-col overflow-hidden animate-slide-up">
       <!-- Modal Header -->
-      <div class="modal-header bg-gray-50 dark:bg-gray-700/50 p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+      <div class="modal-header bg-gray-50 dark:bg-gray-700/50 p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center shrink-0">
         <div>
           <h3 class="text-xl font-bold text-gray-800 dark:text-white m-0" id="pav-program-name">Program Name</h3>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Registered Applicants</p>
         </div>
-        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-3xl cursor-pointer leading-none" onclick="closeProgramViewModal()">&times;</span>
+        <div class="flex items-center gap-4">
+          <button id="pav-print-report-btn" class="bg-brand-primary text-white hover:bg-brand-secondary px-4 py-2 rounded-lg font-medium text-sm shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2" onclick="printProgramReport()">
+            <i class="fas fa-print"></i> Print Report
+          </button>
+          <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-3xl cursor-pointer leading-none" onclick="closeProgramViewModal()">&times;</span>
+        </div>
       </div>
       
       <!-- Modal Body -->
@@ -5527,6 +5478,7 @@
               <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Student Name</th>
               <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Username</th>
               <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+              <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Documents</th>
               <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date Applied</th>
               <th class="p-4 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">Actions</th>
             </tr>

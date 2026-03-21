@@ -535,6 +535,22 @@
           <div id="profile-msg" class="app-message"
             style="display:none; margin-bottom: 15px; padding: 10px; border-radius: 4px;"></div>
 
+          <!-- Profile Completion Progress -->
+          <div class="card mb-6 p-5 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 animate-slide-up">
+            <div class="flex justify-between items-center mb-2">
+              <h3 class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Profile Completion</h3>
+              <span class="text-lg font-bold {% if profile_completion_percentage == 100 %}text-brand-primary{% else %}text-amber-500{% endif %}">{{ profile_completion_percentage|default:0 }}%</span>
+            </div>
+            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
+              <div class="h-3 rounded-full transition-all duration-500 {% if profile_completion_percentage == 100 %}bg-brand-primary{% else %}bg-amber-500{% endif %}" style="width: {{ profile_completion_percentage|default:0 }}%"></div>
+            </div>
+            {% if profile_completion_percentage < 90 %}
+              <p class="text-xs text-amber-600 dark:text-amber-400 mt-2"><i class="fas fa-exclamation-triangle mr-1"></i> You must complete 90% of your profile to apply for Subic Programs.</p>
+            {% else %}
+              <p class="text-xs text-brand-primary mt-2"><i class="fas fa-check-circle mr-1"></i> Your profile is complete! You can now apply for programs.</p>
+            {% endif %}
+          </div>
+
           <form id="profileForm" onsubmit="handleProfileSubmit(event)">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -643,6 +659,14 @@
                           Exam</option>
                       </optgroup>
                     </select>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px;">
+                    <label for="prof_current_school"
+                      style="font-weight: 500; font-size: 0.9em; color: var(--text-secondary);">Current School</label>
+                    <input type="text" id="prof_current_school" name="current_school"
+                      value="{{ student.current_school|default:'' }}" disabled required
+                      class="profile-input disabled:opacity-80 disabled:bg-gray-50 disabled:text-gray-800 disabled:border-transparent dark:disabled:bg-gray-800/50 dark:disabled:text-gray-300"
+                      style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; background-color: var(--bg-surface-alt); color: var(--text-primary); transition: all 0.3s;">
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 5px;" id="prof_program_yr_container" {% if student.student_type != 'Undergraduate' %}style="display: none;" {% endif %}>
                     <label for="prof_program_and_yr"
@@ -1124,6 +1148,9 @@
     // Store programs data globally for easy access
     let programsData = {};
     let currentPopupId = null; // Store current popup ID
+    
+    // Pass the Django context variable into JavaScript
+    const profileCompletionPercentage = {{ profile_completion_percentage|default:0 }};
 
     // Load programs into the dropdown from Home app endpoint
     async function loadProgramsDropdown() {
@@ -1148,6 +1175,11 @@
 
       const grid = document.getElementById('program-cards-grid');
       grid.innerHTML = ''; // Clear loading text
+      
+      const otherGrid = document.getElementById('other-program-cards-grid');
+      if (otherGrid) {
+          otherGrid.innerHTML = ''; // Clear informational text
+      }
 
       data.programs.forEach(p => {
         programsData[p.program_id] = p;
@@ -1206,6 +1238,8 @@
           actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled><i class="fas fa-check-circle mr-1"></i> Already Approved</button>`;
         } else if (p.user_app_status === 'submitted') {
           actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled><i class="fas fa-clock mr-1"></i> Application Pending</button>`;
+        } else if (profileCompletionPercentage < 90) {
+          actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled title="Complete your profile to 90% first"><i class="fas fa-lock mr-1"></i> Profile Incomplete</button>`;
         } else if (isFull) {
           actionButtonHtml = `<button class="w-full sm:w-auto py-2.5 px-6 bg-red-100 text-red-500 dark:bg-red-900/30 dark:text-red-400 font-medium rounded-lg cursor-not-allowed text-sm whitespace-nowrap" disabled>Slots Full</button>`;
         } else {
@@ -1247,11 +1281,27 @@
             </div>
           </div>
         `;
-        grid.appendChild(card);
+        if (p.program_type === 'Other' && otherGrid) {
+          otherGrid.appendChild(card);
+        } else {
+          grid.appendChild(card);
+        }
       });
 
       if (data.programs.length === 0) {
         grid.innerHTML = '<p class="no-programs w-full text-center text-gray-500 py-10 font-medium text-lg bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">No programs available at the moment.</p>';
+      } else if (grid.children.length === 0) {
+        grid.innerHTML = '<p class="no-programs w-full text-center text-gray-500 py-10 font-medium text-lg bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700">No Subic programs available at the moment.</p>';
+      }
+      
+      if (otherGrid && otherGrid.children.length === 0) {
+        otherGrid.innerHTML = `
+          <div class="text-center py-10 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 w-full">
+              <i class="fas fa-info-circle text-3xl text-gray-400 mb-3"></i>
+              <h3 class="text-lg font-medium text-gray-700 dark:text-gray-300">Other External Programs</h3>
+              <p class="text-gray-500 text-sm mt-2 max-w-md mx-auto">There are currently no external programs listed.</p>
+          </div>
+        `;
       }
     }
 
@@ -1731,7 +1781,12 @@
 
         if (data.success && data.recommendations && data.recommendations.length > 0) {
           containerIdx.style.display = 'block';
-          listIdx.innerHTML = data.recommendations.map(p => `
+          listIdx.innerHTML = data.recommendations.map(p => {
+            const applyButtonHtml = profileCompletionPercentage < 90 
+              ? `<button disabled class="mt-auto w-full py-2 bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 cursor-not-allowed text-xs font-bold rounded-lg border border-gray-300 dark:border-gray-600">Profile Incomplete (90% required)</button>`
+              : `<button onclick="switchTab('apply'); setTimeout(() => selectProgramForApplication(${p.id}), 100);" class="mt-auto w-full py-2 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white transition-all duration-200 text-xs font-bold rounded-lg border border-brand-primary/20">Apply Now</button>`;
+
+            return `
             <div class="recommendation-card-ai high-match flex flex-row h-full overflow-hidden items-stretch">
               ${p.image ? `<div class="w-32 sm:w-40 shrink-0" style="background-image: url('${p.image}'); background-size: cover; background-position: center;"></div>` : ''}
               <div class="p-5 flex flex-col flex-1 relative min-w-0">
@@ -1745,13 +1800,11 @@
                   ${p.reasons.map(r => `<span class="match-reason-tag truncate max-w-[100px]">${r}</span>`).join('')}
                 </div>
                 
-                <button onclick="switchTab('apply'); setTimeout(() => selectProgramForApplication(${p.id}), 100);" 
-                        class="mt-auto w-full py-2 bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white transition-all duration-200 text-xs font-bold rounded-lg border border-brand-primary/20">
-                  Apply Now
-                </button>
+                ${applyButtonHtml}
               </div>
             </div>
-          `).join('');
+            `;
+          }).join('');
         } else {
           containerIdx.style.display = 'none';
         }

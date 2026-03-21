@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Registration - ScholarSync Subic</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="{% static 'accounts/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'accounts/style.css' %}?v=3">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Raleway', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .auth-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      width: 100%;
+      max-width: 500px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #10B981, #F59E0B);
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand-logo {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 15px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .brand-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0 0 5px 0;
+    }
+
+    .brand-subtitle {
+      font-size: 0.95rem;
+      color: #64748b;
+      margin: 0;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 8px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Roboto', sans-serif;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      background-color: #f8fafc;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #10B981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      background-color: white;
+    }
+
+    .auth-button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+      margin-top: 10px;
+    }
+
+    .auth-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .auth-button:active {
+      transform: translateY(0);
+    }
+
+    .auth-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.95rem;
+      color: #64748b;
+    }
+
+    .auth-link a {
+      color: #10B981;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .auth-link a:hover {
+      color: #059669;
+      text-decoration: underline;
+    }
+
+    .messages {
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .message {
+      padding: 12px 15px;
+      font-size: 0.9rem;
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .message.error { background-color: #fef2f2; color: #b91c1c; border-left: 4px solid #ef4444; }
+    .message.success { background-color: #f0fdf4; color: #15803d; border-left: 4px solid #22c55e; }
+  </style>
+</head>
+
+<body>
+  <div class="auth-container">
+    <div class="brand-header">
+      <img src="{% static 'accounts/scholarsync_logo.png' %}" alt="ScholarSync" class="brand-logo">
+      <h1 class="brand-title">Admin Registration</h1>
+      <p class="brand-subtitle">Create an administrative account</p>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="message {{ message.tags }}">
+        <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+        <span>{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'accounts:admin_register' %}">
+      {% csrf_token %}
+
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Choose an admin username" required>
+      </div>
+
+      <div class="input-group">
+        <label for="full_name">Full Name</label>
+        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="input-group">
+        <label for="role">Role / Position</label>
+        <input type="text" id="role" name="role" placeholder="e.g. Scholarship Coordinator" required>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+      </div>
+
+      <div class="input-group">
+        <label for="confirm_password">Confirm Password</label>
+        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required>
+        <span id="password-match-msg" style="font-size: 0.8rem; display: none; margin-top: 5px;"></span>
+      </div>
+
+      <button type="submit" class="auth-button" id="main-submit-btn">Register Admin</button>
+    </form>
+
+    <div class="auth-link">
+      <p>Already an admin? <a href="{% url 'accounts:login' %}">Sign in here</a></p>
+      <div style="margin-top: 15px;">
+        <a href="{% url 'accounts:landing' %}"
+          style="color: #718096; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 5px;">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    const matchMsg = document.getElementById('password-match-msg');
+    const submitBtn = document.getElementById('main-submit-btn');
+
+    function checkPasswordMatch() {
+      const password = passwordInput.value;
+      const confirm = confirmInput.value;
+
+      if (confirm.length > 0) {
+        matchMsg.style.display = 'block';
+        if (password === confirm) {
+          matchMsg.textContent = 'Passwords match';
+          matchMsg.style.color = '#10B981';
+          confirmInput.setCustomValidity('');
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+        } else {
+          matchMsg.textContent = 'Passwords do not match';
+          matchMsg.style.color = '#ef4444';
+          confirmInput.setCustomValidity('Passwords do not match');
+          submitBtn.disabled = true;
+          submitBtn.style.opacity = '0.6';
+        }
+      } else {
+        matchMsg.style.display = 'none';
+        confirmInput.setCustomValidity('');
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+      }
+    }
+
+    passwordInput.addEventListener('input', checkPasswordMatch);
+    confirmInput.addEventListener('input', checkPasswordMatch);
+  </script>
+</body>
+</html>
