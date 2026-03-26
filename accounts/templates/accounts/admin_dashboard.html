@@ -103,8 +103,8 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}">
-  <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'accounts/student_dashboard.css' %}?v={% now 'U' %}">
+  <link rel="stylesheet" href="{% static 'accounts/admin_dashboard.css' %}?v={% now 'U' %}">
 </head>
 <body>
   <div class="sd-app-layout">
@@ -208,11 +208,11 @@
     </aside>
 
     <!-- Main Wrapper -->
-    <div class="sd-main-wrapper w-full relative">
+    <div class="sd-main-wrapper relative">
       <!-- Topbar -->
       <header class="sd-topbar w-full flex items-center justify-between shadow-sm relative z-50 bg-white dark:bg-gray-800" style="width: 100%;">
         <div class="topbar-search" style="display: none;">
-          <input type="text" placeholder="Search... (⌘F)">
+          <input type="text" placeholder="Search... (ΓîÿF)">
         </div>
         <div class="topbar-actions" style="justify-content: flex-end; margin-left: auto;">
           <button id="theme-toggle" class="btn btn-outline" style="border: none; padding: 5px; font-size: 1.25rem;">
@@ -222,7 +222,7 @@
       </header>
 
       <!-- Main Content Area -->
-      <main class="sd-content w-full" style="padding-top: 3rem;">
+      <main class="sd-content w-full max-w-full overflow-x-hidden" style="padding-top: 3rem;">
         <!-- Dashboard Tab -->
         <div id="dashboard" class="tab-content active animate-fade-in">
           <!-- Statistics Cards -->
@@ -424,7 +424,7 @@
               </div>
             </div>
           </div>
-        </div>
+        <!-- End of Dashboard Tab -->
 
         <!-- Student Account Registration Tab -->
         <div id="student-registrations" class="tab-content animate-fade-in">
@@ -1325,6 +1325,7 @@
             </div>
           </div>
         </div>
+      </main>
     </div>
   </div>
 
@@ -1907,7 +1908,7 @@
       window.location.href = `/api/admin/reports/?${queryParams.toString()}`;
     }
 
-    // Student Management Functions — master branch (complete)
+    // Student Management Functions ΓÇö master branch (complete)
     let currentStudents = [];
 
     function loadStudents() {
@@ -2113,7 +2114,7 @@
       _renderStudentProfile(idx < 0 ? 0 : idx, visible);
     }
 
-    // Called from Applicant Registration cards — switches to Students tab and opens the profile
+    // Called from Applicant Registration cards ΓÇö switches to Students tab and opens the profile
     function viewStudentFromRegistration(studentId) {
       // Manually activate the Students tab
       document.querySelectorAll('.nav-link, .nav-item').forEach(t => t.classList.remove('active'));
@@ -2234,7 +2235,7 @@
       const toggleBtn = document.getElementById('sp-toggle-btn');
 
       if (isPending) {
-        // Pending students cannot be manually activated — they must first be approved via Applicant Registration
+        // Pending students cannot be manually activated ΓÇö they must first be approved via Applicant Registration
         toggleBtn.textContent = 'Activate';
         toggleBtn.disabled = true;
         toggleBtn.className = 'w-full py-2 px-4 rounded-lg text-sm font-semibold text-white transition bg-gray-400 cursor-not-allowed opacity-60';
@@ -2294,7 +2295,7 @@
         const requiredDocs = data.required_documents || [];
         const uploadedNames = new Set(data.uploaded_names || []);
 
-        // Build a lookup: document name → uploaded doc object (for view link)
+        // Build a lookup: document name ΓåÆ uploaded doc object (for view link)
         const uploadedMap = {};
         (data.documents || []).forEach(d => { if (d.name) uploadedMap[d.name] = d; });
 
@@ -2332,7 +2333,7 @@
             }
           });
         } else if (data.documents && data.documents.length > 0) {
-          // No required docs list — just show uploaded ones
+          // No required docs list ΓÇö just show uploaded ones
           data.documents.forEach(doc => {
             const date = new Date(doc.uploaded_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
             const row = document.createElement('div');
@@ -4703,7 +4704,7 @@
 
   <footer
     style="text-align: center; padding: 20px; margin-top: 40px; border-top: 1px solid #e0e0e0; color: #666; font-size: 14px;">
-    © 2026 ScholarSync Subic. MJ, Lander, BJ, Stone. All rights reserved
+    ┬⌐ 2026 ScholarSync Subic. MJ, Lander, BJ, Stone. All rights reserved
   </footer>
 
 

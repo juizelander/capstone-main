@@ -1,0 +1,4 @@
+Global balance drops to -1 at line 1329!
+Global balance drops to -2 at line 4265!
+Global balance drops to -3 at line 4701!
+Global balance drops to -4 at line 4702!

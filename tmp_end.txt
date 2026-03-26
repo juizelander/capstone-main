@@ -1,0 +1,145 @@
+          onclick="closeEditAdminProfileModal()">&times;</span>
+      </div>
+      <form id="edit-admin-profile-form" onsubmit="saveEditAdminProfile(event)" class="space-y-4">
+        <div class="form-group">
+          <label for="edit_admin_profile_username"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Username</label>
+          <input type="text" id="edit_admin_profile_username" name="username"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="edit_admin_profile_fullname"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+          <input type="text" id="edit_admin_profile_fullname" name="full_name"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="edit_admin_profile_role"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Role / Position</label>
+          <input type="text" id="edit_admin_profile_role" name="role"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            placeholder="e.g. Administrator">
+        </div>
+        <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeEditAdminProfileModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">
+            Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Change Password Modal -->
+  <div id="change-password-modal" class="modal"
+    style="display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+    <div class="modal-content !max-w-md bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl w-full mx-4">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white">Change Password</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closeChangePasswordModal()">&times;</span>
+      </div>
+      <form id="modal-change-password-form" onsubmit="changeAdminPassword(event)" class="space-y-4">
+        <div class="form-group">
+          <label for="old_password"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Old/Current Password</label>
+          <input type="password" id="old_password" name="old_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="new_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">New
+            Password</label>
+          <input type="password" id="new_password" name="new_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="confirm_password" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Retype
+            New Password</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="flex justify-end gap-3 pt-4 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closeChangePasswordModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">
+            Update Password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Popup Modal -->
+  <div id="popup-modal" class="modal" style="display: none;">
+    <div class="modal-content !max-w-xl bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl">
+      <div
+        class="modal-header flex justify-between items-center mb-6 border-b border-gray-100 dark:border-gray-700 pb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white" id="modal-title">Create New Popup</h3>
+        <span class="close text-gray-400 hover:text-gray-600 dark:hover:text-white text-2xl cursor-pointer"
+          onclick="closePopupModal()">&times;</span>
+      </div>
+      <form id="popup-form" class="space-y-4">
+        <input type="hidden" id="popup-id" name="popup_id">
+        <div class="form-group">
+          <label for="popup-title"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Title:</label>
+          <input type="text" id="popup-title" name="title"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="popup-message"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Message:</label>
+          <textarea id="popup-message" name="message" rows="4"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
+            required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="popup-type"
+            class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Type:</label>
+          <select id="popup-type" name="popup_type"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm">
+            <option value="info">Information</option>
+            <option value="warning">Warning</option>
+            <option value="success">Success</option>
+            <option value="error">Error</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="popup-expires" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">Expires
+            At (optional):</label>
+          <input type="datetime-local" id="popup-expires" name="expires_at"
+            class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm block">
+        </div>
+        <div class="form-group flex items-center gap-2 mt-2">
+          <input type="checkbox" id="popup-active" name="is_active"
+            class="w-4 h-4 text-brand-primary border-gray-300 rounded focus:ring-brand-primary dark:focus:ring-brand-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            checked>
+          <label for="popup-active" class="text-sm font-medium text-gray-700 dark:text-gray-300">Active</label>
+        </div>
+        <div class="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100 dark:border-gray-700">
+          <button type="button"
+            class="px-5 py-2.5 rounded-lg font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition duration-300"
+            onclick="closePopupModal()">Cancel</button>
+          <button type="submit"
+            class="btn btn-primary bg-brand-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-brand-secondary transition-colors duration-200">Save
+            Popup</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleProfileDropdown(event) {
+      event.stopPropagation();
+      const dropdown = document.getElementById('profile-dropdown');
+      const chevron = document.getElementById('profile-chevron');
